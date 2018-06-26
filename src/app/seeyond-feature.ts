@@ -691,14 +691,14 @@ export class SeeyondFeature extends Feature {
       // Used in partitions and ceilings
       case '3-85-102':
         if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
-          hardwareQty = Math.ceil(this.boxes * 12);
+          hardwareQty = Math.ceil(this.boxes / 2 * 12);
         }else if (seeyond_feature_index === 3) {
           const ceilingRows = this.syd_t.QT.GetCeilingRows();
           const ceilingCols = this.syd_t.QT.GetCeilingColumns();
           const ceilingBoxes = Math.ceil(ceilingRows * ceilingCols);
-          hardwareQty = Math.ceil(ceilingBoxes * 24);
+          hardwareQty = Math.ceil(ceilingBoxes * 12);
         }else if (seeyond_feature_index === 4) {
-          hardwareQty = Math.ceil(this.boxes * 24);
+          hardwareQty = Math.ceil(this.boxes * 12);
         }
         break;
 

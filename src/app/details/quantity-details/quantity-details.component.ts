@@ -50,7 +50,9 @@ export class QuantityDetailsComponent implements OnInit {
           } else {
             this.api.getUserRep(qtyOrder.uid).subscribe(rep => {
               this.rep = rep;
-              this.setOrderData(qtyOrder);
+              if ( this.qtySrv.order.data.length <= 0 ) {
+                this.setOrderData(qtyOrder);
+              }
             })
           }
           this.dataSource = new TableDataSource(this.dataSubject);
