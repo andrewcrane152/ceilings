@@ -116,6 +116,8 @@ export class SeeyondDesignComponent extends DesignComponent implements OnInit, O
     if (this.seeyond.cove_lighting) {
       this.seeyond.calcLightingFootage();
     }
+    // update the visualization
+    this.seeyond.redrawVisualization();
     this.seeyond.updateEstimatedAmount();
   }
 
