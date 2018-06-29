@@ -31,6 +31,7 @@ export class SeeyondFeature extends Feature {
   public sheets: number;
   public cove_lighting = false;
   public lightingStyle = 'plain';
+  public cameraLocation = 'back';
   public front_relief = true;
   public back_relief = false;
   public random_seed: number;
@@ -224,7 +225,7 @@ export class SeeyondFeature extends Feature {
     const vNum = this.syd_t.QT.GetV();
 
     this.syd_v.QT.Visualization.SetFeatureType(this.seeyond_feature_index);
-    this.syd_v.QT.Visualization.visualizeFeature(front, back, uNum, vNum, this.getMaterialImage(this.material), 'back', this.getLightingStyle());
+    this.syd_v.QT.Visualization.visualizeFeature(front, back, uNum, vNum, this.getMaterialImage(this.material), this.cameraLocation, this.getLightingStyle());
 
     // update the feature depth
     this.depth = this.syd_v.QT.Visualization.GetBoundingBoxDepth().toFixed(2);
@@ -243,7 +244,7 @@ export class SeeyondFeature extends Feature {
     const uNum = this.syd_t.QT.GetU();
     const vNum = this.syd_t.QT.GetV();
 
-    this.syd_v.QT.Visualization.visualizeFeature(front, back, uNum, vNum, this.getMaterialImage(this.material), 'back', this.getLightingStyle());
+    this.syd_v.QT.Visualization.visualizeFeature(front, back, uNum, vNum, this.getMaterialImage(this.material), this.cameraLocation, this.getLightingStyle());
 
     // feature has been updated
     this.onFeatureUpdated.emit();
