@@ -405,10 +405,14 @@ export class Feature {
     const cableKitCost = 12.46;
     const variaConnectionKitCost = 6.85;
     const feltConnectionKitCost = 0.46;
+    const variaOutsideTileKitCost = 10.00;
+    const feltOutsideTileKitCost = 10.00;
     const drillBitCost = 10.23;
     const variaPunchToolCost = 17.49;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
+    let variaOutsideTileKitsNeeded = 0;
+    let feltOutsideTileKitsNeeded = 0;
     let cablesNeeded = 0;
     let variaPunchToolNeeded = false;
 
@@ -427,49 +431,44 @@ export class Feature {
         // ratio = (number_of_shared_edges / number_of_tiles)
         // if ratio < 1 then cableCount = Math.ceil(cables * .75)
         // if ratio > 1 then cableCount = Math.ceil(cables * .5)
-        // this is the total number of purchased tiles
-        // this is the number of tiles in the design
+        const ratio = sharedEdges / tilesInIsland;
+        const factor = ratio < 1 ? 0.75 : 0.5;
+        cableCount = Math.ceil(tilesInIsland * factor);
 
-        //     __          __  _____
-        //    / /_  ____  / /_/ __(_)  __
-        //   / __ \/ __ \/ __/ /_/ / |/_/
-        //  / / / / /_/ / /_/ __/ />  <
-        // /_/ /_/\____/\__/_/ /_/_/|_|
+        // add cables for outside tiles
+        cableCount += islandConnections['totalOutsideTiles'];
 
-        // August 27th 2018
-        // We are setting the cables to be 1:1 with the number of tiles
-        // in order to address an issue with cantilevered features
-        // until such time as we are able to create a more permanent fix.
+        // If shared edges is 1 less than total tiles, set cableCount to sharedEdges
+        if (sharedEdges + 1 === tilesInIsland) {
+          cableCount = sharedEdges;
+        }
+        // Minimum of 2 cables.
+        cableCount = cableCount < 2 ? 2 : cableCount;
+        cableCost += cableCount * cableKitCost;
 
-        // const ratio = sharedEdges / tilesInIsland;
-        // const factor = 1;
-        // cableCount = Math.ceil(tilesInIsland * factor);
-
-        // // If shared edges is 1 less than total tiles, set cableCount to sharedEdges
-        // if (sharedEdges + 1 === tilesInIsland) {
-        //   cableCount = sharedEdges;
-        // }
-        // // Minimum of 2 cables.
-        // cableCount = cableCount < 2 ? 2 : cableCount;
+        // cableCount = tilesInIsland;
         // cableCost += cableCount * cableKitCost;
 
-        cableCount = tilesInIsland;
-        cableCost += cableCount * cableKitCost;
         // Add the cables for this island to the total cables needed
         cablesNeeded += cableCount;
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
           islandConnections['variaToVaria'] * variaConnectionKitCost +
-          (islandConnections['feltToFelt'] + islandConnections['variaToFelt']) * feltConnectionKitCost;
+          (islandConnections['feltToFelt'] + islandConnections['variaToFelt']) * feltConnectionKitCost +
+          islandConnections['variaOutsideTiles'] * variaOutsideTileKitCost +
+          islandConnections['feltOutsideTiles'] * feltOutsideTileKitCost;
 
         // Add the connections to the running total
         variaConnectionKitsNeeded += islandConnections['variaToVaria'];
         feltConnectionKitsNeeded += islandConnections['variaToFelt'] + islandConnections['feltToFelt'];
+        variaOutsideTileKitsNeeded += islandConnections['variaOutsideTiles'];
+        feltOutsideTileKitsNeeded += islandConnections['feltOutsideTiles'];
 
         this.debug.log('feature', `shared edges: ${sharedEdges}`);
         this.debug.log('feature', `total tiles: ${tilesInIsland}`);
-        this.debug.log('feature', `connections ${islandConnections}`);
+        this.debug.log('feature', 'connections:');
+        this.debug.log('feature', islandConnections);
         // this.debug.log('feature', `ratio: ${ratio}`);
         // this.debug.log('feature', `factor: ${factor}`);
         this.debug.log('feature', `cables: ${cableCount}`);
@@ -481,6 +480,8 @@ export class Feature {
     this.debug.log('feature', `Total hardware cost: ${hardwareCost}`);
     this.debug.log('feature', `Varia Kits needed: ${variaConnectionKitsNeeded}`);
     this.debug.log('feature', `Felt Kits needed: ${feltConnectionKitsNeeded}`);
+    this.debug.log('feature', `Varia Outside Kits needed: ${variaOutsideTileKitsNeeded}`);
+    this.debug.log('feature', `Felt Outside Kits needed: ${feltOutsideTileKitsNeeded}`);
     this.debug.log('feature', `Total cables needed: ${cablesNeeded}`);
     hardware_amount = cableCost + hardwareCost + drillBitCost;
     if (this.veloHasVaria()) {
@@ -496,7 +497,8 @@ export class Feature {
       '3-15-1677-K': cablesNeeded,
       '3-15-8899-K': variaConnectionKitsNeeded,
       '3-85-105-K': feltConnectionKitsNeeded,
-      '3-15-8813': variaPunchToolNeeded ? 1 : 0
+      '3-15-8813': variaPunchToolNeeded ? 1 : 0,
+      '3-85-113': feltOutsideTileKitsNeeded
     };
 
     this.debug.log('feature', '=====feature HARDWARE =====');
@@ -1012,6 +1014,8 @@ export class Feature {
     let variaToVariaCount = 0;
     let variaToFeltCount = 0;
     let feltToFeltCount = 0;
+    let feltOutsideTiles = 0;
+    let variaOutsideTiles = 0;
     const matches: any = [];
 
     for (const i in island) {
@@ -1023,6 +1027,8 @@ export class Feature {
     for (const i in veloTiles) {
       if (veloTiles.hasOwnProperty(i)) {
         const thisMaterialType = veloTiles[i]['materialType'];
+        this.debug.log('velo-hardware', veloTiles[i]['index']);
+        let neighborCount = 0;
         for (const j in veloTiles[i].neighbors) {
           if (veloTiles[i].neighbors.hasOwnProperty(j)) {
             const neighbor = this.findVeloTileAt(veloTiles[i].neighbors[j][0], veloTiles[i].neighbors[j][1]);
@@ -1033,6 +1039,12 @@ export class Feature {
               const a = Math.min(thisIndex, neighborIndex);
               const b = Math.max(thisIndex, neighborIndex);
               const mappedIndex = ((a + b) * (a + b + 1)) / 2 + a;
+
+              if (typeof neighbor.materialType !== 'undefined') {
+                // found a neighbor, add one to the neighborCount
+                neighborCount++;
+                this.debug.log('velo-hardware', neighborCount);
+              }
               if (typeof neighbor.materialType !== 'undefined' && !matches[mappedIndex]) {
                 // felt to felt seams
                 if (thisMaterialType === 'felt' && neighbor.materialType === 'felt') {
@@ -1056,6 +1068,16 @@ export class Feature {
             }
           }
         }
+        if ( neighborCount <= 2 ) {
+          // this tile needs to have a special hardware
+          this.debug.log('velo-hardware', thisMaterialType);
+          if (thisMaterialType === 'felt') {
+            feltOutsideTiles++;
+          }
+          if (thisMaterialType === 'varia') {
+            variaOutsideTiles++;
+          }
+        }
       }
     }
 
@@ -1063,6 +1085,9 @@ export class Feature {
       variaToVaria: variaToVariaCount,
       variaToFelt: variaToFeltCount,
       feltToFelt: feltToFeltCount,
+      feltOutsideTiles: feltOutsideTiles,
+      variaOutsideTiles: variaOutsideTiles,
+      totalOutsideTiles: feltOutsideTiles + variaOutsideTiles,
       totalConnections: variaToVariaCount + variaToFeltCount + feltToFeltCount
     };
     return veloConnections;
