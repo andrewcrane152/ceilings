@@ -459,6 +459,7 @@ export class Feature {
         // cableCost += cableCount * cableKitCost;
 
         cableCount = tilesInIsland;
+        cableCost += cableCount * cableKitCost;
         // Add the cables for this island to the total cables needed
         cablesNeeded += cableCount;
 
