@@ -499,6 +499,8 @@ export class Feature {
       '3-85-105-K': feltConnectionKitsNeeded,
       '3-15-8813': variaPunchToolNeeded ? 1 : 0,
       '3-85-113': feltOutsideTileKitsNeeded
+      // TODO: add Varia PartId
+      // '#-##-###': variaOutsideTileKitsNeeded
     };
 
     this.debug.log('feature', '=====feature HARDWARE =====');
