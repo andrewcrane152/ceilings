@@ -8,7 +8,6 @@ import { Feature } from '../_features/feature';
 import { AlertService } from '../_services/alert.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import * as pip from 'point-in-polygon';
 
 @Component({
   selector: 'app-canvas-grids',
@@ -74,6 +73,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
 
   public setGridDisplayValues() {
     this.debug.log('canvas-grids', 'setting grid display values');
+    // backgroundWidth adjusts the size of each ruler section
     let backgroundWidth = 50;
     // set multiplier
     switch (this.gridType) {
@@ -81,13 +81,13 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         backgroundWidth = 50;
         this.vRulerSections = 11;
-        this.hRulerSections = 17;
+        this.hRulerSections = 18;
         break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
         this.vRulerSections = 20;
-        this.hRulerSections = 33;
-        backgroundWidth = 75;
+        this.hRulerSections = 34;
+        backgroundWidth = 79;
         break;
       default:
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
@@ -120,14 +120,14 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   }
 
   public toRadians(angle) {
-    return angle * (Math.PI / 180);
+    return (angle * Math.PI) / 180;
   }
 
   public toDegrees(radians) {
-    return radians * (180 / Math.PI);
+    return (radians * 180) / Math.PI;
   }
 
-  public isOdd(column: number) {
-    return column % 2;
+  public isOdd(num: number) {
+    return num % 2;
   }
 }

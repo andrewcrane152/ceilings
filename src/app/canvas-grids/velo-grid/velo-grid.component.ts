@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CanvasGridsComponent } from '../canvas-grids.component';
-import * as pip from 'point-in-polygon';
+// import * as pip from 'point-in-polygon';
+import * as pip from 'robust-point-in-polygon';
 
 @Component({
   selector: 'app-velo-grid',
@@ -31,7 +32,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     canvas.width = this.canvasWidth;
     canvas.height = this.canvasHeight;
 
-    canvas.width = (98 * this.columns + 50) * this.feature.canvasGridScale;
+    canvas.width = 826 * this.feature.canvasGridScale;
+    // canvas.width = (98 * this.columns + 50) * this.feature.canvasGridScale;
     canvas.height = (50 * this.rows + 17) * this.feature.canvasGridScale;
 
     const ctx = canvas.getContext('2d');
@@ -71,7 +73,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     let foundTile = false;
     this.debug.log('velo-grid', 'you clicked on x: ' + x + ' and y: ' + y);
     for (const el in this.feature.gridData) {
-      if (!foundTile && pip([x, y], this.feature.gridData[el].pentagon)) {
+      if (!foundTile && pip(this.feature.gridData[el].pentagon, [x, y]) === -1) {
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           // reset the texture for the 3D view.

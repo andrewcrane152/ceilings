@@ -506,7 +506,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   zoomCanvasGrid(direction) {
     if (direction === 'in') {
-      this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 1.5);
+      this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 2);
     } else if (direction === 'out') {
       this.feature.canvasGridScale = Math.max(Number((this.feature.canvasGridScale - 0.1).toFixed(1)), 0.4);
     }
