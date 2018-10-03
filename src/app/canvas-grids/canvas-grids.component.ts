@@ -130,4 +130,14 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   public isOdd(num: number) {
     return num % 2;
   }
+
+  public rotateCoords(cx, cy, x, y, angle) {
+    // calculates the new locations of x y after a rotation is applied
+    // cx and cy are the point around which the x and y are rotated
+    const rad = (angle * Math.PI) / 180.0;
+    const nx = Math.cos(rad) * (x - cx) - Math.sin(rad) * (y - cy) + cx;
+    const ny = Math.sin(rad) * (x - cx) + Math.cos(rad) * (y - cy) + cy;
+
+    return [Math.round(nx), Math.round(ny)];
+  }
 }

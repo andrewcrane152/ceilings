@@ -8,8 +8,8 @@ import * as pip from 'robust-point-in-polygon';
   styleUrls: ['../canvas-grids.component.scss', './swoon-grid.component.scss']
 })
 export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
-  rows = 3;
-  columns = 3;
+  rows = 5;
+  columns = 5;
   adjustmentX = 57;
   adjustmentY = 49;
 
@@ -60,8 +60,6 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
       this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
       return;
     }
-    // this.debug.log('swoon-grid-component', event);
-    // this.debug.log('swoon-grid-component', `grid scale: ${this.feature.canvasGridScale}`);
     const x = Math.round(event.offsetX / this.feature.canvasGridScale);
     const y = Math.round(event.offsetY / this.feature.canvasGridScale);
     let foundTile = false;
@@ -70,12 +68,10 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     this.debug.log('swoon-grid', this.feature.gridData);
     for (const el in this.feature.gridData) {
       if (!foundTile && pip(this.feature.gridData[el].diamond, [x, y]) !== 1) {
-        // this.debug.log('swoon-grid-component', this.feature.gridData[el].diamond);
         // this.debug.log(
         //   'swoon-grid-component',
         //   `row: ${this.feature.gridData[el].row}, column: ${this.feature.gridData[el].column}, index: ${this.feature.gridData[el].index}`
         // );
-        // this.debug.log('swoon-grid-component', pip(this.feature.gridData[el].diamond, [x, y]));
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           this.debug.log('swoon-grid', 'removing tile');
@@ -122,7 +118,6 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
         this.feature.updateEstimatedAmount();
       }
     }
-    // console.log('gridData:', this.feature.gridData)
   }
 
   private createSwoonSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
@@ -211,9 +206,8 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     // add x,y to all the points on the diamond
     const diamond = [];
     for (let i = 0; i < xcoords.length; ++i) {
-      diamond[i] = [xcoords[i] + x, ycoords[i] + y];
+      diamond[i] = this.rotateCoords(x, y, xcoords[i] + x, ycoords[i] + y, rotateAngle);
     }
-    // this.debug.log('draw-diamond', diamond);
 
     if (this.newDesign) {
       this.feature.gridData.push({
