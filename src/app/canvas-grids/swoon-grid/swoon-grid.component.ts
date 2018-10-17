@@ -22,6 +22,38 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
       this.debug.log('swoon-grid-component', 'building the swoon grid');
       this.renderSwoonGrid();
     });
+    this.feature.onAdjustSwoonGridSize.subscribe(result => {
+      this.adjustSwoonGridSize(result);
+    });
+  }
+
+  adjustSwoonGridSize(adjustment) {
+    console.log('onAdjustSwoonGridSize:', adjustment);
+    switch (adjustment) {
+      case 'addColumn':
+        this.columns++;
+        break;
+      case 'removeColumn':
+        this.columns--;
+        break;
+      case 'addRow':
+        this.rows++;
+        break;
+      case 'removeRow':
+        this.rows--;
+        break;
+    }
+    this.resizeGridData();
+    this.renderSwoonGrid();
+  }
+
+  resizeGridData() {
+    console.log('gridData:', this.feature.gridData);
+    // for (let r = 0; r < this.rows; ++r) {
+    //   for (let c = 0; c < this.columns; ++c) {
+    //     console.log('');
+    //   }
+    // }
   }
 
   renderSwoonGrid() {
@@ -40,7 +72,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     } else {
       this.newDesign = false;
     }
-
+    console.log(`rows: ${this.rows}, columns: ${this.columns}`);
     for (let r = 0; r < this.rows; ++r) {
       for (let c = 0; c < this.columns; ++c) {
         this.createSwoonSection(
@@ -68,10 +100,10 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     this.debug.log('swoon-grid', this.feature.gridData);
     for (const el in this.feature.gridData) {
       if (!foundTile && pip(this.feature.gridData[el].diamond, [x, y]) !== 1) {
-        // this.debug.log(
-        //   'swoon-grid-component',
-        //   `row: ${this.feature.gridData[el].row}, column: ${this.feature.gridData[el].column}, index: ${this.feature.gridData[el].index}`
-        // );
+        this.debug.log(
+          'swoon-grid-component',
+          `row: ${this.feature.gridData[el].row}, column: ${this.feature.gridData[el].column}, index: ${this.feature.gridData[el].index}`
+        );
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           this.debug.log('swoon-grid', 'removing tile');

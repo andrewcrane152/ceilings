@@ -19,12 +19,14 @@ export class Feature {
   showMainNavbar = new EventEmitter();
   resetAllValues = new EventEmitter();
   onZoomGrid = new EventEmitter();
+  onAdjustSwoonGridSize = new EventEmitter();
+  onAdjustVeloGridSize = new EventEmitter();
 
   // attributes saved in DB
   public id: number;
   public uid: number;
   public feature_type: string;
-  public design_name: string;
+  public design_name = 'TODO';
   public project_name: string;
   public specifier: string;
   public width: number;
@@ -1052,13 +1054,23 @@ export class Feature {
   }
 
   public hushSwoonTiles() {
-    const veloTiles = [];
+    const hushSwoonTiles = [];
     for (const tile in this.gridData) {
       if (this.gridData[tile].texture !== '') {
-        veloTiles.push(this.gridData[tile]);
+        hushSwoonTiles.push(this.gridData[tile]);
       }
     }
-    return veloTiles;
+    console.log('hushSwoonTiles:', hushSwoonTiles);
+    hushSwoonTiles.map(tile => {
+      switch (tile.rotation) {
+        case 0.5235987755982988:
+        case -0.5235987755982988:
+        case 1.5707963267948966:
+          tile.rotation = (tile.rotation * 180) / Math.PI;
+          break;
+      }
+    });
+    return hushSwoonTiles;
   }
 
   public hushTiles() {

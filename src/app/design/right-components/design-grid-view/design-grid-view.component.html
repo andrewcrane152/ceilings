@@ -8,7 +8,7 @@
   </mat-expansion-panel-header>
   <div class="description" *ngIf="feature.feature_type==='tetria'">A 15/16 or 9/16 grid system is required for this
     product.</div>
-  <!-- <div class="inputs">
+  <div class="inputs">
     <div class="input">
       <div class="sub-header">Width</div>
       <input [(ngModel)]="feature.width" class="unit-input" type="text" (blur)="updateGrid()">
@@ -26,7 +26,7 @@
         <button (click)="updateGridUnits('centimeters')" [class.selected]="feature.units === 'centimeters'">CM</button>
       </span>
     </div>
-  </div> -->
+  </div>
   <div class="inputs">
     <div class="input">
       <div class="sub-header">Zoom Grid View</div>
@@ -36,12 +36,17 @@
         {{this.feature.canvasGridScale}}x
       </div>
     </div>
-    <!-- <div class="input">
+    <div class="input">
       <div class="sub-header">Rows</div>
       <div class="add-remove">
-        <img src="/assets/icons/tools/add-plus.png" (click)="adjustGridDimensions('addRow')" alt="Add Row">
-        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustGridDimensions('removeRow')" alt="Remove Row">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustCanvasGridSize('addRow')" alt="Add Row">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustCanvasGridSize('removeRow')" alt="Remove Row">
       </div>
-    </div> -->
+      <div class="sub-header">Columns</div>
+      <div class="add-remove">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustCanvasGridSize('addColumn')" alt="Add Column">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustCanvasGridSize('removeColumn')" alt="Remove Column">
+      </div>
+    </div>
   </div>
 </mat-expansion-panel>

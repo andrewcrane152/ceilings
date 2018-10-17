@@ -2,7 +2,7 @@ import { MaterialsService } from './../_services/materials.service';
 import { SeeyondService } from './../_services/seeyond.service';
 import { SeeyondFeature } from '../_features/seeyond-feature';
 import { Location } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -504,6 +504,17 @@ export class DesignComponent implements OnInit, OnDestroy {
     this.feature.buildGrid();
   }
 
+  adjustCanvasGridSize(selection) {
+    switch (this.feature.feature_type) {
+      case 'hushSwoon':
+        this.feature.onAdjustSwoonGridSize.emit(selection);
+        break;
+      case 'velo':
+        this.feature.onAdjustSwoonGridSize.emit(selection);
+        break;
+    }
+  }
+
   zoomCanvasGrid(direction) {
     if (direction === 'in') {
       this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 2);
@@ -617,6 +628,12 @@ export class DesignComponent implements OnInit, OnDestroy {
     if (this.feature.feature_type === 'hush') {
       this.adjustHushGrid();
     }
+    this.updateGrid();
+  }
+
+  updateCanvasUnits(units: string) {
+    this.debug.log('options-component', 'update grid units: ' + units);
+    this.feature.units = units;
     this.updateGrid();
   }
 
