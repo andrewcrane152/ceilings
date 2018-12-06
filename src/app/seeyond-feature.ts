@@ -59,28 +59,30 @@ export class SeeyondFeature extends Feature {
         case 'linear-partition':
           this.seeyond_feature_index = 0;
           this.front_relief = this.back_relief = true;
-        break;
+          break;
         case 'curved-partition':
           this.seeyond_feature_index = 1;
           this.front_relief = this.back_relief = true;
-        break;
+          break;
         case 'wall':
           this.seeyond_feature_index = 2;
           this.front_relief = true;
-        break;
+          break;
         case 'wall-to-ceiling':
           this.seeyond_feature_index = 3;
           this.front_relief = true;
-        break;
+          break;
         case 'ceiling':
           this.seeyond_feature_index = 4;
           this.front_relief = true;
-        break;
-        default: {
-          this.seeyond_feature_index = 2;
-          this.seeyond_feature_type = 'wall';
-          this.front_relief = true;
-        }; break;
+          break;
+        default:
+          {
+            this.seeyond_feature_index = 2;
+            this.seeyond_feature_type = 'wall';
+            this.front_relief = true;
+          }
+          break;
       }
       this.seeyond_feature_type = seeyond_feature_type;
       this.location.go(`seeyond/design/${seeyond_feature_type}`);
@@ -110,7 +112,7 @@ export class SeeyondFeature extends Feature {
   }
 
   loadSeeyondDesign(design) {
-    this.feature_type = 'seeyond'
+    this.feature_type = 'seeyond';
     this.id = design.id;
     this.uid = design.uid;
     this.seeyond_feature_index = design.feature_type;
@@ -128,7 +130,7 @@ export class SeeyondFeature extends Feature {
     this.ceiling_length = design.ceiling_length;
     this.depth = design.depth;
     this.tessellation = design.tessellation;
-    this.tessellationStr = this.getTessellationName(design.tessellation)
+    this.tessellationStr = this.getTessellationName(design.tessellation);
     this.pattern_strength = design.pattern_strength;
     this.material = design.material;
     this.sheet_part_id = design.sheet_part_id;
@@ -148,8 +150,13 @@ export class SeeyondFeature extends Feature {
     this.quantity = design.quantity || 1;
 
     this.materialObj = this.getMaterialInfo('felt', 'sola', this.material);
-    if (this.materialObj.status === 'inactive') { this.$outdatedMaterial.emit(); }
-    if (this.materialObj.status === 'discontinued') { this.$outdatedMaterial.emit(); this.canQuote = false; }
+    if (this.materialObj.status === 'inactive') {
+      this.$outdatedMaterial.emit();
+    }
+    if (this.materialObj.status === 'discontinued') {
+      this.$outdatedMaterial.emit();
+      this.canQuote = false;
+    }
 
     this.reloadVisualization();
   }
@@ -200,7 +207,7 @@ export class SeeyondFeature extends Feature {
       this.debug.log('seeyond', 'RANDOM SEED IS SET.');
       this.debug.log('seeyond', `Current Random seed: ${this.random_seed}`);
       this.syd_t.QT.SetRandomSeedValue(this.random_seed);
-    }// else{
+    } // else{
     //   this.random_seed = this.syd_t.QT.GetRandomSeedValue();
     // }
 
@@ -257,17 +264,38 @@ export class SeeyondFeature extends Feature {
     let backAngle: number;
     let linearProfile: number;
     switch (this.seeyond_feature_type) {
-      case 'linear-partition': backAngle = 180; linearProfile = 90; profileAngle = 45; facingAngle = 0; break;
-      case 'curved-partition': backAngle = 65; profileAngle = 225; facingAngle = 180; break;
-      case 'wall': profileAngle = 45; facingAngle = 0; break;
-      case 'wall-to-ceiling': profileAngle = 45; facingAngle = 0; break;
-      case 'ceiling': profileAngle = 0; facingAngle = 0; break;
-      default: profileAngle = 45; facingAngle = 0; break;
+      case 'linear-partition':
+        backAngle = 180;
+        linearProfile = 90;
+        profileAngle = 45;
+        facingAngle = 0;
+        break;
+      case 'curved-partition':
+        backAngle = 65;
+        profileAngle = 225;
+        facingAngle = 180;
+        break;
+      case 'wall':
+        profileAngle = 45;
+        facingAngle = 0;
+        break;
+      case 'wall-to-ceiling':
+        profileAngle = 45;
+        facingAngle = 0;
+        break;
+      case 'ceiling':
+        profileAngle = 0;
+        facingAngle = 0;
+        break;
+      default:
+        profileAngle = 45;
+        facingAngle = 0;
+        break;
     }
-    let back = (!!backAngle) ? this.syd_v.QT.Visualization.TakeSnapshot(backAngle) : '';
-    let linear = (!!linearProfile) ? this.syd_v.QT.Visualization.TakeSnapshot(linearProfile) : '';
+    let back = !!backAngle ? this.syd_v.QT.Visualization.TakeSnapshot(backAngle) : '';
+    let linear = !!linearProfile ? this.syd_v.QT.Visualization.TakeSnapshot(linearProfile) : '';
     let profile = this.syd_v.QT.Visualization.TakeSnapshot(profileAngle);
-    let facing  = this.syd_v.QT.Visualization.TakeSnapshot(facingAngle);
+    let facing = this.syd_v.QT.Visualization.TakeSnapshot(facingAngle);
     const filename = this.name + '.zip';
     const FileSaver = require('file-saver');
     const JSZip = require('jszip');
@@ -277,13 +305,16 @@ export class SeeyondFeature extends Feature {
     back = back.replace(/^data:image\/(png|jpg);base64,/, '');
     profile = profile.replace(/^data:image\/(png|jpg);base64,/, '');
     facing = facing.replace(/^data:image\/(png|jpg);base64,/, '');
-    if (!!back) { zip.file('back.png', back, {base64: true}); }
-    if (!!linear) { zip.file('side_profile.png', linear, {base64: true}); }
-    zip.file('profile.png', profile, {base64: true});
-    zip.file('facing.png', facing, {base64: true});
-    zip.generateAsync({type: 'blob'})
-    .then(function (blob) {
-        FileSaver.saveAs(blob, filename);
+    if (!!back) {
+      zip.file('back.png', back, { base64: true });
+    }
+    if (!!linear) {
+      zip.file('side_profile.png', linear, { base64: true });
+    }
+    zip.file('profile.png', profile, { base64: true });
+    zip.file('facing.png', facing, { base64: true });
+    zip.generateAsync({ type: 'blob' }).then(function(blob) {
+      FileSaver.saveAs(blob, filename);
     });
     this.reloadVisualization();
   }
@@ -292,12 +323,24 @@ export class SeeyondFeature extends Feature {
     let profileAngle: number;
     // determine the preferred angle for each feature
     switch (this.seeyond_feature_type) {
-      case 'linear-partition': profileAngle = 45; break;
-      case 'curved-partition': profileAngle = 225; break;
-      case 'wall': profileAngle = 45; break;
-      case 'wall-to-ceiling': profileAngle = 45; break;
-      case 'ceiling': profileAngle = 0; break;
-      default: profileAngle = 45; break;
+      case 'linear-partition':
+        profileAngle = 45;
+        break;
+      case 'curved-partition':
+        profileAngle = 225;
+        break;
+      case 'wall':
+        profileAngle = 45;
+        break;
+      case 'wall-to-ceiling':
+        profileAngle = 45;
+        break;
+      case 'ceiling':
+        profileAngle = 0;
+        break;
+      default:
+        profileAngle = 45;
+        break;
     }
     const profileImg = this.syd_v.QT.Visualization.TakeSnapshot(profileAngle);
     this.design_data_url = profileImg;
@@ -351,7 +394,7 @@ export class SeeyondFeature extends Feature {
     const baseplates: number = this.getBaseplates(this.seeyond_feature_index);
     const fabricationCost: number = this.getFabricationCost(this.seeyond_feature_index);
 
-    this.services_amount = (staples * stapleCost) + (backplates * backplateCost) + (baseplates * baseplateCost) + (frames * frameCost) + fabricationCost;
+    this.services_amount = staples * stapleCost + backplates * backplateCost + baseplates * baseplateCost + frames * frameCost + fabricationCost;
 
     this.estimated_amount = totalProductsCost + totalHardwareCost + this.services_amount;
     this.debug.log('seeyond', `estimated amount: ${this.estimated_amount}`);
@@ -371,9 +414,9 @@ export class SeeyondFeature extends Feature {
       width = this.convertCMtoIN(width);
     }
     if (this.seeyond_feature_type === 'wall-to-ceiling') {
-      totalFootage = ((ceilingLength - inset) * 2) + (width - inset * 2);
+      totalFootage = (ceilingLength - inset) * 2 + (width - inset * 2);
     } else if (this.seeyond_feature_type === 'ceiling') {
-      totalFootage = ((length - (inset * 2)) * 2) + ((width - (inset * 2)) * 2);
+      totalFootage = (length - inset * 2) * 2 + (width - inset * 2) * 2;
     }
     this.linear_feet = totalFootage / 12;
     this.debug.log('seeyond-feature', `linear feet: ${this.linear_feet}`);
@@ -381,8 +424,8 @@ export class SeeyondFeature extends Feature {
   }
 
   calcLightingCost() {
-    const powerSupplyHw = 144.71;
-    const switchHw = 206.74;
+    const powerSupplyHw = 149.05;
+    const switchHw = 212.94;
     const totalWatts = this.linear_feet * 1.88;
     const powerSuppliesNeeded = Math.ceil(totalWatts / 85.4);
     const dimmingSwitchesNeeded = Math.ceil(powerSuppliesNeeded / 12.0);
@@ -390,7 +433,7 @@ export class SeeyondFeature extends Feature {
     const switchCost = dimmingSwitchesNeeded * switchHw;
     const linearFootCost = this.linear_feet * 40.02;
     const partsCost = linearFootCost + switchCost + powerCost;
-    const adjustment = ((partsCost / 5000.00) * 95.00) + 265.00;
+    const adjustment = (partsCost / 5000.0) * 97.85 + 272.95;
     const estimatedCost = parseInt((partsCost + adjustment).toFixed(2), 10);
     return estimatedCost;
   }
@@ -412,7 +455,9 @@ export class SeeyondFeature extends Feature {
   }
 
   setMaxMinDimensions(units?) {
-    if (!units) { units = 'inches'; } // if units aren't given, assume inches
+    if (!units) {
+      units = 'inches';
+    } // if units aren't given, assume inches
     this.widthMin = this.materialsService.seeyondMinMaxDimensions[this.seeyond_feature_index][units]['widthMin'];
     this.widthMax = this.materialsService.seeyondMinMaxDimensions[this.seeyond_feature_index][units]['widthMax'];
     this.heightMin = this.materialsService.seeyondMinMaxDimensions[this.seeyond_feature_index][units]['heightMin'];
@@ -422,9 +467,10 @@ export class SeeyondFeature extends Feature {
     this.radiusMin = this.materialsService.seeyondMinMaxDimensions[this.seeyond_feature_index][units]['radiusMin'];
     this.radiusMax = this.materialsService.seeyondMinMaxDimensions[this.seeyond_feature_index][units]['radiusMax'];
 
-    if (this.width) { // update radiusMin based off entered width
-      const newRadiusMin = Math.ceil((this.width * .5) + 1);
-      this.radiusMin = (newRadiusMin < this.radiusMin) ? this.radiusMin : newRadiusMin;
+    if (this.width) {
+      // update radiusMin based off entered width
+      const newRadiusMin = Math.ceil(this.width * 0.5 + 1);
+      this.radiusMin = newRadiusMin < this.radiusMin ? this.radiusMin : newRadiusMin;
     }
   }
 
@@ -460,23 +506,24 @@ export class SeeyondFeature extends Feature {
       this.height = heightMax;
       this.alert.error(`The maximum height is ${heightMax} ${units}`);
     }
-    if ((currentCeilLength < ceilLengthMin) && (this.seeyond_feature_index === 3)) {
+    if (currentCeilLength < ceilLengthMin && this.seeyond_feature_index === 3) {
       this.ceiling_length = ceilLengthMin;
       this.alert.error(`The minimum ceiling length is ${ceilLengthMin} ${units}`);
     }
-    if ((currentCeilLength > ceilLengthMax) && (this.seeyond_feature_index === 3)) {
+    if (currentCeilLength > ceilLengthMax && this.seeyond_feature_index === 3) {
       this.ceiling_length = ceilLengthMax;
       this.alert.error(`The maximum maximum ceiling length is ${ceilLengthMax} ${units}`);
     }
-    if (this.width) { // update radiusMin based off entered width
-      const newRadiusMin = Math.ceil((this.width * .5) + 1);
-      radiusMin = (newRadiusMin < this.radiusMin) ? this.radiusMin : newRadiusMin;
+    if (this.width) {
+      // update radiusMin based off entered width
+      const newRadiusMin = Math.ceil(this.width * 0.5 + 1);
+      radiusMin = newRadiusMin < this.radiusMin ? this.radiusMin : newRadiusMin;
     }
-    if ((currentRadius < radiusMin) && (this.seeyond_feature_index === 1)) {
+    if (currentRadius < radiusMin && this.seeyond_feature_index === 1) {
       this.radius = radiusMin;
       this.alert.error(`The minimum radius for your width is ${radiusMin} ${units}`);
     }
-    if ((currentRadius > radiusMax) && (this.seeyond_feature_index === 1)) {
+    if (currentRadius > radiusMax && this.seeyond_feature_index === 1) {
       this.radius = radiusMax;
       this.alert.error(`The maximum radius is ${radiusMax} ${units}`);
     }
@@ -484,11 +531,10 @@ export class SeeyondFeature extends Feature {
     this.reloadVisualization();
   }
 
-
   getFabricationCost(seeyond_feature_index: number) {
-    const ceilingFab = 48.46;
-    const partitionFab = 48.46;
-    const wallFab = 44.13;
+    const ceilingFab = 49.91;
+    const partitionFab = 49.91;
+    const wallFab = 45.45;
     let fabricationCost: number;
 
     switch (seeyond_feature_index) {
@@ -506,7 +552,7 @@ export class SeeyondFeature extends Feature {
         break;
 
       case 3:
-        fabricationCost = (this.getWallBoxes() * wallFab) + (this.getCeilingBoxes() * ceilingFab);
+        fabricationCost = this.getWallBoxes() * wallFab + this.getCeilingBoxes() * ceilingFab;
         break;
 
       case 4:
@@ -568,16 +614,16 @@ export class SeeyondFeature extends Feature {
     if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
       // partitions. we need to double the number of frames
       return this.boxes * 25 * 2;
-    }else if (seeyond_feature_index === 2) {
+    } else if (seeyond_feature_index === 2) {
       // wall
       return this.boxes * 25;
-    }else if (seeyond_feature_index === 3) {
+    } else if (seeyond_feature_index === 3) {
       // wall-to-ceiling
       return this.boxes * 25;
-    }else if (seeyond_feature_index === 4) {
+    } else if (seeyond_feature_index === 4) {
       // ceiling
       return this.boxes * 25;
-    }else {
+    } else {
       // anything else
       return this.boxes * 25;
     }
@@ -587,16 +633,16 @@ export class SeeyondFeature extends Feature {
     if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
       // partitions
       return Math.ceil(this.boxes * 12);
-    }else if (seeyond_feature_index === 2) {
+    } else if (seeyond_feature_index === 2) {
       // wall
       return 0;
-    }else if (seeyond_feature_index === 3) {
+    } else if (seeyond_feature_index === 3) {
       // wall-to-ceiling only the ceiling needs ties
       const ceilingRows = this.syd_t.QT.GetCeilingRows();
       const ceilingCols = this.syd_t.QT.GetCeilingColumns();
       const ceilingBoxes = Math.ceil(ceilingRows * ceilingCols);
       return Math.ceil(ceilingBoxes * 24);
-    }else if (seeyond_feature_index === 4) {
+    } else if (seeyond_feature_index === 4) {
       // ceiling
       return Math.ceil(this.boxes * 24);
     }
@@ -606,13 +652,13 @@ export class SeeyondFeature extends Feature {
     if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
       // partitions. we need to double the number of frames
       return Math.ceil(this.boxes / 18) * 2;
-    }else if (seeyond_feature_index === 2) {
+    } else if (seeyond_feature_index === 2) {
       // wall
       return Math.ceil(this.boxes / 18);
-    }else if (seeyond_feature_index === 3) {
+    } else if (seeyond_feature_index === 3) {
       // wall-to-ceiling
       return Math.ceil(this.boxes / 18);
-    }else if (seeyond_feature_index === 4) {
+    } else if (seeyond_feature_index === 4) {
       // ceiling
       return Math.ceil(this.boxes / 18);
     }
@@ -621,13 +667,12 @@ export class SeeyondFeature extends Feature {
   getHardwareCost(seeyond_feature_index: number) {
     // reset hardware array
     this.hardware = [];
-    let totalHardwareCost = 0.00;
-    this.debug.log('seeyond', '========== FEATURE HARDWARE ===============')
+    let totalHardwareCost = 0.0;
+    this.debug.log('seeyond', '========== FEATURE HARDWARE ===============');
     const hardwares = this.seeyond_features[seeyond_feature_index].hardware;
     let qty;
     for (const hardware in hardwares) {
       if (hardwares.hasOwnProperty(hardware)) {
-
         // for magnets add the partId to each feature in MaterialsService.seeyond_features and to hardware switch below
 
         qty = this.getHardwareQty(seeyond_feature_index, hardware);
@@ -640,13 +685,13 @@ export class SeeyondFeature extends Feature {
         this.debug.log('seeyond', `HARDWARE COST: ${hardwareCost}`);
 
         const hwpart = {
-          'part_id': hardware,
-          'qty': qty
-        }
+          part_id: hardware,
+          qty: qty
+        };
         this.hardware.push(hwpart);
       }
     }
-    this.debug.log('seeyond', '========== /FEATURE HARDWARE ===============')
+    this.debug.log('seeyond', '========== /FEATURE HARDWARE ===============');
     return totalHardwareCost;
   }
 
@@ -656,23 +701,33 @@ export class SeeyondFeature extends Feature {
     const rows = this.syd_t.QT.GetV();
     switch (hardware) {
       // MAGNETS
-      case '3-85-101': hardwareQty = this.syd_t.QT.GetMagnets(); break;
+      case '3-85-101':
+        hardwareQty = this.syd_t.QT.GetMagnets();
+        break;
 
       // WALL
-      case '3-15-1606': hardwareQty = Math.ceil(this.boxes / 4) * 4; break;
-      case '3-85-104': hardwareQty = Math.ceil(this.boxes / 4) * 4; break;
-      case '3-85-109': hardwareQty = Math.ceil(this.boxes / 4) * 4; break;
+      case '3-15-1606':
+        hardwareQty = Math.ceil(this.boxes / 4) * 4;
+        break;
+      case '3-85-104':
+        hardwareQty = Math.ceil(this.boxes / 4) * 4;
+        break;
+      case '3-85-109':
+        hardwareQty = Math.ceil(this.boxes / 4) * 4;
+        break;
 
       // PARTITIONS
-      case '3-85-106': hardwareQty = columns * 4; break;
+      case '3-85-106':
+        hardwareQty = columns * 4;
+        break;
 
       // Used in partitions and ceilings
       case '3-15-0842':
         if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
           hardwareQty = this.getBaseplates(seeyond_feature_index) * 3;
-        }else if (seeyond_feature_index === 3) {
+        } else if (seeyond_feature_index === 3) {
           hardwareQty = Math.ceil(this.syd_t.QT.GetCeilingRows() / 2) * Math.ceil(this.syd_t.QT.GetCeilingColumns() / 2) * 2;
-        }else if (seeyond_feature_index === 4) {
+        } else if (seeyond_feature_index === 4) {
           hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2) * 2;
         }
         break;
@@ -681,9 +736,9 @@ export class SeeyondFeature extends Feature {
       case '3-85-105':
         if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
           hardwareQty = columns * 4;
-        }else if (seeyond_feature_index === 3) {
+        } else if (seeyond_feature_index === 3) {
           hardwareQty = Math.ceil(this.syd_t.QT.GetCeilingRows() / 2) * Math.ceil(this.syd_t.QT.GetCeilingColumns() / 2) * 4;
-        }else if (seeyond_feature_index === 4) {
+        } else if (seeyond_feature_index === 4) {
           hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2) * 4;
         }
         break;
@@ -691,24 +746,34 @@ export class SeeyondFeature extends Feature {
       // Used in partitions and ceilings
       case '3-85-102':
         if (seeyond_feature_index === 0 || seeyond_feature_index === 1) {
-          hardwareQty = Math.ceil(this.boxes / 2 * 12);
-        }else if (seeyond_feature_index === 3) {
+          hardwareQty = Math.ceil((this.boxes / 2) * 12);
+        } else if (seeyond_feature_index === 3) {
           const ceilingRows = this.syd_t.QT.GetCeilingRows();
           const ceilingCols = this.syd_t.QT.GetCeilingColumns();
           const ceilingBoxes = Math.ceil(ceilingRows * ceilingCols);
           hardwareQty = Math.ceil(ceilingBoxes * 12);
-        }else if (seeyond_feature_index === 4) {
+        } else if (seeyond_feature_index === 4) {
           hardwareQty = Math.ceil(this.boxes * 12);
         }
         break;
 
       // CEILINGS
-      case '3-85-107': hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2); break;
-      case '3-85-108': hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2); break;
-      case '3-15-1674': hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2); break;
-      case '3-15-1675': hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2); break;
+      case '3-85-107':
+        hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2);
+        break;
+      case '3-85-108':
+        hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2);
+        break;
+      case '3-15-1674':
+        hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2);
+        break;
+      case '3-15-1675':
+        hardwareQty = Math.ceil(rows / 2) * Math.ceil(columns / 2);
+        break;
 
-      default: alert('Unknown hardware part: ' + hardware); break;
+      default:
+        alert('Unknown hardware part: ' + hardware);
+        break;
     }
     return hardwareQty;
   }
@@ -728,12 +793,24 @@ export class SeeyondFeature extends Feature {
   getTessellationName(tessellation: number) {
     let name: string;
     switch (tessellation) {
-      case 0: name = 'court'; break;
-      case 1: name = 'cusp'; break;
-      case 2: name = 'kink'; break;
-      case 3: name = 'tilt'; break;
-      case 4: name = 'billow'; break;
-      default: name = 'Pattern name not found for tessellation: ' + tessellation; break;
+      case 0:
+        name = 'court';
+        break;
+      case 1:
+        name = 'cusp';
+        break;
+      case 2:
+        name = 'kink';
+        break;
+      case 3:
+        name = 'tilt';
+        break;
+      case 4:
+        name = 'billow';
+        break;
+      default:
+        name = 'Pattern name not found for tessellation: ' + tessellation;
+        break;
     }
     return name;
   }
@@ -741,22 +818,32 @@ export class SeeyondFeature extends Feature {
   getTesslationNumber(tessName: string) {
     let tessNum: number;
     switch (tessName) {
-      case 'court': tessNum = 0; break;
-      case 'cusp': tessNum = 1; break;
-      case 'kink': tessNum = 2; break;
-      case 'tilt': tessNum = 3; break;
-      case 'billow': tessNum = 4; break;
+      case 'court':
+        tessNum = 0;
+        break;
+      case 'cusp':
+        tessNum = 1;
+        break;
+      case 'kink':
+        tessNum = 2;
+        break;
+      case 'tilt':
+        tessNum = 3;
+        break;
+      case 'billow':
+        tessNum = 4;
+        break;
     }
     return tessNum;
   }
 
   getFormattedAmount() {
-    const accounting = require( 'accounting' );
+    const accounting = require('accounting');
     return accounting.formatMoney(this.estimated_amount);
   }
 
   getFormattedServicesAmount() {
-    const accounting = require( 'accounting' );
+    const accounting = require('accounting');
     return accounting.formatMoney(this.services_amount);
   }
 
@@ -767,20 +854,30 @@ export class SeeyondFeature extends Feature {
   getDimensionString(units?) {
     let depth = this.depth;
     if (units) {
-      depth = (this.units === 'inches') ? this.depth : this.convertINtoCM(this.depth);
+      depth = this.units === 'inches' ? this.depth : this.convertINtoCM(this.depth);
       // if units come in update this.units
       this.units = units;
     }
     let dimensionString = `${this.width} W x ${this.height} H x ${depth} D`;
     // curved partition has radius
-    if (this.seeyond_feature_index === 1) { dimensionString += ' x ' + this.radius + ' R'; }
+    if (this.seeyond_feature_index === 1) {
+      dimensionString += ' x ' + this.radius + ' R';
+    }
     // wall to ceiling has ceiling_length
-    if (this.seeyond_feature_index === 3) { dimensionString += ' x ' + this.ceiling_length + ' CL'; }
+    if (this.seeyond_feature_index === 3) {
+      dimensionString += ' x ' + this.ceiling_length + ' CL';
+    }
     // ceiling is labeled as length, not height
-    if (this.seeyond_feature_index === 4) { dimensionString = dimensionString.replace(/H/i, 'L'); }
+    if (this.seeyond_feature_index === 4) {
+      dimensionString = dimensionString.replace(/H/i, 'L');
+    }
     // add dimensions
-    if (this.units === 'inches') { dimensionString += ` (IN)`; }
-    if (this.units === 'centimeters') { dimensionString += ` (CM)`; }
+    if (this.units === 'inches') {
+      dimensionString += ` (IN)`;
+    }
+    if (this.units === 'centimeters') {
+      dimensionString += ` (CM)`;
+    }
 
     return dimensionString;
   }
@@ -797,31 +894,31 @@ export class SeeyondFeature extends Feature {
       convertedRadius = this.convertCMtoIN(convertedRadius);
     }
     return {
-      'UserInputs': {
+      UserInputs: {
         // 0 = straight partition, 1 = arc partition, 2 = facing, 3 = transition, 4 = ceiling, 5 = bent partition
-        'Type': this.seeyond_feature_index,
+        Type: this.seeyond_feature_index,
         // 0 = court, 1 = cusp, 2 = kink, 3 = tilt, 4 = billow
-        'Tessellation': this.tessellation,
+        Tessellation: this.tessellation,
         // valid values = .1 - 1.0 (we send whole numbers 1-10 and the tessellation divides by 10)
-        'PatternStrength': this.pattern_strength,
+        PatternStrength: this.pattern_strength,
         // relative path to rendering material image
-        'Material': this.getMaterialImage(this.material),
+        Material: this.getMaterialImage(this.material),
         // in inches
-        'Width': convertedWidth,
+        Width: convertedWidth,
         // in inches
-        'Height': convertedHeight,
+        Height: convertedHeight,
         // in inches
-        'Radius': convertedRadius,
+        Radius: convertedRadius,
         // in degrees 0-360
-        'Angle':  this.angle,
+        Angle: this.angle,
         // in inches
-        'Ceiling_Length': convertedCeilingLength,
+        Ceiling_Length: convertedCeilingLength,
         // boolean
-        'FrontRelief': this.front_relief,
+        FrontRelief: this.front_relief,
         // boolean
-        'BackRelief': this.back_relief
+        BackRelief: this.back_relief
       }
-    }
+    };
   }
 
   getXML() {
@@ -850,171 +947,171 @@ export class SeeyondFeature extends Feature {
     xw.startElement('projectID');
     if (this.id) {
       xw.text(this.id);
-    }else {
+    } else {
       xw.text('New Project');
     }
     xw.endElement('projectID');
 
     if (this.uid) {
       xw.startElement('user');
-         xw.startElement('uid');
-           xw.text(this.uid);
-         xw.endElement('uid');
+      xw.startElement('uid');
+      xw.text(this.uid);
+      xw.endElement('uid');
       xw.endElement('user');
     }
 
     xw.startElement('order');
 
-      xw.startElement('orderDate');
-      xw.text('2017-01-22'); // TO DO: insert order date here
-      xw.endElement('orderDate');
-      // TO DO: add the products price, hardware price and services price
-      xw.startElement('price');
-      xw.text(this.estimated_amount);
-      xw.endElement('price');
+    xw.startElement('orderDate');
+    xw.text('2017-01-22'); // TO DO: insert order date here
+    xw.endElement('orderDate');
+    // TO DO: add the products price, hardware price and services price
+    xw.startElement('price');
+    xw.text(this.estimated_amount);
+    xw.endElement('price');
 
-      xw.startElement('notes');
-      xw.text('Test comments here.'); // TO DO: insert notes here
-      xw.endElement('notes');
+    xw.startElement('notes');
+    xw.text('Test comments here.'); // TO DO: insert notes here
+    xw.endElement('notes');
 
     xw.endElement('order');
 
     xw.startElement('userInputs');
 
-      let seeyond_feature_index = 'StraightPartition';
-      switch (properties.UserInputs.Type) {
-        // freestanding linear
-        case 0:
-          seeyond_feature_index = 'Freestanding Linear';
-          break;
+    let seeyond_feature_index = 'StraightPartition';
+    switch (properties.UserInputs.Type) {
+      // freestanding linear
+      case 0:
+        seeyond_feature_index = 'Freestanding Linear';
+        break;
 
-        // freestanding curved partition
-        case 1:
-          seeyond_feature_index = 'Freestanding Curved';
-          break;
+      // freestanding curved partition
+      case 1:
+        seeyond_feature_index = 'Freestanding Curved';
+        break;
 
-        // wall feature
-        case 2:
-          seeyond_feature_index = 'Wall';
-          break;
+      // wall feature
+      case 2:
+        seeyond_feature_index = 'Wall';
+        break;
 
-        // wall-to-ceiling partition
-        case 3:
-          seeyond_feature_index = 'Wall-to-Ceiling';
-          break;
+      // wall-to-ceiling partition
+      case 3:
+        seeyond_feature_index = 'Wall-to-Ceiling';
+        break;
 
-        // ceiling feature
-        case 4:
-          seeyond_feature_index = 'Ceiling Feature';
-          break;
+      // ceiling feature
+      case 4:
+        seeyond_feature_index = 'Ceiling Feature';
+        break;
 
-        // wall
-        default:
-          seeyond_feature_index = 'Wall';
-      }
+      // wall
+      default:
+        seeyond_feature_index = 'Wall';
+    }
 
-      xw.startElement('installationType');
-      xw.text(seeyond_feature_index);
-      xw.endElement('installationType');
+    xw.startElement('installationType');
+    xw.text(seeyond_feature_index);
+    xw.endElement('installationType');
 
-      let tessellation = 'quad';
-      switch (properties.UserInputs.Tessellation) {
-        case 1:
-            tessellation = 'cusp';
-            break;
-        case 2:
-            tessellation = 'kink';
-            break;
-        case 3:
-            tessellation = 'tilt';
-            break;
-        case 4:
-            tessellation = 'billow';
-            break;
-        default:
-            tessellation = 'court';
-      }
+    let tessellation = 'quad';
+    switch (properties.UserInputs.Tessellation) {
+      case 1:
+        tessellation = 'cusp';
+        break;
+      case 2:
+        tessellation = 'kink';
+        break;
+      case 3:
+        tessellation = 'tilt';
+        break;
+      case 4:
+        tessellation = 'billow';
+        break;
+      default:
+        tessellation = 'court';
+    }
 
-      xw.startElement('tessellation');
-      xw.text(tessellation);
-      xw.endElement('tessellation');
+    xw.startElement('tessellation');
+    xw.text(tessellation);
+    xw.endElement('tessellation');
 
-      xw.startElement('width');
-      xw.text(properties.UserInputs.Width);
-      xw.endElement('width');
+    xw.startElement('width');
+    xw.text(properties.UserInputs.Width);
+    xw.endElement('width');
 
-      xw.startElement('height');
-      xw.text(properties.UserInputs.Height);
-      xw.endElement('height');
+    xw.startElement('height');
+    xw.text(properties.UserInputs.Height);
+    xw.endElement('height');
 
-      if (seeyond_feature_index === 'Freestanding Curved') {
-        xw.startElement('radius');
-        xw.text(properties.UserInputs.Radius);
-        xw.endElement('radius');
-      }
+    if (seeyond_feature_index === 'Freestanding Curved') {
+      xw.startElement('radius');
+      xw.text(properties.UserInputs.Radius);
+      xw.endElement('radius');
+    }
 
-      if (seeyond_feature_index === 'Wall-to-Ceiling') {
-        xw.startElement('angle');
-        xw.text(properties.UserInputs.Angle);
-        xw.endElement('angle');
+    if (seeyond_feature_index === 'Wall-to-Ceiling') {
+      xw.startElement('angle');
+      xw.text(properties.UserInputs.Angle);
+      xw.endElement('angle');
 
-        xw.startElement('ceiling_length');
-        xw.text(properties.UserInputs.Ceiling_Length);
-        xw.endElement('ceiling_length');
-      }
+      xw.startElement('ceiling_length');
+      xw.text(properties.UserInputs.Ceiling_Length);
+      xw.endElement('ceiling_length');
+    }
 
-      xw.startElement('columns');
-      xw.text(uNum);
-      xw.endElement('columns');
+    xw.startElement('columns');
+    xw.text(uNum);
+    xw.endElement('columns');
 
-      xw.startElement('rows');
-      xw.text(vNum);
-      xw.endElement('rows');
+    xw.startElement('rows');
+    xw.text(vNum);
+    xw.endElement('rows');
 
-      xw.startElement('patternStrength');
-      xw.text(properties.UserInputs.PatternStrength);
-      xw.endElement('patternStrength');
+    xw.startElement('patternStrength');
+    xw.text(properties.UserInputs.PatternStrength);
+    xw.endElement('patternStrength');
 
     xw.endElement('userInputs');
 
     xw.startElement('productAttributes');
 
-      xw.startElement('material');
-        xw.startElement('partid');
-          xw.text('#-###-###'); // TO DO: add the partid as a property
-        xw.endElement('partid');
-        xw.startElement('name');
-          xw.text(this.material);
-        xw.endElement('name');
-      xw.endElement('material');
+    xw.startElement('material');
+    xw.startElement('partid');
+    xw.text('#-###-###'); // TO DO: add the partid as a property
+    xw.endElement('partid');
+    xw.startElement('name');
+    xw.text(this.material);
+    xw.endElement('name');
+    xw.endElement('material');
 
-      xw.startElement('hemisphere');
-      xw.text(hemi);
-      xw.endElement('hemisphere');
+    xw.startElement('hemisphere');
+    xw.text(hemi);
+    xw.endElement('hemisphere');
 
-      xw.startElement('faceSizeTarget');
-      xw.text(properties.BoxSize.toString());
-      xw.endElement('faceSizeTarget');
+    xw.startElement('faceSizeTarget');
+    xw.text(properties.BoxSize.toString());
+    xw.endElement('faceSizeTarget');
 
-      xw.startElement('depthTarget');
-      xw.text(properties.Depth.toString());
-      xw.endElement('depthTarget');
+    xw.startElement('depthTarget');
+    xw.text(properties.Depth.toString());
+    xw.endElement('depthTarget');
 
     xw.endElement('productAttributes');
 
     xw.startElement('takeOff');
 
-        xw.startElement('parts');
-        xw.text(takeOff.Parts);
-        xw.endElement('parts');
+    xw.startElement('parts');
+    xw.text(takeOff.Parts);
+    xw.endElement('parts');
 
-        xw.startElement('magnets');
-        xw.text(takeOff.Magnets);
-        xw.endElement('magnets');
+    xw.startElement('magnets');
+    xw.text(takeOff.Magnets);
+    xw.endElement('magnets');
 
-        xw.startElement('sheets');
-        xw.text(takeOff.Sheets);
-        xw.endElement('sheets');
+    xw.startElement('sheets');
+    xw.text(takeOff.Sheets);
+    xw.endElement('sheets');
 
     xw.endElement('takeOff');
 
@@ -1024,18 +1121,18 @@ export class SeeyondFeature extends Feature {
     for (let i = 0; i < uNum; i++) {
       for (let j = 0; j < vNum; j++) {
         xw.startElement('Panel_' + '0' + '-' + i + '-' + j);
-          xw.startElement('pt0');
-            xw.text('{' + front[i + 1][j][0] + ',' + front[i + 1][j][1] + ',' + front[i + 1][j][2] + '}');
-          xw.endElement('pt0');
-          xw.startElement('pt1');
-            xw.text('{' + front[i][j][0] + ',' + front[i][j][1] + ',' + front[i][j][2] + '}');
-          xw.endElement('pt1');
-          xw.startElement('pt2');
-            xw.text('{' + front[i][j + 1][0] + ',' + front[i][j + 1][1] + ',' + front[i][j + 1][2] + '}');
-          xw.endElement('pt2');
-          xw.startElement('pt3');
-            xw.text('{' + front[i + 1][j + 1][0] + ',' + front[i + 1][j + 1][1] + ',' + front[i + 1][j + 1][2] + '}');
-          xw.endElement('pt3');
+        xw.startElement('pt0');
+        xw.text('{' + front[i + 1][j][0] + ',' + front[i + 1][j][1] + ',' + front[i + 1][j][2] + '}');
+        xw.endElement('pt0');
+        xw.startElement('pt1');
+        xw.text('{' + front[i][j][0] + ',' + front[i][j][1] + ',' + front[i][j][2] + '}');
+        xw.endElement('pt1');
+        xw.startElement('pt2');
+        xw.text('{' + front[i][j + 1][0] + ',' + front[i][j + 1][1] + ',' + front[i][j + 1][2] + '}');
+        xw.endElement('pt2');
+        xw.startElement('pt3');
+        xw.text('{' + front[i + 1][j + 1][0] + ',' + front[i + 1][j + 1][1] + ',' + front[i + 1][j + 1][2] + '}');
+        xw.endElement('pt3');
         xw.endElement('Panel_' + '0' + '-' + i + '-' + j);
       }
     }
@@ -1047,16 +1144,16 @@ export class SeeyondFeature extends Feature {
       for (let j = 0; j < vNum; j++) {
         xw.startElement('Panel_' + '1' + '-' + i + '-' + j);
         xw.startElement('pt0');
-          xw.text('{' + back[i + 1][j][0] + ',' + back[i + 1][j][1] + ',' + back[i + 1][j][2] + '}');
+        xw.text('{' + back[i + 1][j][0] + ',' + back[i + 1][j][1] + ',' + back[i + 1][j][2] + '}');
         xw.endElement('pt0');
         xw.startElement('pt1');
-          xw.text('{' + back[i][j][0] + ',' + back[i][j][1] + ',' + back[i][j][2] + '}');
+        xw.text('{' + back[i][j][0] + ',' + back[i][j][1] + ',' + back[i][j][2] + '}');
         xw.endElement('pt1');
         xw.startElement('pt2');
-          xw.text('{' + back[i][j + 1][0] + ',' + back[i][j + 1][1] + ',' + back[i][j + 1][2] + '}');
+        xw.text('{' + back[i][j + 1][0] + ',' + back[i][j + 1][1] + ',' + back[i][j + 1][2] + '}');
         xw.endElement('pt2');
         xw.startElement('pt3');
-          xw.text('{' + back[i + 1][j + 1][0] + ',' + back[i + 1][j + 1][1] + ',' + back[i + 1][j + 1][2] + '}');
+        xw.text('{' + back[i + 1][j + 1][0] + ',' + back[i + 1][j + 1][1] + ',' + back[i + 1][j + 1][2] + '}');
         xw.endElement('pt3');
         xw.endElement('Panel_' + '1' + '-' + i + '-' + j);
       }

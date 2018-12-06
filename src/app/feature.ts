@@ -262,8 +262,8 @@ export class Feature {
   }
 
   getTetriaEstimate(tilesArray) {
-    const flatTilePrice = 61.8;
-    const tetriaTilePrice = 82.4;
+    const flatTilePrice = 63.65;
+    const tetriaTilePrice = 84.87;
     let flatTileCount = 0;
     let tetriaTileCount = 0;
     const tetriaTiles = ['01', '02', '03'];
@@ -294,9 +294,9 @@ export class Feature {
       }
     }
 
-    const hardware110 = 0.23;
-    const hardware111 = 1.8;
-    const hardware112 = 3.08;
+    const hardware110 = 0.24;
+    const hardware111 = 1.85;
+    const hardware112 = 3.17;
     const total110 = hardware110 * hushTileCount * 5;
     const total111 = hardware111 * hushTileCount * 4;
     const total112 = hardware112 * hushTileCount * 2;
@@ -308,7 +308,7 @@ export class Feature {
     };
 
     const allHardwareCost = total110 + total111 + total112;
-    this.services_amount = hushTileCount * 65.49;
+    this.services_amount = hushTileCount * 67.45;
     this.estimated_amount = this.services_amount + allHardwareCost;
   }
 
@@ -339,15 +339,15 @@ export class Feature {
         }
 
         // calculate the sheet cost and add it to the products_amount
-        sheetCost = sheetsNeeded * 48.93;
+        sheetCost = sheetsNeeded * 50.4;
         products_amount += sheetCost;
       }
     }
 
     // SERVICES AMOUNT
-    const clarioFlatServiceCost = 23.81;
-    const clario24ServiceCost = 49.88;
-    const clario48ServiceCost = 99.75;
+    const clarioFlatServiceCost = 24.52;
+    const clario24ServiceCost = 51.38;
+    const clario48ServiceCost = 102.74;
     const clario24Total = clario24ServiceCost * clario24TileCount;
     const clario48Total = clario48ServiceCost * clario48TileCount;
     const clarioFlatTotal = clario00TileCount * clarioFlatServiceCost;
@@ -366,8 +366,8 @@ export class Feature {
     let products_amount: number;
     let variaSheetsNeeded: number;
     let variaDiffusionSheetsNeeded: number;
-    const variaSheetCost = 488.14;
-    const variaDiffusionSheetCost: number = variaSheetCost + 100.0;
+    const variaSheetCost = 508.16;
+    const variaDiffusionSheetCost: number = variaSheetCost + 105.0;
 
     for (const tile in tilesArray) {
       if (tilesArray.hasOwnProperty(tile)) {
@@ -391,8 +391,8 @@ export class Feature {
     products_amount = variaSheetsNeeded * variaSheetCost + variaDiffusionSheetsNeeded * variaDiffusionSheetCost;
 
     // SERVICES AMOUNT
-    const veloFeltServiceCost = 77.25;
-    const veloVariaServiceCost = 78.75;
+    const veloFeltServiceCost = 79.57;
+    const veloVariaServiceCost = 81.11;
     this.services_amount = veloFeltTiles * veloFeltServiceCost + (veloVariaTiles + veloVariaDiffusionTiles) * veloVariaServiceCost;
     // this.debug.logfeature', ('=== SERVICES AMOUNT ===');
     // this.debug.logfeature', (this.services_amount);
@@ -402,11 +402,11 @@ export class Feature {
     let hardwareCost = 0.0;
     let cableCount: number;
     let cableCost = 0.0;
-    const cableKitCost = 12.46;
-    const variaConnectionKitCost = 6.85;
-    const feltConnectionKitCost = 0.46;
-    const drillBitCost = 10.23;
-    const variaPunchToolCost = 17.49;
+    const cableKitCost = 12.84;
+    const variaConnectionKitCost = 7.06;
+    const feltConnectionKitCost = 0.48;
+    const drillBitCost = 11.08;
+    const variaPunchToolCost = 18.02;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
     let cablesNeeded = 0;
@@ -1267,7 +1267,7 @@ export class Feature {
 
   getFeatureNameForUrl() {
     switch (this.feature_type) {
-      case 'hush' :
+      case 'hush':
         return 'hush-blocks';
       default:
         return this.feature_type;
