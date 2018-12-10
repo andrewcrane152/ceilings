@@ -85,8 +85,8 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
-        this.vRulerSections = 20;
-        this.hRulerSections = 34;
+        this.vRulerSections = 5;
+        this.hRulerSections = 5;
         backgroundWidth = 79;
         break;
       default:

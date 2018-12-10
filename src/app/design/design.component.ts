@@ -510,7 +510,7 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.feature.onAdjustSwoonGridSize.emit(selection);
         break;
       case 'velo':
-        this.feature.onAdjustSwoonGridSize.emit(selection);
+        this.feature.onAdjustVeloGridSize.emit(selection);
         break;
     }
   }
