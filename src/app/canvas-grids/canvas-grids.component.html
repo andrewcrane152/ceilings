@@ -1,8 +1,9 @@
 <ng-container *ngIf="!!hRulerLabels && !!vRulerLabels">
-  <div class="ruler horizontal" [style.background-size]="rulerBackgroundSize" [style.width]="rulerWidth">
+  <div (change)="hRulerLabels" class="ruler horizontal" [style.background-size]="rulerBackgroundSize" [style.width]="rulerWidth">
     <label *ngFor="let label of hRulerLabels" [ngStyle]="{'width': labelWidth}">{{label}}</label>
   </div>
-  <div class="ruler vertical" [style.width]="rulerHeight" [style.background-size]="rulerBackgroundSize" *ngIf="!!labelWidth">
+  <div (change)="vRulerLabels" class="ruler vertical" [style.width]="rulerHeight" [style.background-size]="rulerBackgroundSize"
+    *ngIf="!!labelWidth">
     <label *ngFor="let label of vRulerLabels" [ngStyle]="{'width': labelWidth}">{{label}}</label>
   </div>
 </ng-container>

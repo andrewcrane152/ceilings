@@ -29,8 +29,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   renderVeloGrid() {
     this.debug.log('velo-grid-component', 'rendering the velo grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = this.canvasWidth;
-    canvas.height = this.canvasHeight;
+    canvas.width = this.veloCanvasWidth;
+    canvas.height = this.veloCanvasHeight;
 
     canvas.width = 826 * this.feature.canvasGridScale;
     // canvas.width = (98 * this.columns + 50) * this.feature.canvasGridScale;

@@ -8,8 +8,8 @@ import * as pip from 'robust-point-in-polygon';
   styleUrls: ['../canvas-grids.component.scss', './swoon-grid.component.scss']
 })
 export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
-  rows = 10;
-  columns = 13;
+  // rows = 10;
+  // columns = 13;
   adjustmentX = 57;
   adjustmentY = 49;
 
@@ -42,14 +42,15 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
         this.rows = Math.max(this.rows - 1, 5);
         break;
     }
+    this.updateGridDisplayValues();
     this.renderSwoonGrid();
   }
 
   renderSwoonGrid() {
     this.debug.log('swoon-grid-component', 'rendering the swoon grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = (59 * this.columns + 27) * this.feature.canvasGridScale;
-    canvas.height = (50 * this.rows + 27) * this.feature.canvasGridScale;
+    canvas.width = this.swoonCanvasWidth * this.feature.canvasGridScale;
+    canvas.height = this.swoonCanvasHeight * this.feature.canvasGridScale;
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
@@ -215,7 +216,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   private drawDiamond(ctx, x, y, rotateAngle, row, column, index) {
-    this.debug.log('draw-diamond', `x: ${x}, y: ${y}, rotation: ${rotateAngle}, row: ${row}, column: ${column}, index: ${index}`);
+    // this.debug.log('draw-diamond', `x: ${x}, y: ${y}, rotation: ${rotateAngle}, row: ${row}, column: ${column}, index: ${index}`);
 
     // points to create a diamond
     let xcoords = [0, -260.5, 260.5, 521];

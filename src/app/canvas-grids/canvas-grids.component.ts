@@ -19,11 +19,13 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   ngUnsubscribe: Subject<any> = new Subject();
   strokeStyle = '#cdcdcd';
   fillStyle = '#ffffff';
-  canvasWidth = 826;
-  canvasHeight = 500;
+  veloCanvasWidth = 826;
+  veloCanvasHeight = 500;
 
   newDesign = true;
   gridType: string;
+  rows = 10;
+  columns = 13;
   rulerMultiplier = 24;
   hRulerSections = 33;
   hRulerLabels = [];
@@ -31,12 +33,16 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   vRulerLabels = [];
 
   // css bindings
+  swoonCanvasWidth = 826;
+  swoonCanvasHeight = 500;
   guideTop = 10;
   guideLeft = 10;
   rulerBackgroundSize = '50px 15px';
   labelWidth = '50px';
   rulerHeight = '';
   rulerWidth = '';
+  // rulerImgBackgroundWidth adjusts the size of each ruler section
+  rulerImgBackgroundWidth = 50;
 
   constructor(
     public debug: DebugService,
@@ -58,11 +64,11 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
           this.gridType = 'hushSwoon';
         }
       }
-      this.setGridDisplayValues();
+      this.setGridDisplayDefaults();
     });
     this.debug.log('canvas-grids', this.gridType);
     this.feature.onZoomGrid.pipe(takeUntil(this.ngUnsubscribe)).subscribe(data => {
-      this.setGridDisplayValues();
+      this.updateGridDisplayValues();
     });
   }
 
@@ -71,44 +77,58 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  public setGridDisplayValues() {
-    this.debug.log('canvas-grids', 'setting grid display values');
-    // backgroundWidth adjusts the size of each ruler section
-    let backgroundWidth = 50;
+  public setGridDisplayDefaults() {
+    this.debug.log('canvas-grids', `setting grid display values for ${this.gridType}`);
     // set multiplier
     switch (this.gridType) {
       case 'velo':
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
-        backgroundWidth = 50;
+        this.rulerImgBackgroundWidth = 50;
         this.vRulerSections = 11;
         this.hRulerSections = 18;
         break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
-        this.vRulerSections = 5;
-        this.hRulerSections = 5;
-        backgroundWidth = 79;
+        this.vRulerSections = 8;
+        this.hRulerSections = 11;
+        this.rulerImgBackgroundWidth = 79;
         break;
       default:
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
-        backgroundWidth = 50;
+        this.vRulerSections = 11;
+        this.hRulerSections = 18;
+        this.rulerImgBackgroundWidth = 50;
         break;
     }
-    backgroundWidth = Math.round(backgroundWidth * this.feature.canvasGridScale);
-    this.rulerBackgroundSize = `${backgroundWidth}px 15px`;
-    this.rulerHeight = `${backgroundWidth * this.vRulerSections - (backgroundWidth - 5)}px`;
-    this.rulerWidth = `${backgroundWidth * this.hRulerSections - (backgroundWidth - 5)}px`;
-    this.labelWidth = `${backgroundWidth}px`;
+    this.updateGridDisplayValues();
+  }
+
+  public updateGridDisplayValues() {
+    // set number of ruler sections
+    const rulerSectionWidth = Math.round(this.rulerImgBackgroundWidth * this.feature.canvasGridScale);
+    this.swoonCanvasWidth = 59 * this.columns + 27;
+    this.swoonCanvasHeight = 50 * this.rows + 27;
+    this.hRulerSections = Math.ceil(this.swoonCanvasWidth / rulerSectionWidth);
+    this.vRulerSections = Math.ceil(this.swoonCanvasHeight / rulerSectionWidth);
+    console.log(`hRulerSections, ${this.hRulerSections}, vRulerSections, ${this.vRulerSections}`);
+    // set ruler sizing
+    this.rulerBackgroundSize = `${rulerSectionWidth}px 15px`;
+    this.rulerHeight = `${rulerSectionWidth * this.vRulerSections - (rulerSectionWidth - 5)}px`;
+    this.rulerWidth = `${rulerSectionWidth * this.hRulerSections - (rulerSectionWidth - 5)}px`;
+    this.labelWidth = `${rulerSectionWidth}px`;
+
     // horizontal labels
     this.hRulerLabels = [];
     for (let ii = 0; ii < this.hRulerSections; ii++) {
       this.hRulerLabels.push(ii * this.rulerMultiplier);
     }
+    console.log('hRulerLabels', this.hRulerLabels);
     // vertical labels
     this.vRulerLabels = [];
     for (let jj = 0; jj < this.vRulerSections; jj++) {
       this.vRulerLabels.push(jj * this.rulerMultiplier);
     }
+    console.log('vRulerLabels', this.vRulerLabels);
   }
 
   public moveGuide(event: any) {
