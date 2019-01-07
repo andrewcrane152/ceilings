@@ -140,7 +140,7 @@ export class Feature {
         this.getTetriaEstimate(tilesArray);
         break;
       case 'hush':
-        this.getHushEstimate(tilesArray);
+        this.getHushBlocksEstimate(tilesArray);
         break;
       case 'clario':
         this.getClarioEstimate(tilesArray);
@@ -294,30 +294,57 @@ export class Feature {
     this.estimated_amount = this.services_amount;
   }
 
-  getHushEstimate(tilesArray) {
-    let hushTileCount = 0;
+  getHushBlocksEstimate(tilesArray) {
+    let tileCount112 = 0;
+    let tileCount122 = 0;
+    let tileCount132 = 0;
+    let tileCount142 = 0;
+    let tileCount222 = 0;
+    let tileCount222t = 0;
+    let hushTotalTiles = 0;
+
     for (const hushTile in tilesArray) {
       if (tilesArray.hasOwnProperty(hushTile)) {
         const hushCurrentTile = tilesArray[hushTile];
-        hushTileCount += hushCurrentTile.purchased;
+        switch (hushCurrentTile) {
+          case '1-1-2':
+            tileCount112 += hushCurrentTile.purchased;
+            break;
+          case '1-2-2':
+            tileCount122 += hushCurrentTile.purchased;
+            break;
+          case '1-3-2':
+            tileCount132 += hushCurrentTile.purchased;
+            break;
+          case '1-4-2':
+            tileCount142 += hushCurrentTile.purchased;
+            break;
+          case '2-2-2':
+            tileCount222 += hushCurrentTile.purchased;
+            break;
+          case '2-2-2-t':
+            tileCount222t += hushCurrentTile.purchased;
+            break;
+        }
+        hushTotalTiles += hushCurrentTile.purchased;
       }
     }
 
     const hardware110 = 0.23;
     const hardware111 = 1.8;
     const hardware112 = 3.08;
-    const total110 = hardware110 * hushTileCount * 5;
-    const total111 = hardware111 * hushTileCount * 4;
-    const total112 = hardware112 * hushTileCount * 2;
+    const total110 = hardware110 * hushTotalTiles * 5;
+    const total111 = hardware111 * hushTotalTiles * 4;
+    const total112 = hardware112 * hushTotalTiles * 2;
 
     this.hardware = {
-      '3-85-110': hushTileCount * 5,
-      '3-85-111': hushTileCount * 4,
-      '3-85-112': hushTileCount * 2
+      '3-85-110': hushTotalTiles * 5,
+      '3-85-111': hushTotalTiles * 4,
+      '3-85-112': hushTotalTiles * 2
     };
 
     const allHardwareCost = total110 + total111 + total112;
-    this.services_amount = hushTileCount * 65.49;
+    this.services_amount = hushTotalTiles * 65.49;
     this.estimated_amount = this.services_amount + allHardwareCost;
   }
 

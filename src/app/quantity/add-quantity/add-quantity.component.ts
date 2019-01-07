@@ -40,7 +40,7 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
   ngOnInit() {
     this.getFeatureMaterials();
     this.featureTiles = this.feature.tilesArray[this.feature.feature_type];
-    this.showTileSelection = !(this.feature.feature_type === 'hush' || this.feature.feature_type === 'hushSwoon');
+    this.showTileSelection = this.feature.feature_type !== 'hushSwoon';
     if (this.feature.feature_type === 'profile') {
       if (!this.profileFeature.feature_type_tile) {
         this.updateSelectedTile('standard');
@@ -124,7 +124,7 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
     let materialImg;
     switch (this.feature.feature_type) {
       case 'hush':
-        materialImg = `/assets/images/tiles/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
+        materialImg = `/assets/images/tiles/hush-blocks/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
         break;
       case 'hushSwoon':
         materialImg = `/assets/images/tiles/hush-swoon/felt/merino/${this.selectedMaterial}.png`;

@@ -104,7 +104,7 @@ export class QuantityService {
   getRowEstimate(row) {
     switch (this.feature.feature_type) {
       case 'hush':
-        this.feature.getHushEstimate(row);
+        this.feature.getHushBlocksEstimate(row);
         break;
       case 'tetria':
         this.feature.getTetriaEstimate(row);
