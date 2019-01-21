@@ -19,6 +19,7 @@ export class SaveDesignComponent implements OnInit {
   public newButton = false;
   private uiType = this.feature.is_quantity_order ? '/quantity' : '/design';
   saving = false;
+  savingSomeoneElsesDesign = false;
 
   constructor(
     private router: Router,
@@ -38,6 +39,7 @@ export class SaveDesignComponent implements OnInit {
       this.feature = this.seeyond;
     }
     this.newDesign = this.feature.id ? false : true;
+    this.savingSomeoneElsesDesign = this.feature.uid && this.user.uid && this.feature.uid !== this.user.uid;
   }
 
   newButtonClick() {
@@ -51,6 +53,12 @@ export class SaveDesignComponent implements OnInit {
       this.saveFeature();
     }
     this.dialogRef.close();
+  }
+
+  saveAsOwn() {
+    // TODO: WHAT NEEDS TO HAPPEN HERE?  CHANGE FEATURE ID??
+    // do things
+    this.saveInvoked();
   }
 
   saveFeature() {

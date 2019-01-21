@@ -3,14 +3,37 @@
   <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
 </div>
 
-<!-- logged in but not their design -->
-<div *ngIf="feature.uid && user.uid && feature.uid != user.uid">
-  <div class="sub-header">You can't save a design that is not yours.</div>
-</div>
 <!-- logged in -->
 <div class="modals-container">
   <img class="close-btn" (click)="dialogRef.close('cancel')" src="/assets/icons/tools/x-close.svg" alt="Close Modal">
-  <div class="modals-body">
+
+  <!-- Saving someone else's design -->
+  <div class="modals-body" *ngIf="savingSomeoneElsesDesign">
+    <div class="modals-header">
+      <span>Save design as your own</span>
+      <span></span>
+    </div>
+    <div class="modals-inputs" *ngIf="!saving">
+      <p>This design belongs to someone else.</p>
+      <p>Saving this design as your own will allow you to edit it and request your own quote.</p>
+      <div class="input-line email">
+        <div class="sub-header">Design Name</div>
+        <input type="text" placeholder="Name" [(ngModel)]="feature.design_name">
+      </div>
+    </div>
+    <div class="modals-action-btns">
+      <div class="action-btns" *ngIf="!newDesign">
+        <span appStyledButton='primary-right-large'>
+          <button (click)="saveAsOwn()" [disabled]="!feature.design_name && !saving">
+            <span>Save As Own</span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saving own design -->
+  <div class="modals-body" *ngIf="!savingSomeoneElsesDesign">
     <div class="modals-header">
       <span>Save your design</span>
       <span></span>
@@ -21,27 +44,6 @@
         <input type="text" placeholder="Name" [(ngModel)]="feature.design_name">
       </div>
     </div>
-    <!-- <div class="modals-action-btns" *ngIf="!saving">
-      <div class="save-btn">
-        <span appStyledButton='primary-right-large' *ngIf="newDesign">
-          <button (click)="saveInvoked()" [disabled]="!feature.design_name && !saving">
-            <span>Save</span>
-          </button>
-        </span>
-        <span appStyledButton='primary-right-large' *ngIf="!newDesign">
-          <button (click)="saveInvoked()" [disabled]="!feature.design_name && !saving">
-            <span>Save New</span>
-          </button>
-        </span>
-        <span appStyledButton='secondary-right' *ngIf="!newDesign">
-          <button (click)="newButtonClick()" [disabled]="!feature.design_name && !saving">
-            <span>Overwrite</span>
-          </button>
-        </span>
-      </div>
-    </div> -->
-
-
     <div class="modals-action-btns">
       <div class="action-btns" *ngIf="newDesign">
         <span appStyledButton='primary-right-large'>
