@@ -28,6 +28,7 @@ export class QuantityService {
   }
 
   setRowData(row) {
+    this.debug.log('quantity', 'setRowDataInvoked');
     this.debug.log('quantity', row);
     this.getRowEstimate(row); // sets feature.estimated_amount
     const newRow = row[Object.keys(row)[0]];
@@ -175,12 +176,17 @@ export class QuantityService {
   }
 
   getTileSqArea(tile?) {
-    if (this.feature.feature_type === 'hushSwoon' || this.feature.feature_type === 'profileSwoon') {
+    if (this.feature.feature_type === 'hushSwoon') {
       // hushSwoon has two triangles whose sides are 5" x 5" x 5.21"
       // based off this, the total square area is 22.2352 sq inches, or 0.1544 sq ft.
       return 0.1544;
     }
-    switch (tile) {
+    let tileSize = tile;
+    if (typeof tileSize !== 'string' && typeof tileSize !== 'undefined') {
+      tileSize = tile.tile_size;
+    }
+    switch (tileSize) {
+      // Clario tiles
       case '24':
         return 4;
       case '48':
@@ -193,6 +199,22 @@ export class QuantityService {
         return 0.390625;
       case '1250':
         return 0.390625 * 2;
+
+      // Hush blocks tiles
+      case '1-1-2':
+        return 1;
+      case '1-2-2':
+        return 2;
+      case '1-3-2':
+        return 3;
+      case '1-4-2':
+        return 4;
+      case '2-2-2':
+        return 4;
+      case '2-2-2-t':
+        return 2;
+
+      // default
       default:
         return 4;
     }

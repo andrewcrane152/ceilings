@@ -430,7 +430,7 @@ export class MaterialsService {
         image: '/assets/images/tiles/hush-blocks/2-2-2-t.png',
         name: '2x2 Triangle',
         tile: '2-2-2-t',
-        tile_size: '',
+        tile_size: '2-2-2-t',
         tile_shape: 'triangle'
       }
     },
