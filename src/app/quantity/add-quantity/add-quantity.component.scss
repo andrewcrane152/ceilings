@@ -3,6 +3,11 @@
   display: flex;
   flex-direction: column;
   padding: 25px 30px;
+
+  p {
+    margin-top: 10px;
+  }
+
   .dialog-header {
     font-size: 1.3em;
     font-weight: 500;
@@ -10,20 +15,24 @@
     border-bottom: 3px solid black;
     margin-bottom: 15px;
   }
+
   .tile-selection {
     .tile-options {
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      flex-wrap: wrap;
+
       .tile-option-row>div {
         padding: 5px;
         border: 2px solid #efefef;
       }
+
       .tile-img {
         max-height: 60px;
       }
     }
   }
+
   .material-selection {
     .materials div {
       display: flex;
@@ -31,19 +40,24 @@
       max-height: 250px;
       overflow: auto;
     }
+
     .materials div div div img,
     .materials div div div .chroma-materials {
       width: 60px;
       height: 70px;
     }
   }
+
   .quantity-selection {
     padding-top: 10px;
     margin-bottom: 40px;
+
     input {
       max-width: 200px;
     }
-  } // .selection-total {
+  }
+
+  // .selection-total {
   //   margin-bottom: 25px;
   //   .selection-summary {
   //     min-height: 50px;
@@ -66,6 +80,7 @@
       width: 100%;
       display: flex;
     }
+
     .action-btns>button {
       width: 130px;
       margin: 10px 15px 10px 0px;
@@ -74,6 +89,7 @@
       border: none;
     }
   }
+
   p {
     font-size: 0.9em;
     font-weight: 500;

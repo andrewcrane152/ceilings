@@ -41,6 +41,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   tilesNeeded: number;
   tryingRequestQuote = false;
   quantityFeatures = ['tetria', 'clario', 'hush-blocks', 'profile', 'hush-swoon'];
+  showQuantityEstimator = true;
 
   // Table Properties
   dataSource: TableDataSource | null;
@@ -186,6 +187,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     switch (this.feature.feature_type) {
       case 'hush':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
+        this.showQuantityEstimator = false;
         break;
       case 'hushSwoon':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];

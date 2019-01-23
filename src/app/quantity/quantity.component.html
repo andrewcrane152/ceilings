@@ -24,13 +24,13 @@
     </div>
     <div class="quantity-data">
       <div class="left-side">
-        <div class="estimation">
+        <div class="estimation" *ngIf="showQuantityEstimator">
           <div class="sub-header">Quantity estimation</div>
           <div *ngIf="feature.units === 'inches'">
             <div class="description-text">Enter square footage to calculate how many tiles are needed.</div>
             <input [(ngModel)]="sqFootage" (keyup)="calcSqFootage()" type="number" placeholder="Sq Footage">
             <div class="description-text" *ngIf="!!sqFootage">
-              <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
               <strong>{{sqFootage}}</strong> square feet.
             </div>
           </div>
@@ -38,7 +38,7 @@
             <div class="description-text">Enter square meters to calculate how many tiles are needed.</div>
             <input [(ngModel)]="sqMeters" (keyup)="calcSqMeters()" type="number" placeholder="Sq Meters">
             <div class="description-text" *ngIf="!!sqMeters">
-              <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
               <strong>{{sqMeters}}</strong> square meters.</div>
           </div>
           <div class="description-text" *ngIf="!!sqMeters || !!sqFootage">
@@ -108,9 +108,9 @@
 
               <ng-container matColumnDef="hush-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-                <mat-cell *matCellDef="let element" class="material-column">
+                <mat-cell *matCellDef="let element" class="material-column hush-material-row">
                   <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}">
-                  {{element.material | capitalize}}
+                  {{element.material | capitalize}} - {{element.material_type}}
                 </mat-cell>
               </ng-container>
 
@@ -287,7 +287,7 @@
       </div>
       <div *ngIf="!!sqFootage" class="sq-footage-results">
         <p>
-          <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+          <strong>{{tilesNeeded}}</strong> tiles are required to cover
           <strong>{{sqFootage}}</strong> square feet.</p>
         <p>
           <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</p>

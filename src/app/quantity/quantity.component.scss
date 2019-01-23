@@ -5,68 +5,83 @@
     padding: 10px 0px;
     margin-bottom: 25px;
     border-bottom: 4px solid black;
+
     .feature-title {
       font-size: 30px;
       font-weight: 500;
       margin-right: 50px;
     }
   }
+
   .main {
     display: flex;
     flex-direction: column;
+
     .project-name {
       .project-name-input {
         display: flex;
         padding-bottom: 20px;
         border-bottom: 1px solid #bbb;
         margin-bottom: 10px;
+
         .input-container {
           width: 260px;
         }
       }
     }
+
     .quantity-data {
       display: flex;
       flex-direction: row;
       margin-bottom: 30px;
+
       .left-side {
         border-right: 1px solid #bbb;
         padding-right: 10px;
         width: 260px;
+
         .estimation {
           width: 250px;
           padding-bottom: 10px;
           border-bottom: 1px solid #bbb;
         }
+
         .estimation div input {
           margin: 10px 0px;
         }
+
         .used-receiving {
           margin: 10px 0px;
           padding-bottom: 10px;
           border-bottom: 1px solid #bbb;
+
           .add-margin-bottom {
             margin-bottom: 20px;
           }
         }
+
         .dimensions {
           img {
             max-height: 72px;
           }
         }
       }
+
       .right-side {
         width: 100%;
         margin-left: 10px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+
         .qty-table {
           min-height: 400px;
+
           .data-table {
             max-height: 340px;
             overflow: auto;
           }
+
           .add-tiles-btn button {
             width: 130px;
             margin: 10px 0px;
@@ -75,27 +90,35 @@
             border: 2px solid #f5f5f5;
           }
         }
+
         .est-total {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
           border-top: 1px solid #bbb;
           padding-top: 15px;
+
           .est-total-text {
             margin-right: 50px;
             font-size: 1.2em;
             font-weight: 500;
           }
+
           .est-total-text :first-child {
             margin-right: 30px;
           }
         }
       }
     }
+
     .quantity-data>div {
       padding-top: 10px;
     }
   }
+}
+
+.hush-material-row {
+  height: 74px;
 }
 
 mat-header-row {
@@ -152,7 +175,7 @@ mat-header-cell:last-child {
 .material-column img,
 .material-column div {
   margin: 5px 10px 5px 0px;
-  max-height: 48px;
+  // max-height: 48px;
 }
 
 .edit-column span img {
