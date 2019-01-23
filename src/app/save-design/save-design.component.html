@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="modals-action-btns">
-      <div class="action-btns" *ngIf="!newDesign">
+      <div class="action-btns">
         <span appStyledButton='primary-right-large'>
           <button (click)="saveAsOwn()" [disabled]="!feature.design_name && !saving">
             <span>Save As Own</span>

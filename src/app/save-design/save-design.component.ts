@@ -56,9 +56,8 @@ export class SaveDesignComponent implements OnInit {
   }
 
   saveAsOwn() {
-    // TODO: WHAT NEEDS TO HAPPEN HERE?  CHANGE FEATURE ID??
-    // do things
-    this.saveInvoked();
+    this.feature.specifier = undefined;
+    this.saveNew();
   }
 
   saveFeature() {
