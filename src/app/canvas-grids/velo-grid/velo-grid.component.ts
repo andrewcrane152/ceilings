@@ -13,6 +13,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   columns = 9;
   adjustmentX = 96;
   adjustmentY = 48;
+  tilesOutsideBoundary = [];
 
   @ViewChild('veloCanvas')
   canvas;
@@ -24,6 +25,28 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       this.debug.log('velo-grid-component', 'building the velo grid');
       this.renderVeloGrid();
     });
+    this.feature.onAdjustVeloGridSize.subscribe(result => {
+      this.adjustVeloGridSize(result);
+    });
+  }
+
+  adjustVeloGridSize(adjustment) {
+    switch (adjustment) {
+      case 'addColumn':
+        this.columns++;
+        break;
+      case 'removeColumn':
+        this.columns = Math.max(this.columns - 1, 5);
+        break;
+      case 'addRow':
+        this.rows++;
+        break;
+      case 'removeRow':
+        this.rows = Math.max(this.rows - 1, 5);
+        break;
+    }
+    this.updateGridDisplayValues();
+    this.renderVeloGrid();
   }
 
   renderVeloGrid() {
@@ -38,6 +61,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
+
+    this.setTilesOutsideBoundary();
 
     // new design
     if (typeof this.feature.gridData === 'undefined') {
@@ -130,11 +155,12 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
   private createPentagonSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
     const index = (row * 9 + column) * 4;
+    const xAdjustment = 16;
     if (isOdd) {
       // start off 48px off canvas
       this.drawPentagon(
         ctx,
-        18 * this.feature.canvasGridScale + adjustmentX,
+        (18 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         33 * this.feature.canvasGridScale + adjustmentY,
         -Math.PI / 2,
         row,
@@ -143,7 +169,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        50 * this.feature.canvasGridScale + adjustmentX,
+        (50 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         17 * this.feature.canvasGridScale + adjustmentY,
         Math.PI,
         row,
@@ -152,7 +178,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        50 * this.feature.canvasGridScale + adjustmentX,
+        (50 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         49 * this.feature.canvasGridScale + adjustmentY,
         2 * Math.PI,
         row,
@@ -161,7 +187,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        82 * this.feature.canvasGridScale + adjustmentX,
+        (82 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         33 * this.feature.canvasGridScale + adjustmentY,
         Math.PI / 2,
         row,
@@ -171,7 +197,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     } else {
       this.drawPentagon(
         ctx,
-        -30 * this.feature.canvasGridScale + adjustmentX,
+        (-30 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         33 * this.feature.canvasGridScale + adjustmentY,
         -Math.PI / 2,
         row,
@@ -180,7 +206,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        2 * this.feature.canvasGridScale + adjustmentX,
+        (2 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         17 * this.feature.canvasGridScale + adjustmentY,
         Math.PI,
         row,
@@ -189,7 +215,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        2 * this.feature.canvasGridScale + adjustmentX,
+        (2 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         49 * this.feature.canvasGridScale + adjustmentY,
         2 * Math.PI,
         row,
@@ -198,7 +224,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       );
       this.drawPentagon(
         ctx,
-        34 * this.feature.canvasGridScale + adjustmentX,
+        (34 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
         33 * this.feature.canvasGridScale + adjustmentY,
         Math.PI / 2,
         row,
@@ -209,14 +235,11 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   private drawPentagon(ctx, x, y, rotateAngle, row, column, index) {
-    // console.log("=== column ===");
-    // console.log(index % 10);
-    // console.log("==== row ====");
-    // console.log(Math.floor(index/9));
+    // console.log(`row: ${Math.floor(index / 9)}`);
+    // console.log(`index: ${index}, column: ${index % 10}`);
     // pentagon points
     let xcoords = [0, -23.9, -15.95, 15.95, 23.9];
     let ycoords = [15.94, 7.96, -15.94, -15.94, 7.96];
-    const tilesOutsideBoundary = [1, 2, 69, 70, 73, 74, 145, 146, 213, 141, 142, 214, 217, 218, 285, 286, 289, 290, 357, 358];
 
     xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
     ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
@@ -249,7 +272,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
     // save the current canvas state
     ctx.save();
-    if (!tilesOutsideBoundary.includes(index)) {
+    if (!this.tilesOutsideBoundary.includes(index)) {
       // start drawing
       ctx.beginPath();
       // move to the new x,y coordinates (setting a new 0,0 at x,y)
@@ -283,18 +306,41 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       }
 
       // DEBUGGING
-      // ctx.rotate(-rotateAngle);
-      // ctx.fillStyle = '#00E1E1';
-      // ctx.font = '10px Arial';
-      // ctx.fillText(index, -5, -5);
-      // ctx.font = '8px Arial';
-      // ctx.fillText(x + ', ' + y, -15, 5);
+      ctx.rotate(-rotateAngle);
+      ctx.fillStyle = '#00E1E1';
+      ctx.font = '10px Arial';
+      ctx.fillText(index, -5, -5);
+      ctx.font = '8px Arial';
+      ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
 
       // stroke all the pentagon lines
       ctx.stroke();
     }
     // restore the context so that we can draw the next pentagon.
     ctx.restore();
+  }
+
+  setTilesOutsideBoundary() {
+    // loop through rows
+    for (let rr = 0; rr < this.rows; rr++) {
+      if (rr % 2 === 0) {
+        // if odd row add first three indexes
+        const evenStartIndex = rr * this.columns * 4;
+        const evenEndIndex = (rr + 1) * this.columns * 4;
+        this.tilesOutsideBoundary.push(evenStartIndex);
+        this.tilesOutsideBoundary.push(evenStartIndex + 1);
+        this.tilesOutsideBoundary.push(evenStartIndex + 2);
+        this.tilesOutsideBoundary.push(evenEndIndex - 1);
+      } else {
+        // if even row add last three indexes
+        const oddStartIndex = rr * this.columns * 4;
+        const oddEndIndex = (rr + 1) * this.columns * 4 - 3;
+        this.tilesOutsideBoundary.push(oddStartIndex);
+        this.tilesOutsideBoundary.push(oddEndIndex);
+        this.tilesOutsideBoundary.push(oddEndIndex + 1);
+        this.tilesOutsideBoundary.push(oddEndIndex + 2);
+      }
+    }
   }
 
   private tileAbbreviation(tile) {

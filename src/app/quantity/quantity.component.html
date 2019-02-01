@@ -1,7 +1,7 @@
 <div class="quantity">
   <div class="main-header">
     <span class="feature-title">{{featureTitle | capitalize}}</span>
-    <span appStyledButton='secondary-left'>
+    <span appStyledButton='secondary-left' *ngIf="showDesignYourFeatureButton">
       <button (click)="backToDesign('reset')" class="go-to-quantity">Design your feature</button>
     </span>
   </div>

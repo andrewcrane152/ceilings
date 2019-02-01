@@ -85,7 +85,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         this.rulerImgBackgroundWidth = 50;
         this.vRulerSections = 11;
-        this.hRulerSections = 18;
+        this.hRulerSections = 19;
         break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
@@ -96,7 +96,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
       default:
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         this.vRulerSections = 11;
-        this.hRulerSections = 18;
+        this.hRulerSections = 19;
         this.rulerImgBackgroundWidth = 50;
         break;
     }

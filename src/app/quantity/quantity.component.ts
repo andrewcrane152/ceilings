@@ -42,6 +42,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   tryingRequestQuote = false;
   quantityFeatures = ['tetria', 'clario', 'hush-blocks', 'profile', 'hush-swoon'];
   showQuantityEstimator = true;
+  showDesignYourFeatureButton = true;
 
   // Table Properties
   dataSource: TableDataSource | null;
@@ -188,11 +189,13 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       case 'hush':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
         this.showQuantityEstimator = false;
+        this.showDesignYourFeatureButton = false;
         break;
       case 'hushSwoon':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
         this.dimensionsText = 'Hush Swoon tiles are 8.66" wide x 5.21" high x 1" deep';
         this.dimensionsImgUrl = '/assets/images/tiles/hush-swoon/hush-swoon-measurement.png';
+        this.showDesignYourFeatureButton = false;
         break;
       case 'profile':
         this.displayedColumns = ['profile-material', 'used', 'receiving', 'unused', 'total', 'edit'];

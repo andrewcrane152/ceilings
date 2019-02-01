@@ -300,7 +300,7 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.showDimensions = true;
         this.showDesign = true;
         this.showModify = true;
-        this.showGuidesCheckbox = false;
+        // this.showGuidesCheckbox = false;
         break;
       case 'hushSwoon':
         this.showDesign = true;

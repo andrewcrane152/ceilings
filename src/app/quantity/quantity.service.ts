@@ -177,9 +177,9 @@ export class QuantityService {
 
   getTileSqArea(tile?) {
     if (this.feature.feature_type === 'hushSwoon') {
-      // hushSwoon has two triangles whose sides are 5" x 5" x 5.21"
-      // based off this, the total square area is 22.2352 sq inches, or 0.1544 sq ft.
-      return 0.1544;
+      // hushSwoon is a rhombus that is 8.66" wide and 5.21" high
+      // based off this, the total square area is 22.56 sq inches, or 0.15667 sq ft.
+      return 0.15667;
     }
     let tileSize = tile;
     if (typeof tileSize !== 'string' && typeof tileSize !== 'undefined') {
