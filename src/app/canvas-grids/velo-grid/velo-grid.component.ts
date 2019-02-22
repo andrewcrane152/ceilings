@@ -31,6 +31,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   adjustVeloGridSize(adjustment) {
+    this.doingGridSizeAdjust = true;
     switch (adjustment) {
       case 'addColumn':
         this.columns++;
@@ -45,25 +46,22 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         this.rows = Math.max(this.rows - 1, 5);
         break;
     }
+    const currentSelections = this.getDesignDecisions();
     this.updateGridDisplayValues();
     this.renderVeloGrid();
+    this.applySelectionsToNewGrid(currentSelections);
+    this.doingGridSizeAdjust = false;
   }
 
   renderVeloGrid() {
     this.debug.log('velo-grid-component', 'rendering the velo grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = this.veloCanvasWidth;
-    canvas.height = this.veloCanvasHeight;
-
-    canvas.width = 826 * this.feature.canvasGridScale;
-    // canvas.width = (98 * this.columns + 50) * this.feature.canvasGridScale;
-    canvas.height = (50 * this.rows + 17) * this.feature.canvasGridScale;
+    canvas.width = 96 * this.columns * this.feature.canvasGridScale;
+    canvas.height = 52 * this.rows * this.feature.canvasGridScale;
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
-
     this.setTilesOutsideBoundary();
-
     // new design
     if (typeof this.feature.gridData === 'undefined') {
       this.feature.gridData = [];
@@ -151,11 +149,14 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         this.feature.updateEstimatedAmount();
       }
     }
+    this.changeGridDimensions();
   }
 
   private createPentagonSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
     const index = (row * 9 + column) * 4;
     const xAdjustment = 16;
+    // const xAdjustment = -36;
+
     if (isOdd) {
       // start off 48px off canvas
       this.drawPentagon(
@@ -251,7 +252,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       pentagon[i] = [xcoords[i] + x, ycoords[i] + y];
     }
 
-    if (this.newDesign) {
+    if (this.newDesign || this.doingGridSizeAdjust) {
       this.feature.gridData.push({
         index: index,
         row: row,
@@ -291,7 +292,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       ctx.strokeStyle = this.strokeStyle;
 
       // if the design is not new, then we can set fill style from gridData
-      if (!this.newDesign && this.feature.gridData[index].texture !== '') {
+      if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
         // set the fillstyle
         ctx.fillStyle = this.feature.gridData[index].hex;
         // fill the pentagon
@@ -321,26 +322,78 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   setTilesOutsideBoundary() {
-    // loop through rows
-    for (let rr = 0; rr < this.rows; rr++) {
+    this.tilesOutsideBoundary = [];
+
+    const newIndexesByRows = [];
+    // let currentRow = 0;
+
+    // const totalTiles = this.columns * this.rows * 4;
+    let row = [];
+    let currentIndex = 0;
+    for (let rrr = 0; rrr < this.rows; rrr++) {
+      for (let cc = 0; cc < this.columns; cc++) {
+        const newIndex = rrr * cc + currentIndex;
+        row.push(newIndex);
+        row.push(newIndex + 1);
+        row.push(newIndex + 2);
+        row.push(newIndex + 3);
+        currentIndex = currentIndex + 4;
+      }
+      newIndexesByRows.push(row);
+      row = [];
+    }
+
+    // if (!!this.feature.gridData) {
+    //   // sort rows to an array of arrays
+    //   this.feature.gridData.map(tile => {
+    //     if (tile.row === currentRow) {
+    //       row.push(tile);
+    //     } else {
+    //       sortedRows.push(row);
+    //       row = [];
+    //       currentRow++;
+    //     }
+    //   });
+    //   console.log('sortedRows', sortedRows);
+    console.log('newIndexesByRows', newIndexesByRows);
+    for (let rr = 0; rr < newIndexesByRows.length; rr++) {
+      const indexedRow = newIndexesByRows[rr];
+      console.log('indexedRow:', indexedRow);
       if (rr % 2 === 0) {
-        // if odd row add first three indexes
-        const evenStartIndex = rr * this.columns * 4;
-        const evenEndIndex = (rr + 1) * this.columns * 4;
-        this.tilesOutsideBoundary.push(evenStartIndex);
-        this.tilesOutsideBoundary.push(evenStartIndex + 1);
-        this.tilesOutsideBoundary.push(evenStartIndex + 2);
-        this.tilesOutsideBoundary.push(evenEndIndex - 1);
+        this.tilesOutsideBoundary.push(indexedRow[0]);
+        this.tilesOutsideBoundary.push(indexedRow[1]);
+        this.tilesOutsideBoundary.push(indexedRow[2]);
+        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 1]);
       } else {
-        // if even row add last three indexes
-        const oddStartIndex = rr * this.columns * 4;
-        const oddEndIndex = (rr + 1) * this.columns * 4 - 3;
-        this.tilesOutsideBoundary.push(oddStartIndex);
-        this.tilesOutsideBoundary.push(oddEndIndex);
-        this.tilesOutsideBoundary.push(oddEndIndex + 1);
-        this.tilesOutsideBoundary.push(oddEndIndex + 2);
+        this.tilesOutsideBoundary.push(indexedRow[0]);
+        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 1]);
+        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 2]);
+        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 3]);
       }
     }
+    console.log('tilesOutsideBoundary', this.tilesOutsideBoundary);
+    // } else {
+    // // loop through rows
+    // for (let rr = 0; rr < this.rows; rr++) {
+    //   if (rr % 2 === 0) {
+    //     // if odd row add first three indexes
+    //     const evenStartIndex = rr * this.columns * 4;
+    //     const evenEndIndex = (rr + 1) * this.columns * 4;
+    //     this.tilesOutsideBoundary.push(evenStartIndex);
+    //     this.tilesOutsideBoundary.push(evenStartIndex + 1);
+    //     this.tilesOutsideBoundary.push(evenStartIndex + 2);
+    //     this.tilesOutsideBoundary.push(evenEndIndex - 1);
+    //   } else {
+    //     // if even row add last three indexes
+    //     const oddStartIndex = rr * this.columns * 4;
+    //     const oddEndIndex = (rr + 1) * this.columns * 4 - 3;
+    //     this.tilesOutsideBoundary.push(oddStartIndex);
+    //     this.tilesOutsideBoundary.push(oddEndIndex);
+    //     this.tilesOutsideBoundary.push(oddEndIndex + 1);
+    //     this.tilesOutsideBoundary.push(oddEndIndex + 2);
+    //   }
+    // }
+    // }
   }
 
   private tileAbbreviation(tile) {

@@ -28,6 +28,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   adjustSwoonGridSize(adjustment) {
+    this.doingGridSizeAdjust = true;
     switch (adjustment) {
       case 'addColumn':
         this.columns++;
@@ -42,15 +43,18 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
         this.rows = Math.max(this.rows - 1, 5);
         break;
     }
+    const currentSelections = this.getDesignDecisions();
     this.updateGridDisplayValues();
     this.renderSwoonGrid();
+    this.applySelectionsToNewGrid(currentSelections);
+    this.doingGridSizeAdjust = false;
   }
 
   renderSwoonGrid() {
     this.debug.log('swoon-grid-component', 'rendering the swoon grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = this.swoonCanvasWidth * this.feature.canvasGridScale;
-    canvas.height = this.swoonCanvasHeight * this.feature.canvasGridScale;
+    canvas.width = this.canvasWidth * this.feature.canvasGridScale;
+    canvas.height = this.canvasHeight * this.feature.canvasGridScale;
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
@@ -248,7 +252,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
       hex: ''
     };
 
-    if (this.newDesign) {
+    if (this.newDesign || this.doingGridSizeAdjust) {
       this.feature.gridData.push(newDiamond);
     }
 
@@ -278,7 +282,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     ctx.strokeStyle = this.strokeStyle;
 
     // if the design is not new, then we can set the fill style from the gridData
-    if (!this.newDesign && !!this.feature.gridData[index].texture) {
+    if (!this.newDesign && !!this.feature.gridData[index] && !!this.feature.gridData[index].texture) {
       // set the fillstyle
       ctx.fillStyle = this.feature.gridData[index].hex;
       // fill the diamond

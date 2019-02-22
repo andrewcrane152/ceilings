@@ -156,7 +156,8 @@ export class SeeyondFeature extends Feature {
     }
     if (this.materialObj.status === 'discontinued') {
       this.$outdatedMaterial.emit();
-      this.canQuote = false;
+      // this.canQuote = false;
+      // TODO: THIS SHOULD ONLY BE TRIGGERED ON LOADING A SAVED DESIGN THAT ISN'T QUOTED
     }
 
     this.reloadVisualization();

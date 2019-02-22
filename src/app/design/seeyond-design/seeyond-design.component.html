@@ -1,137 +1,156 @@
 <div class="design-header">
-    <div class="row">
-      <div class="col-sm-4">
-        <p class="md project-name">{{seeyond.design_name | capitalize}} <a id="edit-project-name" class="edit-link" title="Edit Project Name" (click)="editOptions()">Edit</a></p>
-      </div>
-      <div class="col-sm-8">
-        <div class="row">
-          <div class="col-sm-8">
-            <p class="md">Est. Total: {{seeyond.estimated_amount | currency:'USD'}} USD <span class="sm"><sup>*</sup>Taxes, Shipping and Handling not included.</span></p>
-          </div>
-          <div class="col-sm-4">
-            <button *ngIf="!seeyond.quoted" class="button button-orange design-quote pull-right" [disabled]="!seeyond.canQuote" (click)="requestQuote()">Request Quote</button>
-            <button *ngIf="seeyond.quoted" class="button button-orange design-quote pull-right" (click)="viewDetails()">View Details</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="bg-white">
-    <div class="separator"></div>
-  </div>
-  <div class="design-ui">
-    <div class="row full-height">
-      <div class="col-sm-9 full-height">
-        <div class="grid-wrapper col-sm-12">
-          <div class="row grid-header syd-grid-header">
-            <span>
-              {{dimensionsString}} &nbsp;<a id="edit-grid" class="edit-link" title="Edit Grid Size" (click)="editOptions()">Edit</a>
-            </span>
-            <span class="save-load">
-                <a id="save-btn" title="save design" (click)="saveDesign()"><span class="icomoon-folder orange"></span>
-                  <span *ngIf="user.isLoggedIn()">Save</span>
-                  <span *ngIf="!user.isLoggedIn()">Login to save</span>
-                </a> | <a id="load-btn" title="load saved designs" (click)="loadSeeyondDesigns()">Load</a>
-            </span>
-            <span class="download-icon">
-              <a (click)="this.seeyond.downloadImages()">
-                <span class="icomoon-yc_download orange align-download-icon"></span>
-                <span class="base-color">Download Image</span>
-              </a>
-            </span>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <app-seeyond-visualization></app-seeyond-visualization>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-3 full-height">
-        <p class="md row">Pattern</p>
-        <div class="row tiles align-patterns">
-          <div *ngFor="let pattern of seeyond.patterns | keys" (click)="updateSelectedTessellation(pattern)" class="pattern-container tooltip-host">
-            <div class="pattern" [class.selected]="seeyond.tessellationStr == pattern">
-              <img src="/assets/images/patterns/{{pattern}}.png" alt="{{pattern | capitalize}}" class="img-responsive">
-            </div>
-            <p class="text-center xs">{{pattern | capitalize}}</p>
-          </div>
-          <div class="strength-parent design-column-padding-adjust">
-            <span>Pattern Strength</span>
-            <select name="pattern-strength" id="pattern-strength" [value]="seeyond.pattern_strength" (change)="updatePatternStrength($event.target.value)" [disabled]="this.seeyond.quoted" class="form-control">
-              <option *ngFor="let strength of strengths">{{strength}}</option>
-            </select>
-          </div>
-          <div class="relief-parent design-column-padding-adjust" *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
-            <span>Pattern Location</span>
-            <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()" [disabled]="this.seeyond.quoted" class="form-control">
-              <option *ngFor="let relief of patternReliefOptions" value="{{relief.value}}">{{relief.name}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="row materials">
-          <p class="md">Colors</p>
-          <div *ngFor="let material of seeyondMaterials | keys" matTooltip="{{material.material | capitalize}}" [matTooltipPosition]="position" (click)="updateSelectedMaterial(material)" class="col-sm-2 material tooltip-host">
-            <ng-container *ngIf="material.status === 'active'">
-              <img src="{{material.image}}" alt="{{material.material | capitalize}}" class="circle img-responsive" [class.selected]="seeyond.material==material.material">
-            </ng-container>
-          </div>
-        </div>
-        <div class="row cove-lighting" *ngIf="((seeyond.seeyond_feature_type === 'wall-to-ceiling') || (seeyond.seeyond_feature_type === 'ceiling'))">
-          <p class="md cove-lighting-label col-sm-6">Cove Lighting</p>
-          <div *ngIf="!this.seeyond.cove_lighting" class="col-sm-6" matTooltip="Add Cove Lighting to Quote" [matTooltipPosition]="position">
-            <p class="icomoon-checkbox-unchecked orange checkbox" (click)="toggleCoveLighting()"></p>
-          </div>
-          <div *ngIf="this.seeyond.cove_lighting" class="col-sm-6" matTooltip="Remove Cove Lighting from Quote" [matTooltipPosition]="position">
-            <p class="icomoon-checkbox-checked orange checkbox" (click)="toggleCoveLighting()"></p>
-          </div>
-        </div>
-        <hr class="nine-pixels">
-        <div class="row">
-          <div class="col-sm-12 tools-header">
-            <p class="md no-bottom-margin">Dimensions</p>
-          </div>
-        </div>
-        <div class="row dimensions-parent">
-          <div class="form-group col-sm-6">
-            <label for="width">Width</label>
-            <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.width" #widthInput="ngModel" required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square" placeholder="Width" name="width" id="width">
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="length" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</label>
-              <label for="length" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</label>
-              <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.height" #lengthInput="ngModel" required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square" placeholder="Height" name="length" id="length">
-            </div>
-          </div>
-          <div class="col-sm-6" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
-            <div class="form-group">
-              <label for="length">Radius</label>
-              <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.radius" #radiusInput="ngModel" required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square" placeholder="Height" name="length" id="length">
-            </div>
-          </div>
-          <div class="col-sm-6" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
-            <div class="form-group">
-              <label for="length">Ceiling Length</label>
-              <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel" required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square" placeholder="Height" name="length" id="length">
-            </div>
-          </div>
-          <div class="col-sm-6 vertical-center">
-            <div class="toggle-button-form-wrapper">
-              <mat-button-toggle-group #units="matButtonToggleGroup" [disabled]="this.seeyond.quoted" (change)="updateUnits(units.value)" value="{{seeyond.units}}">
-                <mat-button-toggle value="inches">IN</mat-button-toggle>
-                <mat-button-toggle value="centimeters">CM</mat-button-toggle>
-              </mat-button-toggle-group>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="row">
-    <div class="col-sm-2">
-      <div class="logo">
-        <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+    <div class="col-sm-4">
+      <p class="md project-name">{{seeyond.design_name | capitalize}} <a id="edit-project-name" class="edit-link" title="Edit Project Name"
+          (click)="editOptions()">Edit</a></p>
+    </div>
+    <div class="col-sm-8">
+      <div class="row">
+        <div class="col-sm-8">
+          <p class="md">Est. Total: {{seeyond.estimated_amount | currency:'USD'}} USD <span class="sm"><sup>*</sup>Taxes,
+              Shipping and Handling not included.</span></p>
+        </div>
+        <div class="col-sm-4">
+          <button *ngIf="!seeyond.quoted" class="button button-orange design-quote pull-right" (click)="requestQuote()">Request
+            Quote</button>
+          <button *ngIf="seeyond.quoted" class="button button-orange design-quote pull-right" (click)="viewDetails()">View
+            Details</button>
+        </div>
       </div>
     </div>
   </div>
+</div>
+<div class="bg-white">
+  <div class="separator"></div>
+</div>
+<div class="design-ui">
+  <div class="row full-height">
+    <div class="col-sm-9 full-height">
+      <div class="grid-wrapper col-sm-12">
+        <div class="row grid-header syd-grid-header">
+          <span>
+            {{dimensionsString}} &nbsp;<a id="edit-grid" class="edit-link" title="Edit Grid Size" (click)="editOptions()">Edit</a>
+          </span>
+          <span class="save-load">
+            <a id="save-btn" title="save design" (click)="saveDesign()"><span class="icomoon-folder orange"></span>
+              <span *ngIf="user.isLoggedIn()">Save</span>
+              <span *ngIf="!user.isLoggedIn()">Login to save</span>
+            </a> | <a id="load-btn" title="load saved designs" (click)="loadSeeyondDesigns()">Load</a>
+          </span>
+          <span class="download-icon">
+            <a (click)="this.seeyond.downloadImages()">
+              <span class="icomoon-yc_download orange align-download-icon"></span>
+              <span class="base-color">Download Image</span>
+            </a>
+          </span>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <app-seeyond-visualization></app-seeyond-visualization>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3 full-height">
+      <p class="md row">Pattern</p>
+      <div class="row tiles align-patterns">
+        <div *ngFor="let pattern of seeyond.patterns | keys" (click)="updateSelectedTessellation(pattern)" class="pattern-container tooltip-host">
+          <div class="pattern" [class.selected]="seeyond.tessellationStr == pattern">
+            <img src="/assets/images/patterns/{{pattern}}.png" alt="{{pattern | capitalize}}" class="img-responsive">
+          </div>
+          <p class="text-center xs">{{pattern | capitalize}}</p>
+        </div>
+        <div class="strength-parent design-column-padding-adjust">
+          <span>Pattern Strength</span>
+          <select name="pattern-strength" id="pattern-strength" [value]="seeyond.pattern_strength" (change)="updatePatternStrength($event.target.value)"
+            [disabled]="this.seeyond.quoted" class="form-control">
+            <option *ngFor="let strength of strengths">{{strength}}</option>
+          </select>
+        </div>
+        <div class="relief-parent design-column-padding-adjust" *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
+          <span>Pattern Location</span>
+          <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()"
+            [disabled]="this.seeyond.quoted" class="form-control">
+            <option *ngFor="let relief of patternReliefOptions" value="{{relief.value}}">{{relief.name}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row materials">
+        <p class="md">Colors</p>
+        <div *ngFor="let material of seeyondMaterials | keys" matTooltip="{{material.material | capitalize}}"
+          [matTooltipPosition]="position" (click)="updateSelectedMaterial(material)" class="col-sm-2 material tooltip-host">
+          <ng-container *ngIf="material.status === 'active'">
+            <img src="{{material.image}}" alt="{{material.material | capitalize}}" class="circle img-responsive"
+              [class.selected]="seeyond.material==material.material">
+          </ng-container>
+        </div>
+      </div>
+      <div class="row cove-lighting" *ngIf="((seeyond.seeyond_feature_type === 'wall-to-ceiling') || (seeyond.seeyond_feature_type === 'ceiling'))">
+        <p class="md cove-lighting-label col-sm-6">Cove Lighting</p>
+        <div *ngIf="!this.seeyond.cove_lighting" class="col-sm-6" matTooltip="Add Cove Lighting to Quote"
+          [matTooltipPosition]="position">
+          <p class="icomoon-checkbox-unchecked orange checkbox" (click)="toggleCoveLighting()"></p>
+        </div>
+        <div *ngIf="this.seeyond.cove_lighting" class="col-sm-6" matTooltip="Remove Cove Lighting from Quote"
+          [matTooltipPosition]="position">
+          <p class="icomoon-checkbox-checked orange checkbox" (click)="toggleCoveLighting()"></p>
+        </div>
+      </div>
+      <hr class="nine-pixels">
+      <div class="row">
+        <div class="col-sm-12 tools-header">
+          <p class="md no-bottom-margin">Dimensions</p>
+        </div>
+      </div>
+      <div class="row dimensions-parent">
+        <div class="form-group col-sm-6">
+          <label for="width">Width</label>
+          <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.width" #widthInput="ngModel" required
+            type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square" placeholder="Width"
+            name="width" id="width">
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="length" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</label>
+            <label for="length" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</label>
+            <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.height" #lengthInput="ngModel"
+              required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square"
+              placeholder="Height" name="length" id="length">
+          </div>
+        </div>
+        <div class="col-sm-6" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
+          <div class="form-group">
+            <label for="length">Radius</label>
+            <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.radius" #radiusInput="ngModel"
+              required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square"
+              placeholder="Height" name="length" id="length">
+          </div>
+        </div>
+        <div class="col-sm-6" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
+          <div class="form-group">
+            <label for="length">Ceiling Length</label>
+            <input (change)="this.seeyond.updateDimensions()" [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel"
+              required type="number" [disabled]="this.seeyond.quoted" class="form-control number-input square"
+              placeholder="Height" name="length" id="length">
+          </div>
+        </div>
+        <div class="col-sm-6 vertical-center">
+          <div class="toggle-button-form-wrapper">
+            <mat-button-toggle-group #units="matButtonToggleGroup" [disabled]="this.seeyond.quoted" (change)="updateUnits(units.value)"
+              value="{{seeyond.units}}">
+              <mat-button-toggle value="inches">IN</mat-button-toggle>
+              <mat-button-toggle value="centimeters">CM</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2">
+    <div class="logo">
+      <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+    </div>
+  </div>
+</div>

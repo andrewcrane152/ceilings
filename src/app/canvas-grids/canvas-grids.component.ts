@@ -19,10 +19,9 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   ngUnsubscribe: Subject<any> = new Subject();
   strokeStyle = '#cdcdcd';
   fillStyle = '#ffffff';
-  veloCanvasWidth = 826;
-  veloCanvasHeight = 500;
 
   newDesign = true;
+  doingGridSizeAdjust = false;
   gridType: string;
   rows = 10;
   columns = 13;
@@ -33,8 +32,8 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   vRulerLabels = [];
 
   // css bindings
-  swoonCanvasWidth = 826;
-  swoonCanvasHeight = 500;
+  canvasWidth = 826;
+  canvasHeight = 500;
   guideTop = 10;
   guideLeft = 10;
   rulerBackgroundSize = '50px 15px';
@@ -106,11 +105,25 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   public updateGridDisplayValues() {
     // set number of ruler sections
     const rulerSectionWidth = Math.round(this.rulerImgBackgroundWidth * this.feature.canvasGridScale);
-    this.swoonCanvasWidth = 59 * this.columns + 27;
-    this.swoonCanvasHeight = 50 * this.rows + 27;
-    this.hRulerSections = Math.ceil(this.swoonCanvasWidth / rulerSectionWidth);
-    this.vRulerSections = Math.ceil(this.swoonCanvasHeight / rulerSectionWidth);
+
+    switch (this.gridType) {
+      case 'velo':
+        this.canvasWidth = 96 * this.columns;
+        this.canvasHeight = 52 * this.rows;
+        break;
+      case 'hushSwoon':
+        this.canvasWidth = 59 * this.columns + 27;
+        this.canvasHeight = 50 * this.rows + 27;
+        break;
+    }
+
+    ////////////////////////////////////////////////////
+    // TODO: FIX THIS TO WORK FOR VELO, NOT JUST SWOON//
+    this.hRulerSections = Math.ceil(this.canvasWidth / rulerSectionWidth);
+    this.vRulerSections = Math.ceil(this.canvasHeight / rulerSectionWidth);
     console.log(`hRulerSections, ${this.hRulerSections}, vRulerSections, ${this.vRulerSections}`);
+    ////////////////////////////////////////////////////
+
     // set ruler sizing
     this.rulerBackgroundSize = `${rulerSectionWidth}px 15px`;
     this.rulerHeight = `${rulerSectionWidth * this.vRulerSections - (rulerSectionWidth - 5)}px`;
@@ -129,6 +142,28 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
       this.vRulerLabels.push(jj * this.rulerMultiplier);
     }
     console.log('vRulerLabels', this.vRulerLabels);
+  }
+
+  getDesignDecisions() {
+    const userSelections = [];
+    // Get new r&c
+    console.log('current grid values:', this.feature.gridData);
+    this.feature.gridData.map(tile => {
+      if (tile && !!tile.texture) {
+        userSelections.push(tile);
+      }
+    });
+    return userSelections;
+  }
+
+  applySelectionsToNewGrid(selections) {
+    console.log('selections:', selections);
+  }
+
+  changeGridDimensions() {
+    // Loop through current grid data getting r&c coordinates with data
+    // create new array with r&c as id
+    // Create new grid data populating data r&c array
   }
 
   public moveGuide(event: any) {
