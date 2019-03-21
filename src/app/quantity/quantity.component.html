@@ -48,18 +48,19 @@
         <div class="used-receiving">
           <div class="sub-header">Quantity used/receiving</div>
           <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
-          <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}</div>
+          <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}
+          </div>
           <div class="description-text" *ngIf="feature.units === 'inches'">SqFt. Used/Receiving:
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
           <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving:
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
         </div>
 
-        <div class="dimensions">
+        <!-- <div class="dimensions">
           <div class="sub-header">Tile Dimensions</div>
           <div class="description-text">{{dimensionsText}}</div>
           <img src={{dimensionsImgUrl}} alt="Dimensions Image Key">
-        </div>
+        </div> -->
       </div>
       <div class="right-side">
         <div class="qty-table">
@@ -88,8 +89,9 @@
               <ng-container matColumnDef="material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img"
-                    alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
+                  <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}"
+                    class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}">
+                  {{element.material | capitalize}}
                   {{element.material_size}}
                 </mat-cell>
               </ng-container>
@@ -97,7 +99,8 @@
               <ng-container matColumnDef="profile-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img" alt="{{element.material.name_str | capitalize}}">
+                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
+                    alt="{{element.material.name_str | capitalize}}">
                   <!-- TODO: SEE IF THE BELOW WILL WORK FOR STANDARD FINISHES -->
                   <!-- <img *ngIf="element.tile.tile !== 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img" [style.background]="url(element.image)"> {{element.material | capitalize}} - {{element.material_type}} -->
                   <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
@@ -109,7 +112,8 @@
               <ng-container matColumnDef="hush-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column hush-material-row">
-                  <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}">
+                  <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                    alt="{{element.material.name_str | capitalize}}">
                   {{element.material | capitalize}} - {{element.material_type}}
                 </mat-cell>
               </ng-container>
@@ -141,7 +145,8 @@
         </div>
         <div class="est-total">
           <span appStyledButton='primary-right' *ngIf="!feature.quoted">
-            <button type="submit" (click)='requestQuote()' [disabled]="((order.data.length === 0) || !feature.design_name)">Request
+            <button type="submit" (click)='requestQuote()'
+              [disabled]="((order.data.length === 0) || !feature.design_name)">Request
               Quote</button>
           </span>
           <span appStyledButton='primary-right' *ngIf="feature.quoted">
