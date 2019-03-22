@@ -5,6 +5,7 @@ import { DebugService } from '../_services/debug.service';
 import * as _ from 'lodash';
 import { Location } from '@angular/common';
 import { GridSection } from '../_models/grid-section';
+import { PricesService } from '../_services/prices.service';
 
 @Injectable()
 export class Feature {
@@ -72,7 +73,13 @@ export class Feature {
   public materialObj: any;
   public seeyond_features = this.materialsService.seeyond_features;
 
-  constructor(public materialsService: MaterialsService, public debug: DebugService, public location: Location, public alert: AlertService) {}
+  constructor(
+    public materialsService: MaterialsService,
+    public debug: DebugService,
+    public location: Location,
+    public alert: AlertService,
+    public pricesService: PricesService
+  ) {}
 
   setDesign(design: any) {
     this.id = design.id;
@@ -299,56 +306,60 @@ export class Feature {
   }
 
   getHushBlocksEstimate(tilesArray) {
-    let tileCount112 = 0;
-    let tileCount122 = 0;
-    let tileCount132 = 0;
-    let tileCount142 = 0;
-    let tileCount222 = 0;
-    let tileCount222t = 0;
-    let hushTotalTiles = 0;
+    const hushEstData = this.pricesService.hushBlocksPricingData;
+    const tileCount = {
+      '1-1-2': 0,
+      '1-2-2': 0,
+      '1-3-2': 0,
+      '1-4-2': 0,
+      '2-2-2': 0,
+      '2-2-2-t': 0
+    };
+    let totalTileCount = 0;
 
+    // set tileCount object and totalTileCount
     for (const hushTile in tilesArray) {
       if (tilesArray.hasOwnProperty(hushTile)) {
         const hushCurrentTile = tilesArray[hushTile];
-        switch (hushCurrentTile) {
-          case '1-1-2':
-            tileCount112 += hushCurrentTile.purchased;
-            break;
-          case '1-2-2':
-            tileCount122 += hushCurrentTile.purchased;
-            break;
-          case '1-3-2':
-            tileCount132 += hushCurrentTile.purchased;
-            break;
-          case '1-4-2':
-            tileCount142 += hushCurrentTile.purchased;
-            break;
-          case '2-2-2':
-            tileCount222 += hushCurrentTile.purchased;
-            break;
-          case '2-2-2-t':
-            tileCount222t += hushCurrentTile.purchased;
-            break;
-        }
-        hushTotalTiles += hushCurrentTile.purchased;
+        const hushCurrentTileSize = hushCurrentTile.tile_size || hushCurrentTile.tile;
+        tileCount[hushCurrentTileSize] += hushCurrentTile.purchased;
+        totalTileCount += hushCurrentTile.purchased;
       }
     }
 
-    const hardware110 = 0.23;
-    const hardware111 = 1.8;
-    const hardware112 = 3.08;
-    const total110 = hardware110 * hushTotalTiles * 5;
-    const total111 = hardware111 * hushTotalTiles * 4;
-    const total112 = hardware112 * hushTotalTiles * 2;
+    // set the shopping list of parts
+    const partsList = hushEstData.partsList;
+    const hardwarePartsList: any = {};
+    Object.keys(tileCount).forEach(tileId => {
+      if (tileCount[tileId] > 0) {
+        const tilePartList = partsList[tileId];
+        Object.keys(tilePartList).forEach(part => {
+          if (!(part in hardwarePartsList)) {
+            hardwarePartsList[part] = tilePartList[part] * tileCount[tileId];
+          } else {
+            hardwarePartsList[part] += tilePartList[part] * tileCount[tileId];
+          }
+        });
+      }
+    });
+    this.hardware = hardwarePartsList;
 
-    this.hardware = {
-      '3-85-110': hushTotalTiles * 5,
-      '3-85-111': hushTotalTiles * 4,
-      '3-85-112': hushTotalTiles * 2
-    };
+    // get Hardware Cost
+    let allHardwareCost = 0;
+    const hardwarePrices = hushEstData.hardwarePrices;
+    Object.keys(hardwarePartsList).forEach(hardwarePart => {
+      allHardwareCost += hardwarePrices[hardwarePart] * hardwarePartsList[hardwarePart];
+    });
 
-    const allHardwareCost = total110 + total111 + total112;
-    this.services_amount = hushTotalTiles * 65.49;
+    // get Services Cost
+    let allServicesCost = 0;
+    const servicePrices = hushEstData.servicePrices;
+    Object.keys(tileCount).forEach(tileId => {
+      allServicesCost += servicePrices[tileId] * tileCount[tileId];
+    });
+
+    // set totals
+    this.services_amount = allServicesCost;
     this.estimated_amount = this.services_amount + allHardwareCost;
   }
 
