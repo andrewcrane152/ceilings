@@ -149,7 +149,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         this.feature.updateEstimatedAmount();
       }
     }
-    this.changeGridDimensions();
+    // this.changeGridDimensions();
   }
 
   private createPentagonSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
@@ -307,12 +307,12 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       }
 
       // DEBUGGING
-      ctx.rotate(-rotateAngle);
-      ctx.fillStyle = '#00E1E1';
-      ctx.font = '10px Arial';
-      ctx.fillText(index, -5, -5);
-      ctx.font = '8px Arial';
-      ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
+      // ctx.rotate(-rotateAngle);
+      // ctx.fillStyle = '#00E1E1';
+      // ctx.font = '10px Arial';
+      // ctx.fillText(index, -5, -5);
+      // ctx.font = '8px Arial';
+      // ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
 
       // stroke all the pentagon lines
       ctx.stroke();
@@ -322,6 +322,52 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   setTilesOutsideBoundary() {
+    if (this.feature.feature_type === 'velo') {
+      // this is temporary
+      this.tilesOutsideBoundary = [
+        0,
+        1,
+        2,
+        35,
+        36,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        107,
+        108,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        179,
+        180,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        251,
+        252,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        323,
+        324,
+        357,
+        358,
+        359
+      ];
+      return;
+    }
     this.tilesOutsideBoundary = [];
 
     const newIndexesByRows = [];

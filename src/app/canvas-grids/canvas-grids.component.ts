@@ -82,9 +82,9 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     switch (this.gridType) {
       case 'velo':
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
-        this.rulerImgBackgroundWidth = 50;
+        this.rulerImgBackgroundWidth = 49;
         this.vRulerSections = 11;
-        this.hRulerSections = 19;
+        this.hRulerSections = 17;
         break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
@@ -119,9 +119,9 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
 
     ////////////////////////////////////////////////////
     // TODO: FIX THIS TO WORK FOR VELO, NOT JUST SWOON//
-    this.hRulerSections = Math.ceil(this.canvasWidth / rulerSectionWidth);
-    this.vRulerSections = Math.ceil(this.canvasHeight / rulerSectionWidth);
-    console.log(`hRulerSections, ${this.hRulerSections}, vRulerSections, ${this.vRulerSections}`);
+    // this.hRulerSections = Math.ceil(this.canvasWidth / rulerSectionWidth);
+    // this.vRulerSections = Math.ceil(this.canvasHeight / rulerSectionWidth);
+    // console.log(`hRulerSections, ${this.hRulerSections}, vRulerSections, ${this.vRulerSections}`);
     ////////////////////////////////////////////////////
 
     // set ruler sizing
