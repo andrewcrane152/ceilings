@@ -21,6 +21,7 @@ export class LandingComponent implements OnInit {
 
   ngOnInit() {
     this.feature.reset();
+    this.feature.showMainNavbar.emit(true);
   }
 
   public goTo(where: string, segment?) {

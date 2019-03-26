@@ -87,6 +87,9 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
         this.showQuantityBtn = true;
         break;
     }
+    this.feature.onDesignLoaded.subscribe(result => {
+      this.dialogRef.close('cancel');
+    });
   }
 
   ngAfterContentInit() {
@@ -112,9 +115,6 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
     }
     this.dialogRef.close('cancel');
     this.feature.navToLanding();
-    // this.dialogRef.afterClosed().subscribe(result => {
-    //   this.router.navigate(['/']);
-    // });
   }
 
   public updateGridUnits(units: string) {
@@ -168,34 +168,29 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   updateSelectedProfileFeature(feature) {
-    console.log('updateSelectedFeature:', feature);
     if (this.profile.tilesFeatures.includes(feature)) {
       if (this.router.url.indexOf('tiles') < 0) {
         this.location.go(`${this.router.url}/tiles/${feature}`);
       }
     }
     this.profile.updateProfileFeature(feature);
-
-    // this.seeyond.updateSeeyondFeature(feature);zz
   }
 
   startDesigning() {
-    // TODO: make this dynamic for all features
-    console.log('startDesigning');
     this.profile.buildFeatureGrid();
     this.dialogRef.close();
   }
 
   clarioGridSizeChanged(selection) {
     if (!!this.feature.gridData) {
-      this.feature.clearAll();
+      this.feature.clearGridData();
     }
     this.clarioGrids.gridSizeSelected(selection);
   }
 
   clarioTileSizeChanged(selection) {
     if (!!this.feature.gridData) {
-      this.feature.clearAll();
+      this.feature.clearGridData();
     }
     this.clarioGrids.tileSizeSelected(selection);
   }

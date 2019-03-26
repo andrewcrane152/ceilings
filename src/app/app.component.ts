@@ -1,7 +1,8 @@
 import { Feature } from 'app/_features/feature';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterContentInit } from '@angular/core';
 import { User } from './_models/user';
 import { environment } from '../environments/environment';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +11,27 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent implements OnInit {
   opened: boolean;
+  showMainNavbar: boolean;
 
-  constructor(public user: User, public feature: Feature) {
+  constructor(public user: User, public feature: Feature, public route: ActivatedRoute) {
     window['environment'] = () => {
       return environment;
     };
+
+    this.feature.showMainNavbar.subscribe(value => {
+      this.showMainNavbar = value;
+    });
   }
 
   ngOnInit() {
+    this.checkForUser();
+
+    this.feature.onToggleSideNav.subscribe(event => {
+      this.opened = !this.opened;
+    });
+  }
+
+  checkForUser() {
     // Check for a logged in user.
     const currentUser = localStorage.getItem('3formUser');
     if (currentUser) {
@@ -31,9 +45,5 @@ export class AppComponent implements OnInit {
       // create a new empty user
       this.user = new User();
     }
-
-    this.feature.onToggleSideNav.subscribe(event => {
-      this.opened = !this.opened;
-    });
   }
 }

@@ -31,7 +31,7 @@ const appRoutes: Routes = [
   { path: 'hush-blocks', redirectTo: '/hush-blocks/design', pathMatch: 'full' },
   { path: 'velo', redirectTo: '/velo/design', pathMatch: 'full' },
   { path: 'profile', redirectTo: '/profile/design', pathMatch: 'full' },
-  { path: 'hush-swoon', redirectTo: '/hush-swoon/design', pathMatch: 'full' },
+  // { path: 'hush-swoon', redirectTo: '/hush-swoon/design', pathMatch: 'full' },
   { path: 'landing', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

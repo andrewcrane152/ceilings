@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   styleUrls: ['./remove-quantity.component.scss']
 })
 export class RemoveQuantityComponent implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public selection: any, private dialogRef: MatDialogRef<RemoveQuantityComponent>) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public selection: any, public dialogRef: MatDialogRef<RemoveQuantityComponent>) {}
 
   ngOnInit() {}
 

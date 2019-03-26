@@ -392,10 +392,46 @@ export class MaterialsService {
     },
     hush: {
       0: {
-        image: '',
-        tile: '00',
-        tile_size: '00',
-        name: '00'
+        image: '/assets/images/tiles/hush-blocks/1-1-2.png',
+        name: '1x1',
+        tile: '1-1-2',
+        tile_size: '1-1-2',
+        tile_shape: 'square'
+      },
+      1: {
+        image: '/assets/images/tiles/hush-blocks/1-2-2.png',
+        name: '1x2',
+        tile: '1-2-2',
+        tile_size: '1-2-2',
+        tile_shape: 'square'
+      },
+      2: {
+        image: '/assets/images/tiles/hush-blocks/1-3-2.png',
+        name: '1x3',
+        tile: '1-3-2',
+        tile_size: '1-3-2',
+        tile_shape: 'square'
+      },
+      3: {
+        image: '/assets/images/tiles/hush-blocks/1-4-2.png',
+        name: '1x4',
+        tile: '1-4-2',
+        tile_size: '1-4-2',
+        tile_shape: 'square'
+      },
+      4: {
+        image: '/assets/images/tiles/hush-blocks/2-2-2.png',
+        name: '2x2',
+        tile: '2-2-2',
+        tile_size: '2-2-2',
+        tile_shape: 'square'
+      },
+      5: {
+        image: '/assets/images/tiles/hush-blocks/2-2-2-t.png',
+        name: '2x2 Triangle',
+        tile: '2-2-2-t',
+        tile_size: '2-2-2-t',
+        tile_shape: 'triangle'
       }
     },
     hushSwoon: {
@@ -556,7 +592,7 @@ export class MaterialsService {
         ore: {
           material: 'ore',
           image: '/assets/images/materials/felt/sola/ore.png',
-          status: 'inactive',
+          status: 'discontinued',
           available_until: 'March 2019',
           name_str: 'Ore',
           sheet_part_id: '0-51-802'
@@ -564,7 +600,7 @@ export class MaterialsService {
         dark_gray: {
           material: 'dark_gray',
           image: '/assets/images/materials/felt/sola/dark_gray.png',
-          status: 'inactive',
+          status: 'discontinued',
           available_until: 'March 2019',
           name_str: 'Dark Gray',
           sheet_part_id: '0-51-801'

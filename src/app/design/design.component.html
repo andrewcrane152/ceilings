@@ -2,7 +2,7 @@
   <div class="left-side">
     <div class="grid-header">
       <div class="top">
-        <span class="project-name">{{feature.design_name}}</span>
+        <span class="project-name">{{feature.design_name || seeyond.design_name}}</span>
         <span class="save-load save-load-btn-fmt">
           <img src="/assets/icons/tools/load.png" alt="load icon">
           <a title="save design" (click)="saveDesign()">
@@ -21,7 +21,7 @@
             <span class="guides-text sub-header">Guides</span>
           </span>
           <span *ngIf="feature.feature_type !== 'seeyond'" class="three-d" appStyledButton='secondary-left'>
-            <button (click)="feature.view3d()">3D View</button>
+            <button (click)="feature.view3d()" [disabled]="(!feature.tiles)">3D View</button>
           </span>
           <span *ngIf="feature.feature_type === 'seeyond'" class="download-img" appStyledButton='secondary-left-rotate90'>
             <button (click)="feature.view3d()">Download Image</button>
@@ -51,6 +51,7 @@
   <div class="right-side">
     <div class="expansion-panels">
       <app-design-dimensions *ngIf="showDimensions"></app-design-dimensions>
+      <app-design-canvas-grid-controls *ngIf="showCanvasGridControls"></app-design-canvas-grid-controls>
       <app-design-clario-dimensions *ngIf="showClarioDimensions"></app-design-clario-dimensions>
       <app-design-design *ngIf="showDesign"></app-design-design>
       <app-design-modify *ngIf="showModify"></app-design-modify>
@@ -60,8 +61,10 @@
       <div class="totals">
         <span class="est-total">
           <span class="sub-header">Est. Total:&nbsp;&nbsp;</span>
-          <span *ngIf="feature.feature_type !== 'seeyond'" class="total">{{feature.estimated_amount | currency:'USD'}} USD</span>
-          <span *ngIf="feature.feature_type === 'seeyond'" class="total">{{seeyond.estimated_amount | currency:'USD'}} USD</span>
+          <span *ngIf="feature.feature_type !== 'seeyond'" class="total">{{feature.estimated_amount | currency:'USD'}}
+            USD</span>
+          <span *ngIf="feature.feature_type === 'seeyond'" class="total">{{seeyond.estimated_amount | currency:'USD'}}
+            USD</span>
         </span>
         <span class="details-btn">
           <span appStyledButton='secondary-left' *ngIf="feature.quoted">
@@ -71,13 +74,13 @@
       </div>
       <div class="request-quote">
         <span appStyledButton='primary-right' *ngIf="!feature.quoted">
-          <button [disabled]="!feature.canQuote" (click)="requestQuote()">Request Quote</button>
+          <button [disabled]="!feature.canQuote || !feature.estimated_amount" (click)="requestQuote()">Request
+            Quote</button>
         </span>
       </div>
     </div>
   </div>
 </div>
-
 
 
 
@@ -273,7 +276,7 @@
           <div class="row">
             <div class="col-sm-12 actions">
               <button *ngIf="feature.feature_type!='velo'" class="button button-gray return-ceilings orange" (click)="feature.applyAll()">Apply All</button>
-              <button class="button button-gray return-ceilings orange" (click)="feature.clearAll()">Clear All</button>
+              <button class="button button-gray return-ceilings orange" (click)="feature.clearGridData()">Clear All</button>
             </div>
           </div>
           <hr class="nine-pixels">

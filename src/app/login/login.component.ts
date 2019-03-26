@@ -30,11 +30,11 @@ export class LoginComponent implements OnInit {
   }
 
   createAccount() {
-    window.location.href = 'https://www.3-form.com/userprofile';
+    window.open('https://www.3-form.com/userprofile', '_blank');
   }
 
   forgotPassword() {
-    window.location.href = 'http://www.3-form.com/userprofile/reset';
+    window.open('http://www.3-form.com/userprofile/reset', '_blank');
   }
 
   login() {

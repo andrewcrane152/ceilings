@@ -13,7 +13,8 @@
       <div class="tiles-container">
         <span *ngFor="let baffle of featureTiles | keys" (click)="feature.updateSelectedTile(baffle)" [class.hide]="feature.tile_image_type==24 && baffle.tile_size==48"
           class="tile-info">
-          <div class="expansion-panel-section-header" *ngIf="baffle.tile_size_type === clarioGrids.tile_size_type">{{baffle.name | capitalize}}</div>
+          <div class="expansion-panel-section-header" *ngIf="baffle.tile_size_type === clarioGrids.tile_size_type">{{baffle.name
+            | capitalize}}</div>
           <div class="tile-wrapper" [class.selected]="feature.selectedTile?.tile==baffle.tile" *ngIf="baffle.tile_size_type === clarioGrids.tile_size_type">
             <div class="tile">
               <img src="{{baffle.image}}" alt="{{baffle.tile | capitalize}}">
@@ -43,7 +44,8 @@
     <div class="expansion-panel-section-header">Colors</div>
     <div class="materials-container">
       <div class="materials" *ngFor="let material of materials | keys" (click)="feature.updateSelectedMaterial(material.material, material.hex)">
-        <span class="material" *ngIf="material.status === 'active'" matTooltip="{{material.material | capitalize}}" [matTooltipPosition]="position">
+        <span class="material" *ngIf="material.status === 'active'" matTooltip="{{material.material | capitalize}}"
+          [matTooltipPosition]="position">
           <img src="{{material.image}}" alt="{{material.material | capitalize}}" [class.selected]="feature.material==material.material">
         </span>
       </div>
@@ -57,8 +59,8 @@
         <mat-tab label="Merino Felt">
           <div class="velo-materials-container" *ngIf="materials.felt">
             <div *ngFor="let felt of materials.felt | keys" (click)="feature.updateSelectedMaterial(felt.material, felt.hex, 'felt')">
-              <div *ngIf="felt.status === 'active'" matTooltip="{{felt.material | capitalize}}" [matTooltipPosition]="position" [attr.data-hex]="felt.hex"
-                class="tooltip-host">
+              <div *ngIf="felt.status === 'active'" matTooltip="{{felt.material | capitalize}}" [matTooltipPosition]="position"
+                [attr.data-hex]="felt.hex" class="tooltip-host">
                 <img src="{{felt.image}}" alt="{{felt.material | capitalize}}" class="" [class.selected]="feature.material==felt.material">
               </div>
             </div>
@@ -67,10 +69,12 @@
         <mat-tab label="Varia">
           <div class="velo-materials-container" *ngIf="materials.varia">
             <div *ngFor="let varia of materials.varia.color | keys last as isLast" (click)="feature.updateSelectedMaterial(varia.material, varia.hex, 'varia')">
-              <div *ngIf="varia.status === 'active'" matTooltip="{{varia.material | capitalize}}" [matTooltipPosition]="position" class="">
-                <div *ngIf="!isLast" class="varia-swatch" [class.selected]="feature.material==varia.material" [style.background-color]="varia.hex"
-                  [ngClass]="{'is-clear': varia.material==='clear'}"></div>
-                <div *ngIf="isLast" class="varia-swatch no-color" [class.selected]="feature.material==varia.material" [ngClass]="{'block-selected': feature.material==varia.material}"></div>
+              <div *ngIf="varia.status === 'active'" matTooltip="{{varia.material | capitalize}}" [matTooltipPosition]="position"
+                class="">
+                <div *ngIf="!isLast" class="varia-swatch" [class.selected]="feature.material==varia.material"
+                  [style.background-color]="varia.hex" [ngClass]="{'is-clear': varia.material==='clear'}"></div>
+                <div *ngIf="isLast" class="varia-swatch no-color" [class.selected]="feature.material==varia.material"
+                  [ngClass]="{'block-selected': feature.material==varia.material}"></div>
               </div>
             </div>
           </div>
@@ -85,7 +89,8 @@
               <li *ngIf="feature.feature_type == 'velo'" (click)="feature.updateSelectedDiffusion('avalanche_d01')">
                 <div class="expansion-panel-section-header">Avalanche D01</div>
                 <div class="diffusion">
-                  <img class="img-responsive" src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01" [class.selected]="feature.diffusion=='avalanche_d01'">
+                  <img class="img-responsive" src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01"
+                    [class.selected]="feature.diffusion=='avalanche_d01'">
                 </div>
               </li>
             </ul>
@@ -96,8 +101,9 @@
   </ng-container>
 
   <div class="actions">
-    <button class="description-text" *ngIf="feature.feature_type!='velo' && feature.feature_type!='hushSwoon'" (click)="feature.applyAll()">Apply All</button>
-    <button class="description-text" (click)="feature.clearAll()">Clear All</button>
+    <button class="description-text" *ngIf="feature.feature_type!='velo' && feature.feature_type!='hushSwoon'" (click)="feature.applyAll()">Apply
+      All</button>
+    <button class="description-text" (click)="feature.clearGridData()">Clear All</button>
   </div>
 
 </mat-expansion-panel>

@@ -41,6 +41,8 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   tilesNeeded: number;
   tryingRequestQuote = false;
   quantityFeatures = ['tetria', 'clario', 'hush-blocks', 'profile', 'hush-swoon'];
+  showQuantityEstimator = true;
+  showDesignYourFeatureButton = true;
 
   // Table Properties
   dataSource: TableDataSource | null;
@@ -50,6 +52,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   featureTitle = '';
   dimensionsText = '';
   dimensionsImgUrl = '';
+  packageQtyInfo = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -90,6 +93,14 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.setComponentProperties();
       this.order = this.qtySrv.order;
 
+      if (this.feature.feature_type === 'hush') {
+        this.feature.updateSelectedTile(this.feature.tilesArray.hush[0]);
+      } else if (this.feature.feature_type === 'hushSwoon') {
+        this.feature.updateSelectedTile(this.feature.tilesArray.hushSwoon[0]);
+      } else if (this.feature.feature_type === 'tetria') {
+        this.feature.updateSelectedTile(this.feature.tilesArray.tetria[0]);
+      }
+
       // load saved if included in params
       const qtyId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10);
       if (!!qtyId) {
@@ -98,13 +109,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         setTimeout(() => {
           this.goToOptions();
         }, 500);
-      }
-
-      if (this.feature.feature_type === 'hush') {
-        this.feature.updateSelectedTile(this.feature.tilesArray.hush[0]);
-      }
-      if (this.feature.feature_type === 'hushSwoon') {
-        this.feature.updateSelectedTile(this.feature.tilesArray.hushSwoon[0]);
       }
 
       this.clarioGrids.onTileSizeChange.pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
@@ -117,6 +121,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     this.dataSource = new TableDataSource(this.dataSubject);
     this.dataSource.connect();
     this.feature.is_quantity_order = true;
+    this.feature.showMainNavbar.emit(true);
 
     this.api.onUserLoggedIn.subscribe(apiUser => {
       this.user.uid = apiUser.uid;
@@ -128,6 +133,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
 
   ngAfterContentInit() {
     this.featureTitle = `${this.feature.getFeatureHumanName()} Quantity Order`;
+    this.packageQtyInfo = this.feature.packageInformation();
   }
 
   ngOnDestroy() {
@@ -143,6 +149,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     if (qtyOrder.feature_type !== this.feature.feature_type) {
       this.location.go(`${qtyOrder.feature_type}/quantity/${qtyOrder.id}`);
     }
+    // this.feature.showMainNavbar.emit(true);
     this.qtySrv.order.data = [];
     this.feature.id = qtyOrder.id;
     this.feature.uid = qtyOrder.uid;
@@ -153,6 +160,8 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.feature.feature_type === 'clario') {
       this.clarioGrids.gridSizeSelected(qtyOrder.grid_type);
       this.clarioGrids.loadSelectedTileSize(qtyOrder.tile_size);
+    } else {
+      this.feature.selectedTile = this.materials;
     }
     const tilesObj = JSON.parse(qtyOrder.tiles);
     const rowsToAdd = Object.keys(tilesObj).map(key => tilesObj[key]);
@@ -179,11 +188,14 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     switch (this.feature.feature_type) {
       case 'hush':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
+        this.showQuantityEstimator = false;
+        this.showDesignYourFeatureButton = false;
         break;
       case 'hushSwoon':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
         this.dimensionsText = 'Hush Swoon tiles are 8.66" wide x 5.21" high x 1" deep';
         this.dimensionsImgUrl = '/assets/images/tiles/hush-swoon/hush-swoon-measurement.png';
+        this.showDesignYourFeatureButton = false;
         break;
       case 'profile':
         this.displayedColumns = ['profile-material', 'used', 'receiving', 'unused', 'total', 'edit'];
@@ -268,7 +280,9 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.loginDialog();
       return;
     }
-    this.quoteDialogRef = this.dialog.open(QuoteDialogComponent, new MatDialogConfig());
+    const config = new MatDialogConfig();
+    config.maxHeight = '90vh';
+    this.quoteDialogRef = this.dialog.open(QuoteDialogComponent, config);
   }
 
   viewDetails() {

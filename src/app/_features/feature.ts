@@ -5,22 +5,29 @@ import { DebugService } from '../_services/debug.service';
 import * as _ from 'lodash';
 import { Location } from '@angular/common';
 import { GridSection } from '../_models/grid-section';
+import { PricesService } from '../_services/prices.service';
 
 @Injectable()
 export class Feature {
   onBuildGrid = new EventEmitter();
   onBuildVeloGrid = new EventEmitter();
-  $buildSwoonGrid = new EventEmitter();
+  onBuildSwoonGrid = new EventEmitter();
   onApplyAll = new EventEmitter();
   onView3d = new EventEmitter();
   onLoadDesigns = new EventEmitter();
+  onDesignLoaded = new EventEmitter();
   onToggleSideNav = new EventEmitter();
+  showMainNavbar = new EventEmitter();
+  resetAllValues = new EventEmitter();
+  onZoomGrid = new EventEmitter();
+  onAdjustSwoonGridSize = new EventEmitter();
+  onAdjustVeloGridSize = new EventEmitter();
 
   // attributes saved in DB
   public id: number;
   public uid: number;
   public feature_type: string;
-  public design_name: string;
+  public design_name = '';
   public project_name: string;
   public specifier: string;
   public width: number;
@@ -43,6 +50,7 @@ export class Feature {
   public qtyTilesUsed = 0;
   public qtyTilesReceiving = 0;
   public grid_type: string = undefined;
+  public canvasGridScale = 1.0;
 
   // attributes for the tool
   public tile_type = 'tile';
@@ -65,7 +73,13 @@ export class Feature {
   public materialObj: any;
   public seeyond_features = this.materialsService.seeyond_features;
 
-  constructor(public materialsService: MaterialsService, public debug: DebugService, public location: Location, public alert: AlertService) {}
+  constructor(
+    public materialsService: MaterialsService,
+    public debug: DebugService,
+    public location: Location,
+    public alert: AlertService,
+    public pricesService: PricesService
+  ) {}
 
   setDesign(design: any) {
     this.id = design.id;
@@ -127,6 +141,7 @@ export class Feature {
     this.archived = false; // boolean
     this.updated_at = undefined;
     this.quantity = 1;
+    this.resetAllValues.emit();
   }
 
   updateEstimatedAmount() {
@@ -136,7 +151,7 @@ export class Feature {
         this.getTetriaEstimate(tilesArray);
         break;
       case 'hush':
-        this.getHushEstimate(tilesArray);
+        this.getHushBlocksEstimate(tilesArray);
         break;
       case 'clario':
         this.getClarioEstimate(tilesArray);
@@ -290,30 +305,61 @@ export class Feature {
     this.estimated_amount = this.services_amount;
   }
 
-  getHushEstimate(tilesArray) {
-    let hushTileCount = 0;
+  getHushBlocksEstimate(tilesArray) {
+    const hushEstData = this.pricesService.hushBlocksPricingData;
+    const tileCount = {
+      '1-1-2': 0,
+      '1-2-2': 0,
+      '1-3-2': 0,
+      '1-4-2': 0,
+      '2-2-2': 0,
+      '2-2-2-t': 0
+    };
+    let totalTileCount = 0;
+
+    // set tileCount object and totalTileCount
     for (const hushTile in tilesArray) {
       if (tilesArray.hasOwnProperty(hushTile)) {
         const hushCurrentTile = tilesArray[hushTile];
-        hushTileCount += hushCurrentTile.purchased;
+        const hushCurrentTileSize = hushCurrentTile.tile_size || hushCurrentTile.tile;
+        tileCount[hushCurrentTileSize] += hushCurrentTile.purchased;
+        totalTileCount += hushCurrentTile.purchased;
       }
     }
 
-    const hardware110 = 0.24;
-    const hardware111 = 1.85;
-    const hardware112 = 3.17;
-    const total110 = hardware110 * hushTileCount * 5;
-    const total111 = hardware111 * hushTileCount * 4;
-    const total112 = hardware112 * hushTileCount * 2;
+    // set the shopping list of parts
+    const partsList = hushEstData.partsList;
+    const hardwarePartsList: any = {};
+    Object.keys(tileCount).forEach(tileId => {
+      if (tileCount[tileId] > 0) {
+        const tilePartList = partsList[tileId];
+        Object.keys(tilePartList).forEach(part => {
+          if (!(part in hardwarePartsList)) {
+            hardwarePartsList[part] = tilePartList[part] * tileCount[tileId];
+          } else {
+            hardwarePartsList[part] += tilePartList[part] * tileCount[tileId];
+          }
+        });
+      }
+    });
+    this.hardware = hardwarePartsList;
 
-    this.hardware = {
-      '3-85-110': hushTileCount * 5,
-      '3-85-111': hushTileCount * 4,
-      '3-85-112': hushTileCount * 2
-    };
+    // get Hardware Cost
+    let allHardwareCost = 0;
+    const hardwarePrices = hushEstData.hardwarePrices;
+    Object.keys(hardwarePartsList).forEach(hardwarePart => {
+      allHardwareCost += hardwarePrices[hardwarePart] * hardwarePartsList[hardwarePart];
+    });
 
-    const allHardwareCost = total110 + total111 + total112;
-    this.services_amount = hushTileCount * 67.45;
+    // get Services Cost
+    let allServicesCost = 0;
+    const servicePrices = hushEstData.servicePrices;
+    Object.keys(tileCount).forEach(tileId => {
+      allServicesCost += servicePrices[tileId] * tileCount[tileId];
+    });
+
+    // set totals
+    this.services_amount = allServicesCost;
     this.estimated_amount = this.services_amount + allHardwareCost;
   }
 
@@ -594,20 +640,18 @@ export class Feature {
     this.debug.log('feature', this.feature_type);
     // If the feature type is velo build that grid
     if (this.feature_type === 'velo') {
+      this.debug.log('feature', 'emitting event buildVeloGrid');
       this.onBuildVeloGrid.emit();
     } else if (this.feature_type === 'hushSwoon') {
       this.debug.log('feature', 'emitting event buildSwoonGrid');
-      this.$buildSwoonGrid.emit();
-    } else if (this.feature_type === 'profile') {
-      this.debug.log('feature', 'emitting event buildSwoonGrid for profile');
-      this.$buildSwoonGrid.emit();
+      this.onBuildSwoonGrid.emit();
     } else {
       // emit an event to build a new grid
       this.onBuildGrid.emit();
     }
   }
 
-  clearAll() {
+  clearGridData() {
     this.gridData = undefined;
     this.estimated_amount = 0.0;
     this.buildGrid();
@@ -615,7 +659,7 @@ export class Feature {
 
   applyAll() {
     this.updateEstimatedAmount();
-    this.clearAll();
+    this.clearGridData();
     this.onApplyAll.emit();
   }
 
@@ -626,7 +670,7 @@ export class Feature {
     }
 
     if (this.feature_type === 'hushSwoon') {
-      this.$buildSwoonGrid.emit();
+      this.onBuildSwoonGrid.emit();
     }
   }
 
@@ -1049,13 +1093,23 @@ export class Feature {
   }
 
   public hushSwoonTiles() {
-    const veloTiles = [];
+    const hushSwoonTiles = [];
     for (const tile in this.gridData) {
       if (this.gridData[tile].texture !== '') {
-        veloTiles.push(this.gridData[tile]);
+        hushSwoonTiles.push(this.gridData[tile]);
       }
     }
-    return veloTiles;
+    console.log('hushSwoonTiles:', hushSwoonTiles);
+    hushSwoonTiles.map(tile => {
+      switch (tile.rotation) {
+        case 0.5235987755982988:
+        case -0.5235987755982988:
+        case 1.5707963267948966:
+          tile.rotation = (tile.rotation * 180) / Math.PI;
+          break;
+      }
+    });
+    return hushSwoonTiles;
   }
 
   public hushTiles() {
@@ -1260,24 +1314,22 @@ export class Feature {
   }
 
   public packageInformation() {
-    let info = '';
-    if (this.feature_type === 'tetria') {
-      info = 'Tiles are sold in quanties of 4.';
+    switch (this.feature_type) {
+      case 'tetria':
+        return 'Tiles are sold in quantities of 4.';
+      case 'clario':
+        return this.tile_image_type === 48
+          ? '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
+          : 'Baffles are sold in quantities of 4.';
+      case 'velo':
+        return 'Velo tiles are sold in quantities of 8.';
+      case 'hush':
+        return `Hush Blocks are sold in quantities of 1.`;
+      case 'hushSwoon':
+        return `Hush Swoon tiles are sold in quantities of 1.`;
+      default:
+        return `${this.feature_type} is sold in quantities of 4.`;
     }
-
-    if (this.feature_type === 'clario' && this.tile_image_type === 24) {
-      info = 'Baffles are sold in quantities of 4.';
-    }
-
-    if (this.feature_type === 'clario' && this.tile_image_type === 48) {
-      info = '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.';
-    }
-
-    if (this.feature_type === 'velo') {
-      info = 'Velo tiles are sold in quanties of 8.';
-    }
-
-    return info;
   }
 
   public updateGridUnits(units: string) {

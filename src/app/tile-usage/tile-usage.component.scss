@@ -1,12 +1,27 @@
-td {
-  font-size: 20px;
+.usage-table {
+  max-height: 25em;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+tr {
+  line-height: 4em;
+  border-bottom: 1px solid #bbb;
+}
+
+th {
+  font-weight: 500;
+}
+
+td,
+th {
+  padding: 0px 10px;
 }
 
 td img {
-  width: 48px;
-}
-
-td div.tile {
-  width: 48px;
-  height: 48px;
+  max-height: 48px;
 }
