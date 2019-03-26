@@ -135,19 +135,18 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     for (let ii = 0; ii < this.hRulerSections; ii++) {
       this.hRulerLabels.push(ii * this.rulerMultiplier);
     }
-    console.log('hRulerLabels', this.hRulerLabels);
+
     // vertical labels
     this.vRulerLabels = [];
     for (let jj = 0; jj < this.vRulerSections; jj++) {
       this.vRulerLabels.push(jj * this.rulerMultiplier);
     }
-    console.log('vRulerLabels', this.vRulerLabels);
   }
 
   getDesignDecisions() {
     const userSelections = [];
     // Get new r&c
-    console.log('current grid values:', this.feature.gridData);
+    this.debug.log('canvas-grids', this.feature.gridData);
     this.feature.gridData.map(tile => {
       if (tile && !!tile.texture) {
         userSelections.push(tile);
@@ -157,7 +156,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   }
 
   applySelectionsToNewGrid(selections) {
-    console.log('selections:', selections);
+    this.debug.log('canvas-grids-selections', selections);
   }
 
   changeGridDimensions() {

@@ -66,7 +66,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
     } else {
       this.newDesign = false;
     }
-    console.log(`rows: ${this.rows}, columns: ${this.columns}`);
+    // console.log(`rows: ${this.rows}, columns: ${this.columns}`);
     for (let r = 0; r < this.rows; ++r) {
       for (let c = 0; c < this.columns; ++c) {
         this.createSwoonSection(

@@ -22,7 +22,6 @@ export class MainNavbarComponent implements OnInit {
   }
 
   goToFeature(feature) {
-    console.log('feature:', feature);
     this.location.go(`${feature}`);
     // TODO reloading for now until reset is working
     window.location.reload();

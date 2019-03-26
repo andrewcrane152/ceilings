@@ -401,10 +401,10 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     //     }
     //   });
     //   console.log('sortedRows', sortedRows);
-    console.log('newIndexesByRows', newIndexesByRows);
+    // console.log('newIndexesByRows', newIndexesByRows);
     for (let rr = 0; rr < newIndexesByRows.length; rr++) {
       const indexedRow = newIndexesByRows[rr];
-      console.log('indexedRow:', indexedRow);
+      // console.log('indexedRow:', indexedRow);
       if (rr % 2 === 0) {
         this.tilesOutsideBoundary.push(indexedRow[0]);
         this.tilesOutsideBoundary.push(indexedRow[1]);
@@ -417,7 +417,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 3]);
       }
     }
-    console.log('tilesOutsideBoundary', this.tilesOutsideBoundary);
+    // console.log('tilesOutsideBoundary', this.tilesOutsideBoundary);
     // } else {
     // // loop through rows
     // for (let rr = 0; rr < this.rows; rr++) {

@@ -73,7 +73,7 @@ export class QuantityOptionsComponent implements OnInit, AfterContentChecked {
   }
 
   updateSelectedProfileFeature(feature) {
-    console.log('updateSelectedFeature:', feature);
+    // console.log('updateSelectedFeature:', feature);
     if (this.profile.tilesFeatures.includes(feature)) {
       if (this.router.url.indexOf('tiles') < 0) {
         this.location.go(`${this.router.url}/tiles/${feature}`);
