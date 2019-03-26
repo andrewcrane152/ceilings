@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { SeeyondService } from './../_services/seeyond.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { DebugService } from './../_services/debug.service';
@@ -15,11 +15,25 @@ import { SeeyondFeature } from '../_features/seeyond-feature';
   templateUrl: './quote-dialog.component.html',
   styleUrls: ['./quote-dialog.component.scss']
 })
-export class QuoteDialogComponent implements OnInit {
+export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   public tilesArray: any;
   public tileType: string;
   public units: string;
   private uiType = 'design';
+
+  isSeeyond = false;
+  isQuantityOrder = false;
+
+  featureType: string;
+  estimatedTotal: number;
+  formattedWidth: string;
+  formattedLength: string;
+  formattedRadius: string;
+  formattedCeilingLength: string;
+  seeyondTessellation: string;
+  seeyondPatternStrength: number;
+  seeyondMaterial: string;
+  seeyondCoveLighting: string;
 
   constructor(
     private router: Router,
@@ -40,15 +54,50 @@ export class QuoteDialogComponent implements OnInit {
     this.tilesArray = this.feature.getTilesPurchasedObj();
     this.tileType = this.feature.getTileType('plural');
     this.units = this.feature.units === 'inches' ? '"' : 'cm';
+    this.setTemplateValues();
+  }
+
+  ngAfterContentChecked() {}
+
+  setTemplateValues() {
+    this.debug.log('quote-dialog', 'got here');
+    this.isSeeyond = this.feature.getFeatureNameForUrl() === 'seeyond';
+    this.isQuantityOrder = this.feature.is_quantity_order;
+    this.featureType = this.feature.getFeatureHumanName();
+    if (this.featureType === 'Seeyond') {
+      this.estimatedTotal = this.seeyond.estimated_amount * this.feature.quantity;
+      this.formattedWidth = `${this.seeyond.width}${this.units}`;
+      this.formattedLength = `${this.seeyond.height}${this.units}`;
+      this.formattedRadius = this.seeyond.seeyond_feature_type === 'curved-partition' ? `${this.seeyond.radius}${this.units}` : '';
+      this.formattedCeilingLength = this.seeyond.seeyond_feature_type === 'wall-to-ceiling' ? `${this.seeyond.ceiling_length}${this.units}` : '';
+      this.seeyondTessellation = this.seeyond.getTessellationName(this.seeyond.tessellation);
+      this.seeyondPatternStrength = this.seeyond.pattern_strength;
+      this.seeyondMaterial = `${this.seeyond.material}`;
+      this.seeyondCoveLighting =
+        this.seeyond.seeyond_feature_type === 'wall-to-ceiling' || this.seeyond.seeyond_feature_type === 'ceiling'
+          ? this.seeyond.cove_lighting
+            ? 'Yes'
+            : 'No'
+          : '';
+    } else {
+      this.estimatedTotal = this.feature.estimated_amount * this.feature.quantity;
+      this.formattedWidth = `${this.feature.width}${this.units}`;
+      this.formattedLength = `${this.feature.length}${this.units}`;
+    }
+  }
+
+  multiplesChanged() {
+    this.debug.log('quote-dialog', `multiples: ${this.feature.quantity}`);
+    this.setTemplateValues();
   }
 
   validInputs() {
     let isValid = false;
-    if (this.feature.feature_type !== 'seeyond') {
-      isValid = !!this.feature.project_name && !!this.feature.specifier;
-    } else {
-      isValid = !!this.seeyond.project_name && !!this.seeyond.specifier;
-    }
+    // if (this.feature.feature_type !== 'seeyond') {
+    isValid = !!this.feature.project_name && !!this.feature.specifier;
+    // } else {
+    //   isValid = !!this.seeyond.project_name && !!this.seeyond.specifier;
+    // }
     return isValid;
   }
 
@@ -69,17 +118,17 @@ export class QuoteDialogComponent implements OnInit {
           this.debug.log('quote-dialog', response);
         });
         // navigate if the current path isn't already right
-        const url = this.router
-          .createUrlTree([`${this.feature.getFeatureNameForUrl()}/${this.uiType}/${this.feature.id}`])
-          .toString();
+        const url = this.router.createUrlTree([`${this.feature.getFeatureNameForUrl()}/${this.uiType}/${this.feature.id}`]).toString();
         if (url !== this.router.url) {
           this.router.navigate([`${this.feature.getFeatureNameForUrl()}/${this.uiType}/${this.feature.id}`]);
         }
         this.alert.success('Your quote request has been sent.');
       });
     } else {
-    // set the design name to something simple
-      this.feature.design_name = this.feature.feature_type + ' - ' + this.getToday();
+      if (!this.feature.design_name) {
+        // set the design name to something simple
+        this.feature.design_name = this.feature.feature_type + ' - ' + this.getToday();
+      }
       this.feature.quoted = true;
       this.api.saveDesign().subscribe(feature => {
         // send ceilings design email after we have saved.
@@ -98,6 +147,8 @@ export class QuoteDialogComponent implements OnInit {
   seeyondQuoteConfirmed() {
     // mark the design as quoted and save
     this.seeyond.quoted = true;
+    this.seeyond.project_name = this.feature.project_name;
+    this.seeyond.specifier = this.feature.specifier;
     if (this.seeyond.id) {
       this.seeyondApi.updateFeature().subscribe(feature => {
         // send seeyond design email after we have saved.

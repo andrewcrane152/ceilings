@@ -32,6 +32,7 @@ export class LoadDesignComponent implements OnInit {
   load(id: number) {
     this.debug.log('load-design', 'loading id: ' + id);
     this.router.navigate([this.feature.feature_type + '/design', id]);
+    this.feature.onDesignLoaded.emit();
     this.dialogRef.close();
   }
 

@@ -2,7 +2,7 @@ import { MaterialsService } from './../_services/materials.service';
 import { SeeyondService } from './../_services/seeyond.service';
 import { SeeyondFeature } from '../_features/seeyond-feature';
 import { Location } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -61,6 +61,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   showModify = false;
   showClarioDimensions = false;
   showDimensions = false;
+  showCanvasGridControls = false;
 
   quantitiesString = '';
   gridRequirementsString = '';
@@ -89,6 +90,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.debug.log('design-component', 'init');
+    this.feature.showMainNavbar.emit(true);
     this.route.params.subscribe(params => {
       // default the feature type
       let featureType;
@@ -161,6 +163,8 @@ export class DesignComponent implements OnInit, OnDestroy {
                 } else if (this.feature.feature_type === 'hush') {
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
                   this.feature.toolsArray = ['remove'];
+                } else if (this.feature.feature_type === 'tetria') {
+                  this.feature.updateSelectedTile(this.materialsService.tilesArray.tetria[0]);
                 } else if (this.feature.feature_type === 'hushSwoon') {
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.hushSwoon[0]);
                   this.feature.toolsArray = ['remove'];
@@ -289,17 +293,20 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'velo':
         this.showDesign = true;
         this.showModify = true;
+        // this.showCanvasGridControls = true;
+        this.showCanvasGridControls = false;
         this.quantitiesString = 'Velo tiles are sold in quantities of 8.';
         break;
       case 'hush':
         this.showDimensions = true;
         this.showDesign = true;
         this.showModify = true;
-        this.showGuidesCheckbox = false;
+        // this.showGuidesCheckbox = false;
         break;
       case 'hushSwoon':
         this.showDesign = true;
         this.showModify = true;
+        this.showCanvasGridControls = true;
         this.showGuidesCheckbox = false;
         break;
     }
@@ -420,7 +427,6 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   public tileUsage() {
     const config = new MatDialogConfig();
-    config.height = '700px';
     if (this.feature.feature_type === 'velo') {
       this.tileUsageDialogRef = this.dialog.open(VeloTileUsageComponent, config);
     } else {
@@ -461,7 +467,7 @@ export class DesignComponent implements OnInit, OnDestroy {
     }
     // load the dialog to confirm the design we will be sending
     const config = new MatDialogConfig();
-    // config.height = '700px';
+    config.maxHeight = '90vh';
     const dialogRef = this.dialog.open(QuoteDialogComponent, config);
   }
 
@@ -477,6 +483,7 @@ export class DesignComponent implements OnInit, OnDestroy {
           break;
         default:
           sizeIncrement = 24;
+          break;
       }
     }
     switch (tool) {
@@ -495,6 +502,27 @@ export class DesignComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+    this.feature.buildGrid();
+  }
+
+  adjustCanvasGridSize(selection) {
+    switch (this.feature.feature_type) {
+      case 'hushSwoon':
+        this.feature.onAdjustSwoonGridSize.emit(selection);
+        break;
+      case 'velo':
+        this.feature.onAdjustVeloGridSize.emit(selection);
+        break;
+    }
+  }
+
+  zoomCanvasGrid(direction) {
+    if (direction === 'in') {
+      this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 2);
+    } else if (direction === 'out') {
+      this.feature.canvasGridScale = Math.max(Number((this.feature.canvasGridScale - 0.1).toFixed(1)), 0.4);
+    }
+    this.feature.onZoomGrid.emit();
     this.feature.buildGrid();
   }
 
@@ -604,6 +632,12 @@ export class DesignComponent implements OnInit, OnDestroy {
     this.updateGrid();
   }
 
+  updateCanvasUnits(units: string) {
+    this.debug.log('options-component', 'update grid units: ' + units);
+    this.feature.units = units;
+    this.updateGrid();
+  }
+
   toggleCoveLighting() {
     if (this.seeyond.quoted) {
       this.alertQuoted();
@@ -651,7 +685,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   clarioGridSizeChanged(selection) {
     if (!!this.feature.gridData) {
-      this.feature.clearAll();
+      this.feature.clearGridData();
     }
     this.clarioGrids.gridSizeSelected(selection);
     this.updateGrid();
@@ -659,7 +693,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   clarioTileSizeChanged(selection) {
     if (!!this.feature.gridData) {
-      this.feature.clearAll();
+      this.feature.clearGridData();
     }
     this.clarioGrids.tileSizeSelected(selection);
     this.updateGrid();

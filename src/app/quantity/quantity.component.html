@@ -1,7 +1,7 @@
 <div class="quantity">
   <div class="main-header">
     <span class="feature-title">{{featureTitle | capitalize}}</span>
-    <span appStyledButton='secondary-left'>
+    <span appStyledButton='secondary-left' *ngIf="showDesignYourFeatureButton">
       <button (click)="backToDesign('reset')" class="go-to-quantity">Design your feature</button>
     </span>
   </div>
@@ -24,13 +24,13 @@
     </div>
     <div class="quantity-data">
       <div class="left-side">
-        <div class="estimation">
+        <div class="estimation" *ngIf="showQuantityEstimator">
           <div class="sub-header">Quantity estimation</div>
           <div *ngIf="feature.units === 'inches'">
             <div class="description-text">Enter square footage to calculate how many tiles are needed.</div>
             <input [(ngModel)]="sqFootage" (keyup)="calcSqFootage()" type="number" placeholder="Sq Footage">
             <div class="description-text" *ngIf="!!sqFootage">
-              <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
               <strong>{{sqFootage}}</strong> square feet.
             </div>
           </div>
@@ -38,7 +38,7 @@
             <div class="description-text">Enter square meters to calculate how many tiles are needed.</div>
             <input [(ngModel)]="sqMeters" (keyup)="calcSqMeters()" type="number" placeholder="Sq Meters">
             <div class="description-text" *ngIf="!!sqMeters">
-              <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
               <strong>{{sqMeters}}</strong> square meters.</div>
           </div>
           <div class="description-text" *ngIf="!!sqMeters || !!sqFootage">
@@ -47,21 +47,20 @@
 
         <div class="used-receiving">
           <div class="sub-header">Quantity used/receiving</div>
-          <div *ngIf="feature.feature_type !=='clario'" class="description-text add-margin-bottom">Tiles are sold in quanties of 4.</div>
-          <div *ngIf="(feature.feature_type ==='clario') && !!clarioGrids.selectedTileSize" class="description-text add-margin-bottom">
-            {{clarioGrids.selectedTileSize['24']}} baffles are sold in qty of 4, and {{clarioGrids.selectedTileSize['48']}} baffles are
-            sold in qty of 2.
+          <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
+          <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}
           </div>
-          <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}</div>
-          <div class="description-text" *ngIf="feature.units === 'inches'">SqFt. Used/Receiving: {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
-          <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving: {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'inches'">SqFt. Used/Receiving:
+            {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving:
+            {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
         </div>
 
-        <div class="dimensions">
+        <!-- <div class="dimensions">
           <div class="sub-header">Tile Dimensions</div>
           <div class="description-text">{{dimensionsText}}</div>
           <img src={{dimensionsImgUrl}} alt="Dimensions Image Key">
-        </div>
+        </div> -->
       </div>
       <div class="right-side">
         <div class="qty-table">
@@ -90,24 +89,32 @@
               <ng-container matColumnDef="material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} {{element.material_size}}
+                  <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}"
+                    class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}">
+                  {{element.material | capitalize}}
+                  {{element.material_size}}
                 </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="profile-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img" alt="{{element.material.name_str | capitalize}}">
+                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
+                    alt="{{element.material.name_str | capitalize}}">
                   <!-- TODO: SEE IF THE BELOW WILL WORK FOR STANDARD FINISHES -->
                   <!-- <img *ngIf="element.tile.tile !== 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img" [style.background]="url(element.image)"> {{element.material | capitalize}} - {{element.material_type}} -->
-                  <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img" [style.backgroundColor]="element.image"> {{element.material | capitalize}} - {{element.material_type}}
+                  <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
+                    class="table-img" [style.backgroundColor]="element.image"> {{element.material | capitalize}} -
+                  {{element.material_type}}
                 </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="hush-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-                <mat-cell *matCellDef="let element" class="material-column">
-                  <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
+                <mat-cell *matCellDef="let element" class="material-column hush-material-row">
+                  <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                    alt="{{element.material.name_str | capitalize}}">
+                  {{element.material | capitalize}} - {{element.material_type}}
                 </mat-cell>
               </ng-container>
 
@@ -138,7 +145,9 @@
         </div>
         <div class="est-total">
           <span appStyledButton='primary-right' *ngIf="!feature.quoted">
-            <button type="submit" (click)='requestQuote()' [disabled]="((order.data.length === 0) || !feature.design_name)">Request Quote</button>
+            <button type="submit" (click)='requestQuote()'
+              [disabled]="((order.data.length === 0) || !feature.design_name)">Request
+              Quote</button>
           </span>
           <span appStyledButton='primary-right' *ngIf="feature.quoted">
             <button (click)="viewDetails()">View Details</button>
@@ -283,7 +292,7 @@
       </div>
       <div *ngIf="!!sqFootage" class="sq-footage-results">
         <p>
-          <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
+          <strong>{{tilesNeeded}}</strong> tiles are required to cover
           <strong>{{sqFootage}}</strong> square feet.</p>
         <p>
           <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</p>

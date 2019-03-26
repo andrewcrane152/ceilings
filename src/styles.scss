@@ -1,12 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
-
 // @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 /* @import '~https://fonts.googleapis.com/icon?family=Material+Icons'; */
-
 @import '~@angular/material/theming';
 @include mat-core();
-$primary-black: ( 50: #000, 100: #000, 200: #000, 300: #000, 400: #000, 500: #000, 600: #000, 700: #000, 800: #000, 900: #000, A100: #e7e7e7, A200: #bbb, A400: #000, A700: #000, contrast: ( 50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
-$secondary-orange: ( 50: #ff9e1b, 100: #ff9e1b, 200: #ff9e1b, 300: #ff9e1b, 400: #ff9e1b, 500: #ff9e1b, 600: #ff9e1b, 700: #ff9e1b, 800: #ff9e1b, 900: #ff9e1b, A100: #ff9e1b, A200: #ff9e1b, A400: #ff9e1b, A700: #ff9e1b, contrast: ( 50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
+$primary-black: (50: #000, 100: #000, 200: #000, 300: #000, 400: #000, 500: #000, 600: #000, 700: #000, 800: #000, 900: #000, A100: #e7e7e7, A200: #bbb, A400: #000, A700: #000, contrast: (50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
+$secondary-orange: (50: #ff9e1b, 100: #ff9e1b, 200: #ff9e1b, 300: #ff9e1b, 400: #ff9e1b, 500: #ff9e1b, 600: #ff9e1b, 700: #ff9e1b, 800: #ff9e1b, 900: #ff9e1b, A100: #ff9e1b, A200: #ff9e1b, A400: #ff9e1b, A700: #ff9e1b, contrast: (50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
 $custom-theme-primary: mat-palette($primary-black, A200, A100, A400);
 $custom-theme-accent: mat-palette($secondary-orange, A200, A100, A400);
 // The warn palette is optional (defaults to red).
@@ -17,6 +15,7 @@ $custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $cus
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($custom-theme);
+
 @font-face {
   font-family: 'Graphik Web';
   src: url('https://3form.s3.amazonaws.com/fonts/Graphik-MediumItalic-Web.eot');
@@ -76,6 +75,7 @@ $custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $cus
 
 $primary-orange: #ff9e1b;
 $primary-black: #000;
+
 .Graphik-Regular-Web {
   font-family: 'Graphik Web';
   font-weight: 400;
@@ -91,7 +91,7 @@ body {
   font-family: 'Graphik Web';
   background-color: #fff;
   color: #1f1f1f;
-  font-size: 14px; // em sizing should be relative to this
+  font-size: 14px; // all em sizing should be relative to this
 }
 
 input:focus {
@@ -107,7 +107,7 @@ select:focus {
 }
 
 button:focus {
-  border: 2px solid $primary-orange;
+  border: 2px solid $primary-orange !important;
 }
 
 button:focus {
@@ -121,6 +121,7 @@ input {
 }
 
 .toggle-btns {
+
   button,
   button:active {
     // outline: none !important;
@@ -133,12 +134,15 @@ input {
     cursor: pointer;
     outline: inherit;
   }
+
   button:first-child {
     border-right: 0px;
   }
+
   button:last-child {
     border-left: 0px;
   }
+
   button.selected {
     border: 2px solid $primary-black;
   }
@@ -154,7 +158,6 @@ input {
 
 .sub-header {
   font-weight: 500;
-  font-size: 0.9em;
   padding: 5px 0px;
   color: rgba(0, 0, 0, 0.87);
 }
@@ -207,6 +210,7 @@ button[disabled] {
   width: 24px;
   border: 1px solid #bbb;
   margin: 0px;
+
   img {
     width: 100%;
     padding: 4px;
@@ -217,6 +221,7 @@ button[disabled] {
 .modals-container {
   padding: 50px;
   position: relative;
+
   img.close-btn {
     position: absolute;
     top: 0px;
@@ -224,41 +229,83 @@ button[disabled] {
     height: 20px;
     width: 20px;
   }
+
   .modals-body {
-    width: 380px;
+    min-width: 380px;
     min-height: 280px;
+
     .modals-header {
       border-bottom: 4px solid black;
       padding: 15px 10px 10px 0px;
       margin-bottom: 20px;
     }
+
     .modals-header span:first-child {
       font-size: 2em;
       font-weight: 500;
       margin-right: 15px;
     }
+
     .modals-header span:nth-child(2) {
       font-size: 2em;
       font-weight: 400;
     }
+
     .modals-inputs {
       padding-bottom: 15px;
+
       .input-line {
         margin-bottom: 20px;
+
         input {
           width: 100%;
         }
       }
     }
-    .modals-action-btns {
-      margin-top: 15px;
-    }
-    .modals-action-btns>div {
-      margin-bottom: 10px;
+  }
+}
+
+.modals-action-btns {
+  margin-top: 15px;
+
+  .action-btns {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      width: 45%;
+      white-space: nowrap;
+
+      button.cancel-modal-btn {
+        height: 100%;
+        width: 100%;
+        border: none;
+        margin: 0px;
+        display: flex;
+        -webkit-appearance: none;
+        border-radius: 0px;
+        line-height: 3.75;
+        font-weight: 500;
+        text-indent: 8px;
+        background-color: #ddd;
+      }
     }
   }
 }
 
+.modals-action-btns>div {
+  margin-bottom: 10px;
+}
+
+// .action-btns {
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+// }
+// .action-btns>span {
+//   width: 45%;
+// }
 // mat-button-toggle {
 //   border: 1px solid !important;
 //   border-color: #e8e8e8;
@@ -343,10 +390,17 @@ mat-tab-header {
   margin-left: 20px;
 }
 
+.nav-sub-menu+* .cdk-overlay-pane {
+  margin-top: 54px;
+}
+
+.nav-sub-menu+* .nav-menu-item {
+  width: 225px;
+}
+
 /* span.orange {
   color: $primary-orange;
 } */
-
 /* p.orange {
   color: $primary-orange;
 }
@@ -379,11 +433,8 @@ mat-tab-header {
 #load-btn span.orange {
   color: $primary-orange;
 } */
-
 /* Bootstrap overrides */
-
 /*updates to the buttons just for ceilings*/
-
 /* .button {
   font-weight: 500;
   padding: 6px 24px;
@@ -403,9 +454,7 @@ mat-tab-header {
   background-color: $primary-orange;
   color: #fff;
 } */
-
 /* more appropriate link colors */
-
 /* a {
   color: $primary-orange;
   cursor: pointer;
@@ -424,9 +473,7 @@ a:visited {
 .number-input {
   text-align: right;
 } */
-
 /* 5 equal columns in 12 column grid */
-
 /* .col-xs-5ths,
 .col-sm-5ths,
 .col-md-5ths,
@@ -462,42 +509,30 @@ a:visited {
     float: left;
   }
 } */
-
 /* end 5 equal columns in 12 column grid*/
-
 /* Media */
-
 /* Small devices (tablets, 768px and up) */
-
 /* @media (min-width: 768px) {} */
-
 /* Medium devices (desktops, 992px and up) */
-
 /*
 @media (min-width: 992px) {
   .container {
     width: 992px;
   }
 } */
-
 /* Medium Large (iPad 1024 and up) */
-
 /* @media (min-width: 1024px) {
   .container {
     width: 1024px;
   }
 } */
-
 /* Large devices (large desktops, 1200px and up) */
-
 /* @media (min-width: 1200px) {
   .container {
     width: 1200px;
   }
 } */
-
 /* Overwrite some default css styles */
-
 /*
 div.mat-tab-label {
   min-width: 72px;

@@ -1,4 +1,43 @@
-<div class="removeQty-dialog-container">
+<div class="modals-container">
+  <img class="close-btn" (click)="dialogRef.close('cancel')" src="/assets/icons/tools/x-close.svg" alt="Close Modal">
+  <div class="modals-body">
+    <div class="modals-header">
+      <span>Remove Row?</span>
+    </div>
+    <div class="modals-inputs">
+      <div class="input-line remove-qty-table">
+        <table>
+          <tr>
+            <th class="sub-header">Material</th>
+            <th class="sub-header">Used</th>
+          </tr>
+          <tr>
+            <td class="selection-descriptor sub-header">
+              <img src="{{selection.row.image}}" class="img-responsive" alt="{{selection.row.material | capitalize}}"> {{selection.row.material | capitalize}} {{selection.row.tile.tile}}
+            </td>
+            <td class="sub-header">{{selection.row.purchased}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="modals-action-btns">
+      <div class="action-btns">
+        <span appStyledButton='primary-right-large'>
+          <button (click)="removeFromOrder()">
+            <span>Remove</span>
+          </button>
+        </span>
+        <span>
+          <button class="cancel-modal-btn" (click)="cancel()">
+            <span>Cancel</span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="removeQty-dialog-container">
   <div class='section'>
     <div class="selection-summary">
       <p class="md selection">
@@ -15,4 +54,4 @@
       <button class="button button-gray" (click)="removeFromOrder()">Remove</button>
     </div>
   </div>
-</div>
+</div> -->

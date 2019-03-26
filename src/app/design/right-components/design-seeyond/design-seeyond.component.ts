@@ -87,7 +87,7 @@ export class DesignSeeyondComponent extends DesignComponent implements OnInit, A
   }
 
   updatePatternStrength() {
-    this.seeyond.pattern_strength = this.pattern_strength;
+    this.pattern_strength = Number(this.seeyond.pattern_strength);
 
     // update the visualization
     this.seeyond.reloadVisualization();

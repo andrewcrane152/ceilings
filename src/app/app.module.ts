@@ -98,6 +98,7 @@ import { DesignModifyComponent } from './design/right-components/design-modify/d
 import { DesignSeeyondComponent } from './design/right-components/design-seeyond/design-seeyond.component';
 import { DesignDimensionsComponent } from './design/right-components/design-dimensions/design-dimensions.component';
 import { DesignClarioDimensionsComponent } from './design/right-components/design-clario-dimensions/design-clario-dimensions.component';
+import { DesignCanvasGridControlsComponent } from './design/right-components/design-canvas-grid-controls/design-canvas-grid-controls.component';
 
 @NgModule({
   declarations: [
@@ -152,7 +153,8 @@ import { DesignClarioDimensionsComponent } from './design/right-components/desig
     DesignModifyComponent,
     DesignSeeyondComponent,
     DesignDimensionsComponent,
-    DesignClarioDimensionsComponent
+    DesignClarioDimensionsComponent,
+    DesignCanvasGridControlsComponent
   ],
   imports: [
     BrowserModule,

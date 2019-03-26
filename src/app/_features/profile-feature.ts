@@ -9,7 +9,7 @@ export class ProfileFeature {
   feature_type = 'swoon';
   feature_type_tile = '';
   $featureTypeChange = new EventEmitter();
-  $buildSwoonGrid = new EventEmitter();
+  onBuildSwoonGrid = new EventEmitter();
   tilesFeatures = ['verve', 'subway', 'glide', 'quarry', 'swoon', 'flank'];
 
   constructor(private debug: DebugService) {}
@@ -22,7 +22,7 @@ export class ProfileFeature {
   buildFeatureGrid() {
     switch (this.feature_type) {
       case 'swoon':
-        this.$buildSwoonGrid.emit();
+        this.onBuildSwoonGrid.emit();
         break;
       default:
         this.debug.log('profile-feature', `buildFeatureGrid ${this.feature_type} not found`);

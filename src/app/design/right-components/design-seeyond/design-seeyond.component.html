@@ -39,8 +39,8 @@
     <div class="inputs">
       <div class="input">
         <div class="sub-header">Width</div>
-        <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)" required type="number"
-          class="unit-input" placeholder="Width" name="width">
+        <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+          required type="number" class="unit-input" placeholder="Width" name="width">
         <div class="max-min">
           <span>Min {{this.seeyond.widthMin}}</span>
           <span>Max {{this.seeyond.widthMax}}</span>
@@ -49,15 +49,15 @@
       <div class="input">
         <div class="sub-header" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</div>
         <div class="sub-header" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</div>
-        <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)" required type="number"
-          class="unit-input" placeholder="Height" name="length">
+        <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+          required type="number" class="unit-input" placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.heightMin}}</span>
           <span>Max {{this.seeyond.heightMax}}</span>
         </div>
       </div>
       <div class="input" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
-        <div class="sub-header">Ceiling Length</div>
+        <div class="sub-header ceiling-length">Ceiling Length</div>
         <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
           required type="number" class="unit-input" placeholder="Height" name="length">
         <div class="max-min">
@@ -67,8 +67,8 @@
       </div>
       <div class="input" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
         <div class="sub-header">Radius</div>
-        <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)" type="number"
-          class="unit-input" placeholder="Height" name="length">
+        <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+          type="number" class="unit-input" placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.radiusMin}}</span>
           <span>Max {{this.seeyond.radiusMax}}</span>
@@ -123,7 +123,8 @@
       <div class="relief-container" *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
         <div class="sub-header">Pattern Location</div>
         <span appStyledSelect [width]="145">
-          <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()" [disabled]="this.seeyond.quoted">
+          <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()"
+            [disabled]="this.seeyond.quoted">
             <option *ngFor="let relief of patternReliefOptions" value="{{relief.value}}">{{relief.name}}</option>
           </select>
         </span>
@@ -144,8 +145,8 @@
   </mat-expansion-panel-header>
 
   <div class="colors-selection">
-    <div *ngFor="let material of seeyondMaterials | keys" matTooltip="{{material.material | capitalize}}" [matTooltipPosition]="position"
-      (click)="updateSelectedMaterial(material)" class="material">
+    <div *ngFor="let material of seeyondMaterials | keys" matTooltip="{{material.material | capitalize}}"
+      [matTooltipPosition]="position" (click)="updateSelectedMaterial(material)" class="material">
       <div *ngIf="material.status === 'active'">
         <img src="{{material.image}}" alt="{{material.material | capitalize}}" [class.selected]="seeyond.material==material.material">
       </div>

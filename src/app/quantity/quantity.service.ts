@@ -28,6 +28,7 @@ export class QuantityService {
   }
 
   setRowData(row) {
+    this.debug.log('quantity', 'setRowDataInvoked');
     this.debug.log('quantity', row);
     this.getRowEstimate(row); // sets feature.estimated_amount
     const newRow = row[Object.keys(row)[0]];
@@ -38,7 +39,7 @@ export class QuantityService {
     newRow.tileSqArea = this.getTileSqArea(newRow.tile);
     newRow.id = this.rowIndexNum++;
     newRow.material_size = typeof newRow.tile === 'string' ? newRow.tile : newRow.tile.tile;
-    newRow.material_type = this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    newRow.material_type = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
     return newRow;
   }
 
@@ -104,7 +105,7 @@ export class QuantityService {
   getRowEstimate(row) {
     switch (this.feature.feature_type) {
       case 'hush':
-        this.feature.getHushEstimate(row);
+        this.feature.getHushBlocksEstimate(row);
         break;
       case 'tetria':
         this.feature.getTetriaEstimate(row);
@@ -175,10 +176,17 @@ export class QuantityService {
   }
 
   getTileSqArea(tile?) {
-    if (this.feature.feature_type === 'hushSwoon' || this.feature.feature_type === 'profileSwoon') {
-      return 0.1566;
+    if (this.feature.feature_type === 'hushSwoon') {
+      // hushSwoon is a rhombus that is 8.66" wide and 5.21" high
+      // based off this, the total square area is 22.56 sq inches, or 0.15667 sq ft.
+      return 0.15667;
     }
-    switch (tile) {
+    let tileSize = tile;
+    if (typeof tileSize !== 'string' && typeof tileSize !== 'undefined') {
+      tileSize = tile.tile_size;
+    }
+    switch (tileSize) {
+      // Clario tiles
       case '24':
         return 4;
       case '48':
@@ -191,6 +199,22 @@ export class QuantityService {
         return 0.390625;
       case '1250':
         return 0.390625 * 2;
+
+      // Hush blocks tiles
+      case '1-1-2':
+        return 1;
+      case '1-2-2':
+        return 2;
+      case '1-3-2':
+        return 3;
+      case '1-4-2':
+        return 4;
+      case '2-2-2':
+        return 4;
+      case '2-2-2-t':
+        return 2;
+
+      // default
       default:
         return 4;
     }

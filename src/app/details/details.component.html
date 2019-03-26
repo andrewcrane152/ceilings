@@ -1,143 +1,231 @@
 <app-seeyond-details *ngIf="isSeeyond"></app-seeyond-details>
-<ng-container *ngIf="!isSeeyond">
-  <div class="row">
-    <div class="col-sm-2">
-      <a class="hidden-print back-to-design" (click)="backToDesign()">
-        <span class="icomoon-chevron-left orange"></span> Back to Design</a>
+<div *ngIf="!isSeeyond" class="details-ui">
+  <div class="top-section">
+    <div class="section-header">
+      <span>
+        <span>{{feature.project_name}}</span>
+        <!-- <span appStyledButton='secondary-left' class="back-to-design">
+          <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
+        </span> -->
+      </span>
+      <!--TODO: get the image-->
+      <span id="print-icon" (click)="print()" class="icomoon-print orange"></span>
     </div>
-  </div>
-  <div class="row header">
-    <div class="col-sm-12">
-      <div class="row">
-        <div class="col-sm-6">
-          <p class="sm">Project:
-            <span class="md info">{{feature.project_name}}</span>
-          </p>
+    <div class="design-details">
+
+      <!-- LEFT-COLUMN -->
+      <div class="contact-info rfq-data">
+        <div class="top-row">
+          <div class="left">
+            <div>
+              <span class="orange-bold">ID</span>
+              <span>{{feature.id}}</span>
+            </div>
+            <div>
+              <span class="orange-bold">Specifier</span>
+              <span>{{feature.specifier}}</span>
+            </div>
+            <div>
+              <span class="orange-bold">Date</span>
+              <span>{{feature.updated_at | date:'shortDate'}}</span>
+            </div>
+          </div>
+          <div class="right" *ngIf="!!rep">
+            <div class="orange-bold">Sales Representative</div>
+            <div>{{rep.name}}</div>
+            <div>{{rep.email}}</div>
+            <div>{{rep.phone}}</div>
+          </div>
         </div>
-        <div class="col-sm-5">
-          <p class="sm">Feature:
-            <span class="md info">{{feature.feature_type | capitalize}} - ID: {{feature.id}}</span>
-          </p>
-        </div>
-        <div class="col-sm-1 hidden-print">
-          <p class="sm bold print" (click)="print()">
-            <span class="icomoon-print orange"></span> Print</p>
+        <div class="bottom-row">
+          <div class="left">
+            <div>Est. Total</div>
+            <div class="details-header">{{feature.estimated_amount | currency:'USD'}}</div>
+            <div class="description-text">Taxes, shipping & handling not included</div>
+          </div>
+          <div class="right"></div>
         </div>
       </div>
+      <div class="divider"></div>
 
-      <div class="row">
-        <div class="col-sm-6">
-          <p class="sm">Specifier:
-            <span class="md info">{{feature.specifier}}</span>
-          </p>
+      <!-- RIGHT-COLUMN -->
+      <div class="feature-info rfq-data">
+        <div class="top-row">
+          <div class="left">
+            <div class="details-header">Feature</div>
+            <div>{{featureHumanName}}</div>
+            <div>24" x 24" tiles</div> <!-- TODO make this dynamic -->
+            <div class="description-text">{{tilesSoldString}}</div>
+          </div>
+          <div class="right">
+            <div class="details-header">Quantity</div>
+            <div>Tiles - {{totalReceiving}}</div> <!-- TODO baffles included -->
+            <div>Designs - {{feature.quantity || 1}}</div>
+            <div>Total - {{totalReceiving * (feature.quantity || 1)}}</div>
+          </div>
         </div>
-        <div class="col-sm-5">
-          <p class="sm">Design Total:
-            <span class="md info">{{feature.estimated_amount | currency:'USD'}}
-              <sup>*</sup> USD</span>
-          </p>
-        </div>
-        <div class="col-sm-1">
-          <p class="xs bold">{{feature.updated_at | date:'shortDate'}}</p>
+        <div class="bottom-row">
+          <div class="left">
+            <div class="details-header">Dimensions</div>
+            <div>{{dimensionStr}}</div>
+          </div>
+          <div class="right"></div>
         </div>
       </div>
     </div>
   </div>
-
-  <hr>
-
-  <div class="row">
-    <div class="col-sm-6">
-      <p class="sm">Dimensions:
-        <span class="md info">{{feature.width}} W x {{feature.length}} L ({{feature.units | shortendUnits}})</span>
-      </p>
+  <div class="bottom-section">
+    <div class="left-side">
+      <div class="details-header">WHAT DOES THIS LOOK LIKE?</div>
+    </div>
+    <div class="right-side">
+      <div class="details-header">Design</div>
       <img class="grid-guide img-responsive" src="{{feature.design_data_url}}" alt="Grid Guide Image">
     </div>
-    <div class="col-sm-6">
-      <p class="md info" *ngIf="feature.feature_type=='tetria' || (feature.feature_type=='clario' && feature.tile_image_type === 24)">24" x 24" {{feature.getTileType('plural') | capitalize}}
-        <span class="sm">(sold in quantities of {{feature.getPackageQty()}})</span>
-      </p>
-      <div class="row tile-info-header">
-        <div class="col-sm-3">
-          <div class="row">
-            <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
-            <div class="col-sm-6">Qty</div>
+  </div>
+  <div class="logo-footer">
+    <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form"></div>
+</div>
+
+
+
+<!-- <div class="row">
+      <div class="col-sm-2">
+        <a class="hidden-print back-to-design" (click)="backToDesign()">
+          <span class="icomoon-chevron-left orange"></span> Back to Design</a>
+      </div>
+    </div>
+    <div class="row header">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="sm">Project:
+              <span class="md info">{{feature.project_name}}</span>
+            </p>
+          </div>
+          <div class="col-sm-5">
+            <p class="sm">Feature:
+              <span class="md info">{{feature.feature_type | capitalize}} - ID: {{feature.id}}</span>
+            </p>
+          </div>
+          <div class="col-sm-1 hidden-print">
+            <p class="sm bold print" (click)="print()">
+              <span class="icomoon-print orange"></span> Print</p>
           </div>
         </div>
-        <div class="col-sm-3" *ngIf="tileArraySize > 1">
-          <div class="row">
-            <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
-            <div class="col-sm-6">Qty</div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="sm">Specifier:
+              <span class="md info">{{feature.specifier}}</span>
+            </p>
           </div>
-        </div>
-        <div class="col-sm-3" *ngIf="tileArraySize > 2">
-          <div class="row">
-            <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
-            <div class="col-sm-6">Qty</div>
+          <div class="col-sm-5">
+            <p class="sm">Design Total:
+              <span class="md info">{{feature.estimated_amount | currency:'USD'}}
+                <sup>*</sup> USD</span>
+            </p>
           </div>
-        </div>
-        <div class="col-sm-3" *ngIf="tileArraySize > 3">
-          <div class="row">
-            <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
-            <div class="col-sm-6">Qty</div>
+          <div class="col-sm-1">
+            <p class="xs bold">{{feature.updated_at | date:'shortDate'}}</p>
           </div>
         </div>
       </div>
-      <div class="row" *ngIf="tilesArray">
-        <div *ngFor="let tile of tilesArray | keys">
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <p class="sm">Dimensions:
+          <span class="md info">{{feature.width}} W x {{feature.length}} L ({{feature.units | shortendUnits}})</span>
+        </p>
+        <img class="grid-guide img-responsive" src="{{feature.design_data_url}}" alt="Grid Guide Image">
+      </div>
+      <div class="col-sm-6">
+        <p class="md info" *ngIf="feature.feature_type=='tetria' || (feature.feature_type=='clario' && feature.tile_image_type === 24)">24" x 24" {{feature.getTileType('plural') | capitalize}}
+          <span class="sm">(sold in quantities of {{feature.getPackageQty()}})</span>
+        </p>
+        <div class="row tile-info-header">
           <div class="col-sm-3">
-            <div class="row tile-info">
-              <div class="col-sm-6">
-                <img *ngIf="tile.image" src="{{tile.image}}" alt="{{tile.material}} - {{tile.type}}">
+            <div class="row">
+              <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
+              <div class="col-sm-6">Qty</div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="tileArraySize > 1">
+            <div class="row">
+              <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
+              <div class="col-sm-6">Qty</div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="tileArraySize > 2">
+            <div class="row">
+              <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
+              <div class="col-sm-6">Qty</div>
+            </div>
+          </div>
+          <div class="col-sm-3" *ngIf="tileArraySize > 3">
+            <div class="row">
+              <div class="col-sm-6">{{feature.getTileType() | capitalize}}</div>
+              <div class="col-sm-6">Qty</div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="tilesArray">
+          <div *ngFor="let tile of tilesArray | keys">
+            <div class="col-sm-3">
+              <div class="row tile-info">
+                <div class="col-sm-6">
+                  <img *ngIf="tile.image" src="{{tile.image}}" alt="{{tile.material}} - {{tile.type}}">
+                </div>
+                <div class="col-sm-6">{{tile.purchased}}</div>
               </div>
-              <div class="col-sm-6">{{tile.purchased}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row multiples-section">
+          <p class="multiples md">Total Quantity Ordered</p>
+          <div class="multiples">
+            <div class="multiples-row">
+              <span>Quantity Ordered</span>
+              <span>{{feature.quantity || 1}}</span>
+            </div>
+            <div class="multiples-row">
+              <span>Estimated Total</span>
+              <span>{{((feature.estimated_amount * feature.quantity) || (feature.estimated_amount))| currency:'USD'}}
+                <sup>*</sup>
+              </span>
             </div>
           </div>
         </div>
       </div>
-      <div class="row multiples-section">
-        <p class="multiples md">Total Quantity Ordered</p>
-        <div class="multiples">
-          <div class="multiples-row">
-            <span>Quantity Ordered</span>
-            <span>{{feature.quantity || 1}}</span>
-          </div>
-          <div class="multiples-row">
-            <span>Estimated Total</span>
-            <span>{{((feature.estimated_amount * feature.quantity) || (feature.estimated_amount))| currency:'USD'}}
-              <sup>*</sup>
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row footer">
-    <div class="col-sm-6">
-      <div class="row">
-        <div class="col-sm-2">
-          <div class="logo">
-            <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+    <div class="row footer">
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="logo">
+              <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+            </div>
+          </div>
+          <div class="col-sm-10" *ngIf="rep">
+            <p class="rep-name">
+              <span class="bold">{{rep.name}}</span> Sales Rep</p>
+            <p class="rep-info">{{rep.phone}} | {{rep.email}}</p>
           </div>
         </div>
-        <div class="col-sm-10" *ngIf="rep">
-          <p class="rep-name">
-            <span class="bold">{{rep.name}}</span> Sales Rep</p>
-          <p class="rep-info">{{rep.phone}} | {{rep.email}}</p>
+      </div>
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-9">
+            <p class="xs">
+              <sup>*</sup>Taxes, Shipping and Handling not included</p>
+          </div>
+          <div class="col-sm-3">
+            <p class="xs orange pull-right">3-form.com</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="row">
-        <div class="col-sm-9">
-          <p class="xs">
-            <sup>*</sup>Taxes, Shipping and Handling not included</p>
-        </div>
-        <div class="col-sm-3">
-          <p class="xs orange pull-right">3-form.com</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</ng-container>
+    </div> -->

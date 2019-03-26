@@ -156,7 +156,8 @@ export class SeeyondFeature extends Feature {
     }
     if (this.materialObj.status === 'discontinued') {
       this.$outdatedMaterial.emit();
-      this.canQuote = false;
+      // this.canQuote = false;
+      // TODO: THIS SHOULD ONLY BE TRIGGERED ON LOADING A SAVED DESIGN THAT ISN'T QUOTED
     }
 
     this.reloadVisualization();
@@ -426,8 +427,8 @@ export class SeeyondFeature extends Feature {
   }
 
   calcLightingCost() {
-    const powerSupplyHw = 144.71;
-    const switchHw = 206.74;
+    const powerSupplyHw = 149.05;
+    const switchHw = 212.94;
     const totalWatts = this.linear_feet * 1.88;
     const powerSuppliesNeeded = Math.ceil(totalWatts / 85.4);
     const dimmingSwitchesNeeded = Math.ceil(powerSuppliesNeeded / 12.0);
@@ -435,7 +436,7 @@ export class SeeyondFeature extends Feature {
     const switchCost = dimmingSwitchesNeeded * switchHw;
     const linearFootCost = this.linear_feet * 40.02;
     const partsCost = linearFootCost + switchCost + powerCost;
-    const adjustment = (partsCost / 5000.0) * 95.0 + 265.0;
+    const adjustment = (partsCost / 5000.0) * 97.85 + 272.95;
     const estimatedCost = parseInt((partsCost + adjustment).toFixed(2), 10);
     return estimatedCost;
   }
@@ -534,9 +535,9 @@ export class SeeyondFeature extends Feature {
   }
 
   getFabricationCost(seeyond_feature_index: number) {
-    const ceilingFab = 48.46;
-    const partitionFab = 48.46;
-    const wallFab = 44.13;
+    const ceilingFab = 49.91;
+    const partitionFab = 49.91;
+    const wallFab = 45.45;
     let fabricationCost: number;
 
     switch (seeyond_feature_index) {
@@ -895,14 +896,14 @@ export class SeeyondFeature extends Feature {
       convertedCeilingLength = this.convertCMtoIN(convertedCeilingLength);
       convertedRadius = this.convertCMtoIN(convertedRadius);
     }
-    return {
+    const userInputs = {
       UserInputs: {
         // 0 = straight partition, 1 = arc partition, 2 = facing, 3 = transition, 4 = ceiling, 5 = bent partition
         Type: this.seeyond_feature_index,
         // 0 = court, 1 = cusp, 2 = kink, 3 = tilt, 4 = billow
         Tessellation: this.tessellation,
         // valid values = .1 - 1.0 (we send whole numbers 1-10 and the tessellation divides by 10)
-        PatternStrength: this.pattern_strength,
+        PatternStrength: Number(this.pattern_strength),
         // relative path to rendering material image
         Material: this.getMaterialImage(this.material),
         // in inches
@@ -921,6 +922,8 @@ export class SeeyondFeature extends Feature {
         BackRelief: this.back_relief
       }
     };
+    this.debug.log('seeyond-json', userInputs);
+    return userInputs;
   }
 
   getXML() {

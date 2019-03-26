@@ -2,8 +2,43 @@
   position: absolute;
   border-bottom: 1px solid #000000;
   background-color: #ffffff;
-  background-image: linear-gradient(90deg, rgba(73, 73, 73, 0.5) 0, rgba(73, 73, 73, 0.5) 2%, transparent 2%), linear-gradient(180deg, #ffffff 50%, transparent 50%), linear-gradient(90deg, transparent 50%, rgba(73, 73, 73, 0.5) 50%, rgba(73, 73, 73, 0.5) 52%, transparent 52%), linear-gradient(180deg, #ffffff 70%, transparent 70%), linear-gradient(90deg, transparent 10%, rgba(73, 73, 73, 0.4) 10%, rgba(73, 73, 73, 0.4) 12%, transparent 12%, transparent 20%, rgba(73, 73, 73, 0.4) 20%, rgba(73, 73, 73, 0.4) 22%, transparent 22%, transparent 30%, rgba(73, 73, 73, 0.4) 30%, rgba(73, 73, 73, 0.4) 32%, transparent 32%, transparent 40%, rgba(73, 73, 73, 0.4) 40%, rgba(73, 73, 73, 0.4) 42%, transparent 42%, transparent 60%, rgba(73, 73, 73, 0.4) 60%, rgba(73, 73, 73, 0.4) 62%, transparent 62%, transparent 70%, rgba(73, 73, 73, 0.4) 70%, rgba(73, 73, 73, 0.4) 72%, transparent 72%, transparent 80%, rgba(73, 73, 73, 0.4) 80%, rgba(73, 73, 73, 0.4) 82%, transparent 82%, transparent 90%, rgba(73, 73, 73, 0.4) 90%, rgba(73, 73, 73, 0.4) 92%, transparent 92%);
-  background-size: 50px 15px;
+  background-image: linear-gradient(90deg, rgba(73, 73, 73, 0.5) 0, rgba(73, 73, 73, 0.5) 2%, transparent 2%),
+    linear-gradient(180deg, #ffffff 50%, transparent 50%),
+    linear-gradient(90deg, transparent 50%, rgba(73, 73, 73, 0.5) 50%, rgba(73, 73, 73, 0.5) 52%, transparent 52%),
+    linear-gradient(180deg, #ffffff 70%, transparent 70%),
+    linear-gradient(90deg,
+    transparent 10%,
+    rgba(73, 73, 73, 0.4) 10%,
+    rgba(73, 73, 73, 0.4) 12%,
+    transparent 12%,
+    transparent 20%,
+    rgba(73, 73, 73, 0.4) 20%,
+    rgba(73, 73, 73, 0.4) 22%,
+    transparent 22%,
+    transparent 30%,
+    rgba(73, 73, 73, 0.4) 30%,
+    rgba(73, 73, 73, 0.4) 32%,
+    transparent 32%,
+    transparent 40%,
+    rgba(73, 73, 73, 0.4) 40%,
+    rgba(73, 73, 73, 0.4) 42%,
+    transparent 42%,
+    transparent 60%,
+    rgba(73, 73, 73, 0.4) 60%,
+    rgba(73, 73, 73, 0.4) 62%,
+    transparent 62%,
+    transparent 70%,
+    rgba(73, 73, 73, 0.4) 70%,
+    rgba(73, 73, 73, 0.4) 72%,
+    transparent 72%,
+    transparent 80%,
+    rgba(73, 73, 73, 0.4) 80%,
+    rgba(73, 73, 73, 0.4) 82%,
+    transparent 82%,
+    transparent 90%,
+    rgba(73, 73, 73, 0.4) 90%,
+    rgba(73, 73, 73, 0.4) 92%,
+    transparent 92%);
   background-repeat: repeat-x;
   min-height: 15px;
   /* only needed for labels */
@@ -16,14 +51,12 @@
 .ruler.horizontal {
   left: 15px;
   top: 0;
-  width: 820px;
   height: 15px;
 }
 
 .ruler.vertical {
   top: 0px;
   left: 15px;
-  width: 500px;
   height: 15px;
   transform: rotateZ(90deg) rotateX(180deg);
   transform-origin: 0% 100%;
@@ -34,12 +67,10 @@ label {
   font-size: 9px;
   font-weight: normal;
   display: inline-block;
-  width: 50px;
   text-indent: 3px;
 }
 
 .ruler.vertical label {
-  /*border: 1px solid red;*/
   transform: rotateY(180deg);
   transform-origin: 0% 100%;
 }
@@ -50,14 +81,14 @@ label {
 
 .guide:after {
   display: block;
-  content: "";
+  content: '';
   position: absolute;
   background-color: #000000;
 }
 
 .guide.vertical {
   width: 11px;
-  height: 100%;
+  height: 14px;
   top: 0;
 }
 
@@ -84,5 +115,5 @@ label {
 canvas {
   position: absolute;
   top: 14px;
-  left: 13px;
+  left: 14px;
 }

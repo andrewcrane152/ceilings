@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { Feature } from 'app/_features/feature';
 import { Component, OnInit, EventEmitter } from '@angular/core';
@@ -8,7 +9,7 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
   styleUrls: ['./main-navbar.component.scss']
 })
 export class MainNavbarComponent implements OnInit {
-  constructor(public feature: Feature, public router: Router) {}
+  constructor(public feature: Feature, public router: Router, public location: Location) {}
 
   ngOnInit() {}
 
@@ -21,7 +22,8 @@ export class MainNavbarComponent implements OnInit {
   }
 
   goToFeature(feature) {
-    this.router.navigate([`${feature}`]);
+    this.location.go(`${feature}`);
+    // TODO reloading for now until reset is working
     window.location.reload();
   }
 }
