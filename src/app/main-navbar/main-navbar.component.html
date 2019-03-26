@@ -30,6 +30,7 @@
         </span>
       </span>
       <mat-menu #menu="matMenu" backdropClass="nav-sub-menu">
+        <button class="sub-header nav-menu-item" (click)="goToFeature('')" mat-menu-item>Main</button>
         <button class="sub-header nav-menu-item" (click)="goToFeature('seeyond/design')" mat-menu-item>Seeyond</button>
         <button class="sub-header" (click)="goToFeature('velo/design')" mat-menu-item>Velo</button>
         <button class="sub-header" [matMenuTriggerFor]="tetria" mat-menu-item>Tetria</button>

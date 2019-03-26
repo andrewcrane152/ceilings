@@ -592,7 +592,7 @@ export class MaterialsService {
         ore: {
           material: 'ore',
           image: '/assets/images/materials/felt/sola/ore.png',
-          status: 'inactive',
+          status: 'discontinued',
           available_until: 'March 2019',
           name_str: 'Ore',
           sheet_part_id: '0-51-802'
@@ -600,7 +600,7 @@ export class MaterialsService {
         dark_gray: {
           material: 'dark_gray',
           image: '/assets/images/materials/felt/sola/dark_gray.png',
-          status: 'inactive',
+          status: 'discontinued',
           available_until: 'March 2019',
           name_str: 'Dark Gray',
           sheet_part_id: '0-51-801'

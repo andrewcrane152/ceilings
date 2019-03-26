@@ -27,7 +27,7 @@ export class Feature {
   public id: number;
   public uid: number;
   public feature_type: string;
-  public design_name = 'TODO';
+  public design_name = '';
   public project_name: string;
   public specifier: string;
   public width: number;
