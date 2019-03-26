@@ -34,8 +34,8 @@
         <button class="sub-header" (click)="goToFeature('velo/design')" mat-menu-item>Velo</button>
         <button class="sub-header" [matMenuTriggerFor]="tetria" mat-menu-item>Tetria</button>
         <button class="sub-header" [matMenuTriggerFor]="clario" mat-menu-item>Clario</button>
-        <button class="sub-header" [matMenuTriggerFor]="hushBlocks" mat-menu-item>Hush-Blocks</button>
-        <button class="sub-header" [matMenuTriggerFor]="hushSwoon" mat-menu-item>Hush-Swoon</button>
+        <button class="sub-header" (click)="goToFeature('hush-blocks/quantity')" mat-menu-item>Hush-Blocks</button>
+        <!-- <button class="sub-header" [matMenuTriggerFor]="hushSwoon" mat-menu-item>Hush-Swoon</button> -->
       </mat-menu>
       <mat-menu #tetria="matMenu">
         <button class="sub-header" (click)="goToFeature('tetria/design')" mat-menu-item>Design</button>
@@ -45,14 +45,14 @@
         <button class="sub-header" (click)="goToFeature('clario/design')" mat-menu-item>Design</button>
         <button class="sub-header" (click)="goToFeature('clario/quantity')" mat-menu-item>Quantity</button>
       </mat-menu>
-      <mat-menu #hushBlocks="matMenu">
+      <!-- <mat-menu #hushBlocks="matMenu">
         <button class="sub-header" (click)="goToFeature('hush-blocks/design')" mat-menu-item>Design</button>
         <button class="sub-header" (click)="goToFeature('hush-blocks/quantity')" mat-menu-item>Quantity</button>
-      </mat-menu>
-      <mat-menu #hushSwoon="matMenu">
+      </mat-menu> -->
+      <!-- <mat-menu #hushSwoon="matMenu">
         <button class="sub-header" (click)="goToFeature('hush-swoon/design')" mat-menu-item>Design</button>
         <button class="sub-header" (click)="goToFeature('hush-swoon/quantity')" mat-menu-item>Quantity</button>
-      </mat-menu>
+      </mat-menu> -->
     </div>
   </div>
 </div>

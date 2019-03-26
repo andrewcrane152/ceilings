@@ -21,7 +21,8 @@ export class MainNavbarComponent implements OnInit {
   }
 
   goToFeature(feature) {
+    console.log('feature:', feature);
     this.router.navigate([`${feature}`]);
-    window.location.reload();
+    // window.location.reload();
   }
 }
