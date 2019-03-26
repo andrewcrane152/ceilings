@@ -426,8 +426,8 @@ export class SeeyondFeature extends Feature {
   }
 
   calcLightingCost() {
-    const powerSupplyHw = 144.71;
-    const switchHw = 206.74;
+    const powerSupplyHw = 149.05;
+    const switchHw = 212.94;
     const totalWatts = this.linear_feet * 1.88;
     const powerSuppliesNeeded = Math.ceil(totalWatts / 85.4);
     const dimmingSwitchesNeeded = Math.ceil(powerSuppliesNeeded / 12.0);
@@ -435,7 +435,7 @@ export class SeeyondFeature extends Feature {
     const switchCost = dimmingSwitchesNeeded * switchHw;
     const linearFootCost = this.linear_feet * 40.02;
     const partsCost = linearFootCost + switchCost + powerCost;
-    const adjustment = (partsCost / 5000.0) * 95.0 + 265.0;
+    const adjustment = (partsCost / 5000.0) * 97.85 + 272.95;
     const estimatedCost = parseInt((partsCost + adjustment).toFixed(2), 10);
     return estimatedCost;
   }
@@ -534,9 +534,9 @@ export class SeeyondFeature extends Feature {
   }
 
   getFabricationCost(seeyond_feature_index: number) {
-    const ceilingFab = 48.46;
-    const partitionFab = 48.46;
-    const wallFab = 44.13;
+    const ceilingFab = 49.91;
+    const partitionFab = 49.91;
+    const wallFab = 45.45;
     let fabricationCost: number;
 
     switch (seeyond_feature_index) {
