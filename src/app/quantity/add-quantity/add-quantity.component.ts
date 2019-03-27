@@ -68,27 +68,28 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
 
   getFeatureMaterials() {
     let requiredMaterials: any;
+    const dialogVerb = this.isEditing ? 'Edit' : 'Add';
     switch (this.feature.feature_type) {
       case 'hush':
         requiredMaterials = this.materialsService.materials.felt.sola;
-        this.dialogHeader = 'Add Hush Blocks Tiles';
+        this.dialogHeader = `${dialogVerb} Hush Blocks Tiles`;
         break;
       case 'tetria':
         requiredMaterials = this.materialsService.materials.felt.merino;
-        this.dialogHeader = 'Add Tetria Tiles';
+        this.dialogHeader = `${dialogVerb} Tetria Tiles`;
         break;
       case 'hushSwoon':
         requiredMaterials = this.materialsService.materials.felt.merino;
-        this.dialogHeader = 'Add Hush Swoon Tiles';
+        this.dialogHeader = `${dialogVerb} Hush Swoon Tiles`;
         break;
       case 'clario':
         requiredMaterials = this.materialsService.materials.felt.sola;
-        this.dialogHeader = 'Add Clario Baffles';
+        this.dialogHeader = `${dialogVerb} Clario Baffles`;
         break;
       case 'profile':
         switch (this.profileFeature.feature_type) {
           case 'swoon':
-            this.dialogHeader = 'Add Swoon Tiles';
+            this.dialogHeader = `${dialogVerb} Swoon Tiles`;
             switch (this.profileFeature.feature_type_tile) {
               case 'standard':
                 requiredMaterials = this.materialsService.materials.finishes.standard;
