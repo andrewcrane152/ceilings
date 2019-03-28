@@ -45,7 +45,7 @@
             <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</div>
         </div>
 
-        <div class="used-receiving">
+        <div class="used-receiving" *ngIf="!soldInSingleQuantities">
           <div class="sub-header">Quantity used/receiving</div>
           <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
           <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}
@@ -54,6 +54,17 @@
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
           <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving:
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+        </div>
+        <div class="used-receiving" *ngIf="soldInSingleQuantities">
+          <div class="sub-header">Quantity receiving</div>
+          <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
+          <div class="description-text">Total Tiles Receiving: {{feature.qtyTilesReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'inches'">
+            SqFt. Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
+          <div class="description-text" *ngIf="feature.units === 'centimeters'">
+            SqM Used/Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
         </div>
 
         <!-- <div class="dimensions">

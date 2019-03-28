@@ -43,6 +43,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   quantityFeatures = ['tetria', 'clario', 'hush-blocks', 'profile', 'hush-swoon'];
   showQuantityEstimator = true;
   showDesignYourFeatureButton = true;
+  soldInSingleQuantities = false;
 
   // Table Properties
   dataSource: TableDataSource | null;
@@ -190,6 +191,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
         this.showQuantityEstimator = false;
         this.showDesignYourFeatureButton = false;
+        this.soldInSingleQuantities = true;
         break;
       case 'hushSwoon':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
