@@ -24,7 +24,7 @@ set :application, 'design-alpha.3-form.com'
 # role :db,  %w{deploy@example.com}
 
 role :web, %w{webmaster@design-alpha.3-form.com}
-role :staging, %w{webmaster@design-alpha.3-form.com}
+role :alpha, %w{webmaster@design-alpha.3-form.com}
 
 
 
