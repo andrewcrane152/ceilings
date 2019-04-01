@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  staging: true,
+  staging: false,
   API_URL: 'alphaapi.3-form.com'
 };
