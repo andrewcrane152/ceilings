@@ -269,6 +269,7 @@ export class DesignComponent implements OnInit, OnDestroy {
     switch (feature) {
       case 'seeyond':
         this.showSeeyondOptions = true;
+        this.showGuidesCheckbox = false;
         break;
       case 'profile':
         this.showProfileFeatureSelection = true;
