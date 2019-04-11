@@ -1,0 +1,121 @@
+.options-dialog-container {
+  padding: 40px 40px 0 40px;
+  .options-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    .title {
+      font-size: 30px;
+      font-weight: 500;
+    }
+  }
+  .options-columns {
+    display: flex;
+    align-items: stretch;
+    .left-column {
+      border-top: solid 5px black;
+      flex-grow: 3;
+      .left-section {
+        padding: 15px 0 15px 0;
+        border-bottom: 1px solid #e8e8e8;
+        .subtitle {
+          font-size: 16px;
+          font-weight: 500;
+          margin-bottom: 10px;
+        }
+        .inputs {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          .input {
+            margin-right: 20px;
+          }
+          .input input {
+            max-width: 100px;
+            text-indent: 8px;
+            line-height: 2;
+          }
+          .name-input {
+            width: 280px;
+            padding-right: 10px;
+            line-height: 2;
+            text-indent: 8px;
+          }
+          .load-btn {
+            display: flex;
+            align-items: center;
+          }
+          .load-btn>* {
+            padding-left: 15px;
+          }
+          .load-btn img {
+            max-height: 15px;
+          } // .sub-header {
+          //   font-weight: 500;
+          //   font-size: 0.9em;
+          // }
+          .max-min {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.7em;
+            line-height: 1;
+            margin-top: 8px;
+          }
+          .units-input {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            span {
+              border: 1px solid #e8e8e8;
+              margin-top: -9px;
+              height: 34px;
+              width: 50px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            span p {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+    .left-column :last-child {
+      border-bottom: 0;
+    }
+    .vertical-divider {
+      margin: 3px 10px 0 10px;
+      border-left: 1px solid #e8e8e8;
+    }
+    .right-column {
+      border-top: solid 5px black;
+      flex-grow: 3;
+    }
+  }
+  .options-footer {
+    margin-top: 40px;
+    display: flex;
+  }
+  .options-footer :first-child {
+    margin-right: 20px;
+  }
+}
+
+//This is pulled out of the nesting so it can be picked up by the right-column templates
+.right-section {
+  margin-top: 35px;
+  font-size: 0.9em;
+  .subtitle {
+    font-weight: 500;
+  }
+  .images {
+    display: flex;
+    margin-top: 10px;
+  }
+  .images img {
+    margin-right: 10px;
+  }
+}

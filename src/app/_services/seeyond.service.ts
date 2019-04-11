@@ -7,7 +7,7 @@ import { ApiService } from './api.service';
 import { MaterialsService } from './materials.service';
 import { DebugService } from './debug.service';
 import { environment } from './../../environments/environment';
-import { SeeyondFeature } from 'app/seeyond-feature';
+import { SeeyondFeature } from 'app/_features/seeyond-feature';
 import { User } from './../_models/user';
 
 import { Observable } from 'rxjs';

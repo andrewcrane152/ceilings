@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { AlertService } from '../_services/alert.service';
 import { ApiService } from '../_services/api.service';
@@ -11,7 +11,7 @@ import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.compone
 @Component({
   selector: 'app-load-design',
   templateUrl: './load-design.component.html',
-  styleUrls: ['./load-design.component.css']
+  styleUrls: ['./load-design.component.scss']
 })
 export class LoadDesignComponent implements OnInit {
   public designs: Array<Feature>;
@@ -24,7 +24,7 @@ export class LoadDesignComponent implements OnInit {
     public dialog: MatDialog,
     public feature: Feature,
     public user: User,
-    private dialogRef: MatDialogRef<LoadDesignComponent>
+    public dialogRef: MatDialogRef<LoadDesignComponent>
   ) {}
 
   ngOnInit() {}
@@ -32,6 +32,7 @@ export class LoadDesignComponent implements OnInit {
   load(id: number) {
     this.debug.log('load-design', 'loading id: ' + id);
     this.router.navigate([this.feature.feature_type + '/design', id]);
+    this.feature.onDesignLoaded.emit();
     this.dialogRef.close();
   }
 

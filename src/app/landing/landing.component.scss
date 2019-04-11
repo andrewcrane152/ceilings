@@ -1,0 +1,67 @@
+.features {
+  margin-top: 10px;
+}
+
+.feature {
+  height: 250px;
+  margin-bottom: 15px;
+}
+
+.feature>.content {
+  width: 555px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.feature>.content p {
+  padding-bottom: 15px;
+  color: #fff;
+}
+
+.buttons>button {
+  margin: 0px 10px;
+}
+
+#seeyond {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/seeyond.png);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#tetria {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/tetria.png);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#clario {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/clario.png);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#velo {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/velo.png);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#hush-blocks {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/hush.jpg);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#profile {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/profile-temp.png);
+  background-size: cover;
+  background-position: 50%;
+}
+
+#hush-swoon {
+  background: radial-gradient(circle at bottom left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(/assets/images/features/hush-swoon.jpg);
+  background-size: cover;
+  background-position: 50%;
+}

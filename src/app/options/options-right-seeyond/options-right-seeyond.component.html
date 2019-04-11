@@ -1,0 +1,32 @@
+<div class="right-section">
+  <div class="subtitle">Feature Layout</div>
+  <div class="images grid-and-guide">
+    <img src="{{seeyond.image}}" alt="{{seeyond.title}} line drawing">
+  </div>
+</div>
+
+<div class="right-section">
+  <div class="subtitle">Feature Configurations</div>
+  <div class="description">Choose your feature pattern and color.</div>
+  <div class="colors">
+    <img src="/assets/images/materials/felt/sola/nickel.png" alt="Nickel">
+    <img src="/assets/images/materials/felt/sola/citrine.png" alt="Citrine">
+    <img src="/assets/images/materials/felt/sola/aries.png" alt="Aries">
+    <img src="/assets/images/materials/felt/sola/ruby.png" alt="Ruby">
+    <img src="/assets/images/materials/felt/sola/oxford.png" alt="Oxford">
+    <img src="/assets/images/materials/felt/sola/hunter.png" alt="hunter">
+    <img src="/assets/images/materials/felt/sola/burnt_umber.png" alt="Burnt Umber">
+    <img src="/assets/images/materials/felt/sola/ebony.png" alt="Ebony">
+  </div>
+
+  <div class="images design">
+    <div class="design-img" *ngFor="let pattern of seeyond.patterns last as isLast; index as i">
+      <img src="/assets/images/patterns/{{pattern}}.png" alt="{{pattern | capitalize}}">
+    </div>
+  </div>
+</div>
+
+<div class="right-section">
+  <div class="subtitle">Modify</div>
+  <div class="description">Dynamically adjust feature dimensions.</div>
+</div>

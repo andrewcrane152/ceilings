@@ -3,7 +3,7 @@ import { DebugService } from './../../_services/debug.service';
 import { QuantityService } from './../../quantity/quantity.service';
 import { BehaviorSubject } from 'rxjs';
 import { TableDataSource, Order } from './../../quantity/quantity.component';
-import { Feature } from './../../feature';
+import { Feature } from './../../_features/feature';
 import { AlertService } from './../../_services/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -13,7 +13,7 @@ import { ApiService } from '../../_services/api.service';
 @Component({
   selector: 'app-quantity-details',
   templateUrl: './quantity-details.component.html',
-  styleUrls: ['./quantity-details.component.css']
+  styleUrls: ['./quantity-details.component.scss']
 })
 export class QuantityDetailsComponent implements OnInit {
   public rep: any;
@@ -45,8 +45,8 @@ export class QuantityDetailsComponent implements OnInit {
       if (params['type'] === 'hush') {
         this.location.go(this.router.url.replace(/hush\/design/g, 'hush-blocks/design'));
       }
-      this.qtySrv.feature_type = this.feature.setFeatureType(params['type']);
-      if (this.qtySrv.feature_type === 'hush') {
+      this.feature.feature_type = this.feature.setFeatureType(params['type']);
+      if (this.feature.feature_type === 'hush') {
         this.displayedColumns = ['hush-receiving', 'hush-material', 'total'];
       }
       const orderId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10);
@@ -66,7 +66,7 @@ export class QuantityDetailsComponent implements OnInit {
               if ( !this.qtySrv.order || this.qtySrv.order.data.length <= 0 ) {
                 this.setOrderData(qtyOrder);
               }
-            })
+            });
           }
           this.clarioGrids.gridSizeSelected(qtyOrder.grid_type);
           this.clarioGrids.loadSelectedTileSize(qtyOrder.tile_size);

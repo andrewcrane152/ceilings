@@ -1,6 +1,7 @@
+import { ProfileFeature } from './../../_features/profile-feature';
 import { ClarioGridsService } from './../../_services/clario-grids.service';
 import { DebugService } from './../../_services/debug.service';
-import { Feature } from './../../feature';
+import { Feature } from './../../_features/feature';
 import { Component, OnInit, Inject, AfterContentInit } from '@angular/core';
 import { QuantityService } from './../quantity.service';
 import { MaterialsService } from 'app/_services/materials.service';
@@ -9,7 +10,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'app-add-quantity',
   templateUrl: './add-quantity.component.html',
-  styleUrls: ['./add-quantity.component.css']
+  styleUrls: ['./add-quantity.component.scss']
 })
 export class AddQuantityComponent implements OnInit, AfterContentInit {
   materials: any;
@@ -18,9 +19,12 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
   featureTiles: any;
   // Selections
   selectedMaterial: string;
+  selectedMaterialObj: any;
   selectedMaterialImg: string;
   selectedQuantity: number;
   // selectedTile: any;
+  dialogHeader = '';
+  showTileSelection = true;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public inputRow: any,
@@ -29,12 +33,20 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
     public qtySrv: QuantityService,
     public feature: Feature,
     public debug: DebugService,
-    public clarioGrids: ClarioGridsService
+    public clarioGrids: ClarioGridsService,
+    public profileFeature: ProfileFeature
   ) {}
 
   ngOnInit() {
     this.getFeatureMaterials();
-    this.featureTiles = this.feature.tilesArray[this.qtySrv.feature_type];
+    this.featureTiles = this.feature.tilesArray[this.feature.feature_type];
+    this.showTileSelection = this.feature.feature_type !== 'hushSwoon';
+    if (this.feature.feature_type === 'profile') {
+      if (!this.profileFeature.feature_type_tile) {
+        this.updateSelectedTile('standard');
+      }
+      this.featureTiles = this.feature.tilesArray[this.feature.feature_type][this.profileFeature.feature_type];
+    }
   }
 
   ngAfterContentInit() {
@@ -48,7 +60,7 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
   loadRowForEdit() {
     this.debug.log('quantity', this.inputRow);
     this.isEditing = true;
-    this.updateSelectedMaterial(this.inputRow.material);
+    this.updateQtySelectedMaterial(this.inputRow.material);
     this.updateSelectedTile(this.feature.selectedTile);
     this.quantityDidChange(this.inputRow.used);
     this.updateSelectedTile(this.inputRow.tile);
@@ -56,30 +68,67 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
 
   getFeatureMaterials() {
     let requiredMaterials: any;
-    switch (this.qtySrv.feature_type) {
+    const dialogVerb = this.isEditing ? 'Edit' : 'Add';
+    switch (this.feature.feature_type) {
       case 'hush':
         requiredMaterials = this.materialsService.materials.felt.sola;
+        this.dialogHeader = `${dialogVerb} Hush Blocks Tiles`;
         break;
       case 'tetria':
         requiredMaterials = this.materialsService.materials.felt.merino;
+        this.dialogHeader = `${dialogVerb} Tetria Tiles`;
+        break;
+      case 'hushSwoon':
+        requiredMaterials = this.materialsService.materials.felt.merino;
+        this.dialogHeader = `${dialogVerb} Hush Swoon Tiles`;
         break;
       case 'clario':
         requiredMaterials = this.materialsService.materials.felt.sola;
+        this.dialogHeader = `${dialogVerb} Clario Baffles`;
+        break;
+      case 'profile':
+        switch (this.profileFeature.feature_type) {
+          case 'swoon':
+            this.dialogHeader = `${dialogVerb} Swoon Tiles`;
+            switch (this.profileFeature.feature_type_tile) {
+              case 'standard':
+                requiredMaterials = this.materialsService.materials.finishes.standard;
+                break;
+              case 'acoustic':
+                requiredMaterials = this.materialsService.materials.felt.sola;
+                break;
+              case 'chroma':
+                requiredMaterials = this.materialsService.materials.chroma.color;
+                break;
+              default:
+                requiredMaterials = this.materialsService.materials.finishes.standard;
+                break;
+            }
+            break;
+        }
         break;
     }
     this.materials = requiredMaterials;
   }
 
-  updateSelectedMaterial(material) {
-    this.selectedMaterial = material;
+  updateQtySelectedMaterial(material) {
+    let materialName = material;
+    if (typeof material === 'object') {
+      this.selectedMaterialObj = material;
+      materialName = material.material;
+    }
+    this.selectedMaterial = materialName;
     this.updateMaterialImg();
   }
 
   updateMaterialImg() {
     let materialImg;
-    switch (this.qtySrv.feature_type) {
+    switch (this.feature.feature_type) {
       case 'hush':
-        materialImg = `/assets/images/tiles/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
+        materialImg = `/assets/images/tiles/hush-blocks/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
+        break;
+      case 'hushSwoon':
+        materialImg = `/assets/images/tiles/hush-swoon/felt/merino/${this.selectedMaterial}.png`;
         break;
       case 'tetria':
         materialImg = `/assets/images/tiles/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
@@ -98,13 +147,24 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
         }
         materialImg = `/assets/images/${tileType}/${tileImageType}/${this.selectedMaterial}.png`;
         break;
+      case 'profile':
+        materialImg = !!this.selectedMaterialObj ? this.selectedMaterialObj.image : '';
+        if (this.profileFeature.feature_type_tile === 'chroma') {
+          materialImg = !!this.selectedMaterialObj ? this.selectedMaterialObj.hex : '';
+        }
+        break;
     }
     this.selectedMaterialImg = materialImg;
   }
 
   updateSelectedTile(tile) {
-    this.feature.updateSelectedTile(tile);
+    this.feature.selectedTile = tile;
+    if (this.feature.feature_type === 'profile') {
+      this.profileFeature.feature_type_tile = tile.tile;
+      this.updateQtySelectedMaterial(''); // deselect the material
+    }
     this.updateMaterialImg();
+    this.getFeatureMaterials();
   }
 
   quantityDidChange(quantity) {
@@ -112,19 +172,7 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
   }
 
   validateQtyInputs() {
-    let isValid = false;
-    switch (this.qtySrv.feature_type) {
-      case 'hush':
-        isValid = !!this.selectedMaterial && this.selectedQuantity > 0;
-        break;
-      case 'tetria':
-        isValid = !!this.selectedMaterial && this.selectedQuantity > 0;
-        break; // TODO FIX THIS
-      case 'clario':
-        isValid = !!this.selectedMaterial && this.selectedQuantity > 0;
-        break; // TODO FIX THIS
-    }
-    return isValid;
+    return !!this.selectedMaterial && this.selectedQuantity > 0;
   }
 
   cancel() {

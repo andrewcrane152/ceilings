@@ -1,4 +1,66 @@
-<div class="quantity-options">
+<div class="qty-options-dialog-container">
+  <div class="qty-options-header">
+    <div class="title">
+      {{title | capitalize}}
+    </div>
+    <span appStyledButton='secondary-left' (click)="goToLanding()">
+      <button>Return to design tools</button>
+    </span>
+  </div>
+  <div class="qty-options-container">
+    <div id="project-name" class="qty-section">
+      <div class="subtitle">Project name</div>
+      <div class="inputs">
+        <input type="text" class="name-input square" placeholder="Name" autofocus [(ngModel)]="feature.design_name">
+        <a id="load-btn" class="load-btn-fmt" title="load saved designs" (click)="feature.loadDesigns()">
+          <img src="/assets/icons/tools/load.png">
+          <span>Load</span>
+        </a>
+      </div>
+    </div>
+
+    <div *ngIf="showProfileFeatureSelection" id="swoon-feature-selection" class="qty-section">
+      <div class="subtitle">Feature selection</div>
+      <span appStyledSelect [width]="280">
+        <select (change)="updateSelectedProfileFeature($event.target.value)">
+          <option value="swoon">Swoon</option>
+        </select>
+      </span>
+    </div>
+
+    <div *ngIf="showClarioTileSizes" id="clario-tile-sizes" class="qty-section">
+      <div class="subtitle">Grid and Tile Size</div>
+      <div class="inputs clario-inputs">
+        <div class="input">
+          <div class="sub-header">Ceiling Grid Type</div>
+          <span appStyledSelect [width]="280">
+            <select (change)="clarioGridSizeChanged($event.target.value)" id="gridOptions" [(ngModel)]="feature.grid_type">
+              <option [value]="'15/16'">15/16" (24mm)</option>
+              <option [value]="'9/16'">9/16"</option>
+            </select>
+          </span>
+        </div>
+        <div class="input">
+          <div class="sub-header">Tile Size</div>
+          <span appStyledSelect [width]="280">
+            <select (change)="clarioTileSizeChanged($event.target.value)" id="gridOptions">
+              <option disabled [value]="undefined" [selected]="clarioGrids.selectedTileSize === undefined">-- select --</option>
+              <option *ngFor="let gridOption of clarioGrids.tileSizeOptions | keys" [value]="gridOption.name" [selected]="clarioGrids.selectedTileSize?.name === gridOption.name">{{gridOption.name}}</option>
+            </select>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="qty-options-footer">
+    <span appStyledButton='primary-right'>
+      <button type="submit" (click)="dialogRef.close('start designing')" class="start-designing" [disabled]="!validateOptions()">Next</button>
+    </span>
+  </div>
+</div>
+
+
+<!-- <div class="quantity-options">
   <div class="row">
     <div class="col-xs-11">
       <div class="intro">
@@ -54,4 +116,4 @@
         < Choose a Different Tool</a>
     </div>
   </div>
-</div>
+</div> -->

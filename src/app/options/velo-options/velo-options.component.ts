@@ -4,7 +4,7 @@ import { OptionsComponent } from 'app/options/options.component';
 @Component({
   selector: 'app-velo-options',
   templateUrl: './velo-options.component.html',
-  styleUrls: ['../../options/options.component.css', './velo-options.component.css']
+  styleUrls: ['../../options/options.component.scss', './velo-options.component.scss']
 })
 export class VeloOptionsComponent extends OptionsComponent implements OnInit {
   modifyToolsArray = ['remove'];

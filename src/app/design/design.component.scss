@@ -1,0 +1,392 @@
+.design-ui {
+  display: flex;
+  justify-content: space-between;
+
+  .left-side {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+
+    .grid-header {
+      display: flex;
+      flex-direction: column;
+
+      .top {
+        display: flex;
+        align-items: center;
+        padding: 15px 0px;
+        border-bottom: 4px solid black;
+        width: 100%;
+
+        .project-name {
+          font-size: 2em;
+          line-height: 20px;
+          font-weight: 500;
+          width: 50%;
+        }
+
+        .save-load {
+          display: flex;
+          width: 50%;
+        }
+      }
+
+      .bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .left {
+          display: flex;
+          flex-direction: row;
+
+          .guides {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 15px;
+
+            .guides-text {
+              margin-left: 10px;
+            }
+          }
+
+          .three-d {}
+        }
+      }
+    }
+
+    .grid {
+      height: 530px;
+      overflow: auto;
+    }
+
+    .grid-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .quantities-sold {
+        margin-right: 30px;
+        display: flex;
+        flex-direction: column;
+
+        .sub-header {
+          padding: 0px;
+        }
+      }
+
+      .tile-usage {}
+    }
+  }
+
+  .right-side {
+    width: 420px;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .expansion-panels {}
+
+    .bottom-section {
+      // this will not be necessary the footer is brought back
+      margin-bottom: 50px;
+
+      .totals {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        height: 50px;
+        margin: 10px 0px;
+
+        .est-total {
+          .total {
+            font-size: 1.1em;
+            font-weight: 600;
+          }
+        }
+
+        .details-btn {}
+      }
+    }
+  }
+
+  .canvas-grid-container {
+    position: relative;
+  }
+}
+
+.expansion-panel-section-header {
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.mat-expansion-panel-body div:last-child {
+  margin-bottom: 10px;
+}
+
+.selected {
+  border: 2px solid #ff9e1b !important;
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+
+  .input {
+    margin-right: 20px;
+  }
+
+  .input input {
+    max-width: 75px;
+    line-height: 2;
+  }
+
+  .name-input {
+    width: 280px;
+    margin-right: 20px;
+    line-height: 2;
+    text-indent: 8px;
+  }
+
+  .max-min {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7em;
+    line-height: 1;
+    margin-top: 8px;
+  }
+
+  .units-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      border: 1px solid #e8e8e8;
+      margin-top: -9px;
+      height: 34px;
+      width: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    span p {
+      margin: 0;
+    }
+  }
+
+  .add-remove {
+    img {
+      height: 30px;
+      padding: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      border: 1px solid #bbb;
+    }
+  }
+}
+
+// .navigation {
+//   margin-left: 15px;
+// }
+// .canvas-grid-container {
+//   position: relative;
+//   margin-left: -15px;
+// }
+// hr {
+//   margin-top: 10px;
+//   margin-bottom: 10px;
+// }
+// .logo {
+//   padding: 0px 15px;
+// }
+// .logo img {
+//   width: 100px;
+// }
+// .separator {
+//   background-color: #fff;
+//   border-bottom: 2px solid #cdcdcd;
+//   margin: 0 15px;
+// }
+// span.sm {
+//   font-size: 10px;
+// }
+// .tile-options {
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+// }
+// .tile-option-row {
+//   width: auto;
+// }
+// .back-to-design span {
+//   font-size: 11px;
+// }
+// .design-header {
+//   background-color: #fff;
+//   padding: 3px 15px 10px 15px;
+// }
+// .design-header p {
+//   margin-bottom: 0;
+// }
+// .design-header .project-name {
+//   border-right: 2px solid #cdcdcd;
+// }
+// .design-ui {
+//   background-color: #fff;
+//   height: 570px;
+//   padding: 5px 15px;
+//   overflow: auto;
+// }
+// .grid-wrapper {
+//   border-right: 2px solid #cdcdcd;
+//   height: 100%;
+//   overflow: auto;
+// }
+// .grid-header {
+//   padding: 2px 0 5px 0;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+// }
+// .full-height {
+//   height: 100%;
+// }
+// .edit-link {
+//   font-size: 12px;
+// }
+// /* Tiles */
+// .tiles p {
+//   margin: 0;
+// }
+// .tile-container {
+//   padding: 5px;
+// }
+// .tile {
+//   border: 2px solid #e7e7e7;
+//   cursor: pointer;
+//   padding: 5px;
+//   margin: 0px 5px;
+// }
+// /* Materials */
+// .materials {
+//   margin-bottom: 10px;
+// }
+// .material {
+//   padding: 5px;
+//   cursor: pointer;
+// }
+// .materials .circle {
+//   width: 38px;
+//   border-radius: 50%;
+// }
+// .varia-materials {
+//   max-height: 196px;
+//   overflow: auto;
+// }
+// .velo-materials .circle {
+//   height: 38px;
+//   width: 38px;
+//   border-radius: 50%;
+// }
+// .is-clear {
+//   border-radius: 50%;
+//   border: 2px solid #cdcdcd;
+// }
+// .no-color-selection {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+// .no-color-selection span {
+//   font-size: 38px;
+//   color: #cdcdcd !important;
+//   height: 38px;
+//   width: 38px;
+//   border-radius: 50%;
+// }
+// .block-selected ::before {
+//   border: 2px solid #ff9e1b;
+//   font-size: 36px;
+//   border-radius: 50%;
+// }
+// /* Actions */
+// .actions {
+//   padding: 2px;
+//   display: flex;
+//   justify-content: space-evenly;
+// }
+// /* Tools */
+// .tools-header {
+//   padding: 2px;
+// }
+// .tool-container {
+//   padding: 0;
+//   font-size: 12px;
+// }
+// .tool {
+//   border: 2px solid #e7e7e7;
+//   border-right: none;
+//   cursor: pointer;
+//   padding: 15px;
+//   width: 52px;
+// }
+// .grid-tool {
+//   border: 2px solid #e7e7e7;
+//   border-right: none;
+//   cursor: pointer;
+//   padding: 15px;
+//   width: 52px;
+//   margin: 0px -2px;
+// }
+// .grid-tool span {
+//   font-size: 20px;
+//   font-weight: 600;
+// }
+// .grid-tool-spacer {
+//   margin-left: 15px;
+// }
+// .velo-diffusion {
+//   padding: 0;
+//   border-right: 2px solid #e7e7e7;
+// }
+// .velo-diffusion-list {
+//   margin: 0;
+// }
+// .velo-diffusion-list p {
+//   font-size: 10px;
+// }
+// .tile-package-information {
+//   text-align: right;
+//   margin: 3px 30px 0 0;
+// }
+// .toggle-button-form-wrapper {
+//   display: inline-block;
+//   padding-right: 15px;
+// }
+// .no-bottom-margin {
+//   margin-bottom: 0;
+// }
+// hr.nine-pixels {
+//   margin-top: 9px;
+//   margin-bottom: 9px;
+// }
+// /* Keep below other borders so it will override the default border */
+// .selected {
+//   border: 2px solid #ff9e1b;
+// }
+// input::-webkit-outer-spin-button,
+// input::-webkit-inner-spin-button {
+//   /* display: none; <- Crashes Chrome on hover */
+//   -webkit-appearance: none;
+//   margin: 0;
+//   /* <-- Apparently some margin are still there even though it's hidden */
+// }

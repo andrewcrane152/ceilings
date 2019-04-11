@@ -2,14 +2,13 @@ import { ClarioGridsService } from './../_services/clario-grids.service';
 import { TileObj } from './quantity.service';
 import { MatTableDataSource } from '@angular/material';
 import { TileRow } from './quantity.component';
-import { Feature } from './../feature';
+import { Feature } from './../_features/feature';
 import { DebugService } from './../_services/debug.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class QuantityService {
-  feature_type: string;
   qtyTilesArray = <TileObj[]>[];
   estimatedPrice = 0;
   tilesSelected = 0;
@@ -29,6 +28,7 @@ export class QuantityService {
   }
 
   setRowData(row) {
+    this.debug.log('quantity', 'setRowDataInvoked');
     this.debug.log('quantity', row);
     this.getRowEstimate(row); // sets feature.estimated_amount
     const newRow = row[Object.keys(row)[0]];
@@ -39,6 +39,7 @@ export class QuantityService {
     newRow.tileSqArea = this.getTileSqArea(newRow.tile);
     newRow.id = this.rowIndexNum++;
     newRow.material_size = typeof newRow.tile === 'string' ? newRow.tile : newRow.tile.tile;
+    newRow.material_type = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
     return newRow;
   }
 
@@ -54,6 +55,7 @@ export class QuantityService {
     matchedRow.total = this.feature.estimated_amount;
     matchedRow.id = this.rowIndexNum++;
     matchedRow.material_size = typeof matchedRow.tile === 'string' ? matchedRow.tile : matchedRow.tile.tile;
+    matchedRow.material_type = this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
     this.updateSummary();
   }
 
@@ -94,21 +96,25 @@ export class QuantityService {
     editRow.tileSqArea = this.getTileSqArea(editRow.tile);
     editRow.id = this.rowIndexNum++;
     editRow.material_size = typeof editRow.tile === 'string' ? editRow.tile : editRow.tile.tile;
+    editRow.material_type = this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
     this.order.data[index] = editRow;
     this.order.data = this.order.data.slice(); // refreshes the table
     this.updateSummary();
   }
 
   getRowEstimate(row) {
-    switch (this.feature_type) {
+    switch (this.feature.feature_type) {
       case 'hush':
-        this.feature.getHushEstimate(row);
+        this.feature.getHushBlocksEstimate(row);
         break;
       case 'tetria':
         this.feature.getTetriaEstimate(row);
         break;
       case 'clario':
         this.feature.getClarioEstimate(row);
+        break;
+      case 'hushSwoon':
+        this.feature.getHushSwoonEstimate(row);
         break;
     }
   }
@@ -133,11 +139,11 @@ export class QuantityService {
     this.feature.qtyTilesUsed = tilesUsed;
     this.sqAreaUsed = Math.round(sqAreaUsed * 100) / 100;
     this.sqAreaReceiving = Math.round(sqAreaReceiving * 100) / 100;
-    this.tilesSelected = sqAreaUsed / 4 || null;
+    this.tilesSelected = Math.round(sqAreaUsed / 4) || null;
     if (this.feature.feature_type === 'clario' && !!this.clarioGrids.selectedTileSize) {
       const tileForArea = this.clarioGrids.selectedTileSize.tile_size / 2;
       const tileArea = this.getTileSqArea(tileForArea.toString());
-      this.tilesSelected = sqAreaUsed / tileArea;
+      this.tilesSelected = Math.round(sqAreaUsed / tileArea);
     }
     this.updateTilesArr();
   }
@@ -153,9 +159,8 @@ export class QuantityService {
       newObj.image = newRow.image;
       newObj.used = newRow.used;
       newObj.material = newRow.material;
-      newObj.tile = newRow.tile;
-      const tileStr = typeof(newObj.tile) === 'string' ? newObj.tile : newObj.tile.tile;
-      const objectKey = `${newObj.material}-${tileStr}`;
+      newObj.tile = typeof newObj.tile === 'string' ? newRow.tile : newRow.tile.tile;
+      const objectKey = this.feature.feature_type === 'hushSwoon' ? `${newObj.material}` : `${newObj.material}-${newObj.tile}`;
       if (!tilesArr[objectKey]) {
         tilesArr[objectKey] = newObj;
       } else {
@@ -167,10 +172,21 @@ export class QuantityService {
 
     this.getRowEstimate(tilesArr); // updates feature.ts with the totals
     this.feature.tiles = tilesArr;
+    this.debug.log('quantity', this.feature.tiles);
   }
 
-  getTileSqArea(tile) {
-    switch (tile) {
+  getTileSqArea(tile?) {
+    if (this.feature.feature_type === 'hushSwoon') {
+      // hushSwoon is a rhombus that is 8.66" wide and 5.21" high
+      // based off this, the total square area is 22.56 sq inches, or 0.15667 sq ft.
+      return 0.15667;
+    }
+    let tileSize = tile;
+    if (typeof tileSize !== 'string' && typeof tileSize !== 'undefined') {
+      tileSize = tile.tile_size;
+    }
+    switch (tileSize) {
+      // Clario tiles
       case '24':
         return 4;
       case '48':
@@ -183,6 +199,22 @@ export class QuantityService {
         return 0.390625;
       case '1250':
         return 0.390625 * 2;
+
+      // Hush blocks tiles
+      case '1-1-2':
+        return 1;
+      case '1-2-2':
+        return 2;
+      case '1-3-2':
+        return 3;
+      case '1-4-2':
+        return 4;
+      case '2-2-2':
+        return 4;
+      case '2-2-2-t':
+        return 2;
+
+      // default
       default:
         return 4;
     }
