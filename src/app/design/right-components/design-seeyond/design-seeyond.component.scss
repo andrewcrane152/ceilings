@@ -39,6 +39,15 @@
     .relief-container {
       flex-grow: 1;
     }
+
+    .cove-lighting {
+      flex-grow: 1;
+
+      .checkbox {
+        height: 32px;
+        width: 32px;
+      }
+    }
   }
 }
 
@@ -59,3 +68,4 @@
 .ceiling-length {
   width: 100px;
 }
+

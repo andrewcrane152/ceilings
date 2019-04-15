@@ -36,7 +36,7 @@
     "rxjs": "^6.2.1",
     "syd-tessellation": "0.0.69",
     "syd-tiling": "0.0.16",
-    "syd-visualization": "0.0.93",
+    "syd-visualization": "0.0.88",
     "xml-writer": "1.7.0",
     "zone.js": "^0.8.4"
   },

@@ -16,13 +16,6 @@
     </span>
     <div class="feature-details">
       <img src="{{seeyond.image}}" class="seeyond-feature-img" alt="{{seeyond.title}} line drawing">
-      <span class="cove-lighting"
-        *ngIf="this.seeyond.seeyond_feature_type === 'ceiling' || this.seeyond.seeyond_feature_type === 'wall-to-ceiling'">
-        <div class="sub-header">Cove Lighting</div>
-        <span class="checkbox" (click)="toggleCoveLighting()">
-          <img *ngIf="seeyond.cove_lighting" src="/assets/icons/tools/check.png" alt="check-mark">
-        </span>
-      </span>
     </div>
   </div>
 </mat-expansion-panel>
@@ -133,6 +126,13 @@
             [disabled]="this.seeyond.quoted">
             <option *ngFor="let relief of patternReliefOptions" value="{{relief.value}}">{{relief.name}}</option>
           </select>
+        </span>
+      </div>
+      <div class="cove-lighting"
+        *ngIf="this.seeyond.seeyond_feature_type === 'ceiling' || this.seeyond.seeyond_feature_type === 'wall-to-ceiling'">
+        <div class="sub-header">Cove Lighting</div>
+        <span class="checkbox" (click)="toggleCoveLighting()">
+          <img *ngIf="seeyond.cove_lighting" src="/assets/icons/tools/check.png" alt="check-mark">
         </span>
       </div>
     </div>

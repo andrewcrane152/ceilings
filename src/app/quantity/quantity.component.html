@@ -137,10 +137,10 @@
               <ng-container matColumnDef="edit">
                 <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
                 <mat-cell *matCellDef="let row; let i=index;" class="edit-column">
-                  <span (click)="editRow(i, row)">
+                  <span (click)="editRow(i, row)" *ngIf="!feature.quoted">
                     <img src="/assets/icons/tools/edit.png" alt="Edit Row">
                   </span>
-                  <span class="delete-icon" (click)="deleteRow(i, row)">
+                  <span class="delete-icon" (click)="deleteRow(i, row)" *ngIf="!feature.quoted">
                     <img src="/assets/icons/tools/delete.png" alt="Delete Row">
                   </span>
                 </mat-cell>
@@ -150,7 +150,7 @@
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
           </div>
-          <div class="add-tiles-btn">
+          <div class="add-tiles-btn" *ngIf="!feature.quoted">
             <button (click)="addToOrder()">Add Tiles</button>
           </div>
         </div>

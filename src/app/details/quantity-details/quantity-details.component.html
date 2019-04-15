@@ -72,14 +72,18 @@
       <ng-container matColumnDef="material">
         <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
         <mat-cell *matCellDef="let element" class="material-column">
-          <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} {{element.material_size}}
+          <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img"
+            alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
+          {{element.material_size}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="hush-material">
         <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
         <mat-cell *matCellDef="let element" class="material-column">
-          <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
+          <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+            alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} -
+          {{element.material_size}}
         </mat-cell>
       </ng-container>
 
