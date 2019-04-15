@@ -115,7 +115,13 @@ export class DesignComponent implements OnInit, OnDestroy {
       }
 
       this.debug.log('design', `featureType: ${featureType}`);
-      this.canvasGridFeatures.includes(featureType) ? (this.useCanvasGrid = true) : (this.useRepeatingGrid = true);
+      if (this.canvasGridFeatures.includes(featureType)) {
+        this.useCanvasGrid = true;
+        this.useRepeatingGrid = false;
+      } else {
+        this.useCanvasGrid = false;
+        this.useRepeatingGrid = true;
+      }
 
       if (featureType === 'profile') {
         this.setProfileFeature(params);
