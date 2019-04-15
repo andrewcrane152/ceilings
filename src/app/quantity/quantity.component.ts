@@ -150,6 +150,19 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     if (qtyOrder.feature_type !== this.feature.feature_type) {
       this.location.go(`${qtyOrder.feature_type}/quantity/${qtyOrder.id}`);
     }
+    if (this.feature.feature_type === 'hush') {
+      let tilesObj = JSON.parse(qtyOrder.tiles);
+      if (!!tilesObj) {
+        for (const tileType in tilesObj) {
+          if (tilesObj[tileType].tile.tile === '00') {
+            tilesObj.tile.tile = '2-2-2';
+            tilesObj.tile.tile_size = '2-2-2';
+            tilesObj.tile.name = '2-2-2';
+          }
+        }
+      }
+      qtyOrder.tiles = JSON.stringify(tilesObj);
+    }
     // this.feature.showMainNavbar.emit(true);
     this.qtySrv.order.data = [];
     this.feature.id = qtyOrder.id;
