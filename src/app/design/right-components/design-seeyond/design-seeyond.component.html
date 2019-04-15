@@ -2,7 +2,7 @@
 <mat-expansion-panel #features hideToggle="true">
   <mat-expansion-panel-header>
     <mat-panel-title class="sub-header">
-      Features
+      Feature Type
     </mat-panel-title>
     <mat-icon *ngIf="!features.expanded" svgIcon="accordian_open"></mat-icon>
     <mat-icon *ngIf="features.expanded" svgIcon="accordian_close"></mat-icon>
@@ -10,17 +10,12 @@
   <div class="features-selection">
     <span appStyledSelect [width]="280">
       <select (change)="seeyondUpdateSelectedFeature($event.target.value)">
-        <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name" [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
+        <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name"
+          [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
       </select>
     </span>
     <div class="feature-details">
       <img src="{{seeyond.image}}" class="seeyond-feature-img" alt="{{seeyond.title}} line drawing">
-      <span class="cove-lighting" *ngIf="this.seeyond.seeyond_feature_type === 'ceiling' || this.seeyond.seeyond_feature_type === 'wall-to-ceiling'">
-        <div class="sub-header">Cove Lighting</div>
-        <span class="checkbox" (click)="toggleCoveLighting()">
-          <img *ngIf="seeyond.cove_lighting" src="/assets/icons/tools/check.png" alt="check-mark">
-        </span>
-      </span>
     </div>
   </div>
 </mat-expansion-panel>
@@ -58,8 +53,9 @@
       </div>
       <div class="input" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
         <div class="sub-header ceiling-length">Ceiling Length</div>
-        <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
-          required type="number" class="unit-input" placeholder="Height" name="length">
+        <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel"
+          (change)="seeyondDimensionsDidChange($event.key)" required type="number" class="unit-input"
+          placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.ceilLengthMin}}</span>
           <span>Max {{this.seeyond.ceilLengthMax}}</span>
@@ -93,7 +89,7 @@
 <mat-expansion-panel #patterns hideToggle="true" [expanded]="true">
   <mat-expansion-panel-header>
     <mat-panel-title class="sub-header">
-      Pattern
+      Design
     </mat-panel-title>
     <mat-icon *ngIf="!patterns.expanded" svgIcon="accordian_open"></mat-icon>
     <mat-icon *ngIf="patterns.expanded" svgIcon="accordian_close"></mat-icon>
@@ -101,7 +97,8 @@
 
   <div class="patterns-selection">
     <div class="patterns-container">
-      <div *ngFor="let pattern of seeyond.patterns | keys" (click)="updateSelectedTessellation(pattern)" class="pattern">
+      <div *ngFor="let pattern of seeyond.patterns | keys" (click)="updateSelectedTessellation(pattern)"
+        class="pattern">
         <div class="sub-header">{{pattern | capitalize}}</div>
         <div class="pattern" [class.selected]="seeyond.tessellationStr == pattern">
           <img src="/assets/images/patterns/{{pattern}}.png" alt="{{pattern | capitalize}}" class="img-responsive">
@@ -115,18 +112,27 @@
           [value]="seeyond.pattern_strength" (change)="updatePatternStrength(patternStrength.value)" #patternStrength>
         </mat-slider> -->
         <span appStyledSelect [width]="145">
-          <select [(ngModel)]="seeyond.pattern_strength" (change)="updatePatternStrength()" [disabled]="this.seeyond.quoted">
+          <select [(ngModel)]="seeyond.pattern_strength" (change)="updatePatternStrength()"
+            [disabled]="this.seeyond.quoted">
             <option *ngFor="let strength of strengths" value="{{strength}}">{{strength}}</option>
           </select>
         </span>
       </div>
-      <div class="relief-container" *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
+      <div class="relief-container"
+        *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
         <div class="sub-header">Pattern Location</div>
         <span appStyledSelect [width]="145">
           <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()"
             [disabled]="this.seeyond.quoted">
             <option *ngFor="let relief of patternReliefOptions" value="{{relief.value}}">{{relief.name}}</option>
           </select>
+        </span>
+      </div>
+      <div class="cove-lighting"
+        *ngIf="this.seeyond.seeyond_feature_type === 'ceiling' || this.seeyond.seeyond_feature_type === 'wall-to-ceiling'">
+        <div class="sub-header">Cove Lighting</div>
+        <span class="checkbox" (click)="toggleCoveLighting()">
+          <img *ngIf="seeyond.cove_lighting" src="/assets/icons/tools/check.png" alt="check-mark">
         </span>
       </div>
     </div>
@@ -148,7 +154,8 @@
     <div *ngFor="let material of seeyondMaterials | keys" matTooltip="{{material.material | capitalize}}"
       [matTooltipPosition]="position" (click)="updateSelectedMaterial(material)" class="material">
       <div *ngIf="material.status === 'active'">
-        <img src="{{material.image}}" alt="{{material.material | capitalize}}" [class.selected]="seeyond.material==material.material">
+        <img src="{{material.image}}" alt="{{material.material | capitalize}}"
+          [class.selected]="seeyond.material==material.material">
       </div>
     </div>
   </div>

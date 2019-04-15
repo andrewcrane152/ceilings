@@ -45,7 +45,7 @@
             <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</div>
         </div>
 
-        <div class="used-receiving">
+        <div class="used-receiving" *ngIf="!soldInSingleQuantities">
           <div class="sub-header">Quantity used/receiving</div>
           <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
           <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}
@@ -54,6 +54,17 @@
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
           <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving:
             {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+        </div>
+        <div class="used-receiving" *ngIf="soldInSingleQuantities">
+          <div class="sub-header">Quantity receiving</div>
+          <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
+          <div class="description-text">Total Tiles Receiving: {{feature.qtyTilesReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'inches'">
+            SqFt. Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
+          <div class="description-text" *ngIf="feature.units === 'centimeters'">
+            SqM Used/Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
         </div>
 
         <!-- <div class="dimensions">
@@ -126,10 +137,10 @@
               <ng-container matColumnDef="edit">
                 <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
                 <mat-cell *matCellDef="let row; let i=index;" class="edit-column">
-                  <span (click)="editRow(i, row)">
+                  <span (click)="editRow(i, row)" *ngIf="!feature.quoted">
                     <img src="/assets/icons/tools/edit.png" alt="Edit Row">
                   </span>
-                  <span class="delete-icon" (click)="deleteRow(i, row)">
+                  <span class="delete-icon" (click)="deleteRow(i, row)" *ngIf="!feature.quoted">
                     <img src="/assets/icons/tools/delete.png" alt="Delete Row">
                   </span>
                 </mat-cell>
@@ -139,7 +150,7 @@
               <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
           </div>
-          <div class="add-tiles-btn">
+          <div class="add-tiles-btn" *ngIf="!feature.quoted">
             <button (click)="addToOrder()">Add Tiles</button>
           </div>
         </div>

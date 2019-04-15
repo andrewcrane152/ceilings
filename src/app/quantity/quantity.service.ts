@@ -38,8 +38,8 @@ export class QuantityService {
     newRow.total = this.feature.estimated_amount;
     newRow.tileSqArea = this.getTileSqArea(newRow.tile);
     newRow.id = this.rowIndexNum++;
-    newRow.material_size = typeof newRow.tile === 'string' ? newRow.tile : newRow.tile.tile;
-    newRow.material_type = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    newRow.material_size = this.setMaterialSize(newRow);
+    newRow.material_type = this.setMaterialType();
     return newRow;
   }
 
@@ -54,8 +54,8 @@ export class QuantityService {
     this.getRowEstimate(matchedRowFmtd); // sets feature.estimated_amount
     matchedRow.total = this.feature.estimated_amount;
     matchedRow.id = this.rowIndexNum++;
-    matchedRow.material_size = typeof matchedRow.tile === 'string' ? matchedRow.tile : matchedRow.tile.tile;
-    matchedRow.material_type = this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    matchedRow.material_size = this.setMaterialSize(matchedRow);
+    matchedRow.material_type = this.setMaterialType();
     this.updateSummary();
   }
 
@@ -95,11 +95,21 @@ export class QuantityService {
     editRow.total = this.feature.estimated_amount;
     editRow.tileSqArea = this.getTileSqArea(editRow.tile);
     editRow.id = this.rowIndexNum++;
-    editRow.material_size = typeof editRow.tile === 'string' ? editRow.tile : editRow.tile.tile;
-    editRow.material_type = this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    editRow.material_size = this.setMaterialSize(editRow);
+    editRow.material_type = this.setMaterialType();
     this.order.data[index] = editRow;
     this.order.data = this.order.data.slice(); // refreshes the table
     this.updateSummary();
+  }
+
+  setMaterialSize(row) {
+    let materialSize = typeof row.tile === 'string' ? row.tile : row.tile.tile;
+    return materialSize;
+  }
+
+  setMaterialType() {
+    let materialType = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    return materialType;
   }
 
   getRowEstimate(row) {
@@ -159,7 +169,7 @@ export class QuantityService {
       newObj.image = newRow.image;
       newObj.used = newRow.used;
       newObj.material = newRow.material;
-      newObj.tile = typeof newObj.tile === 'string' ? newRow.tile : newRow.tile.tile;
+      newObj.tile = typeof newRow.tile === 'string' ? newRow.tile : newRow.tile.tile;
       const objectKey = this.feature.feature_type === 'hushSwoon' ? `${newObj.material}` : `${newObj.material}-${newObj.tile}`;
       if (!tilesArr[objectKey]) {
         tilesArr[objectKey] = newObj;
