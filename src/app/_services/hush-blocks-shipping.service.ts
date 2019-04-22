@@ -6,7 +6,7 @@ import { retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class HushBlocksShippingService {
-  hushShippingData = {
+  public hushShippingData = {
     '1-1-2': {
       'weight': 1.4,
       'capacity': 24
@@ -33,143 +33,134 @@ export class HushBlocksShippingService {
     }
   }
 
-  purchasedTiles = {};
+  private currentShippingInfo = {
+    totalWeight: 0,
+    boxesRecommended: {
+      '1-1-2': 0,
+      '1-2-2': 0,
+      '1-3-2': 0,
+      '1-4-2': 0,
+      '2-2-2': 0,
+      '2-2-2-t': 0,
+    }
+  }
+
+  private purchasedTiles = {};
+  private tilesRemaining = {};
 
   hushBlocksShippingTotals(tileCount) {
+    console.warn(tileCount);
     // tileCount is formatted like hushShippingInfo.boxesRecommended
     this.purchasedTiles = tileCount;
-    const shippingData = this.hushShippingData;
-    const hushShippingInfo = {
-      totalWeight: 0,
-      boxesRecommended: {
-        '1-1-2': 0,
-        '1-2-2': 0,
-        '1-3-2': 0,
-        '1-4-2': 0,
-        '2-2-2': 0,
-        '2-2-2-t': 0,
+    this.tilesRemaining = JSON.parse(JSON.stringify(tileCount));
+    this.calcShippingBoxes();
+    this.calcTotalWeight();
+    return this.currentShippingInfo;
+  }
+
+  private calcShippingBoxes () {
+    // fill full boxes first
+    Object.keys(this.purchasedTiles).forEach(tileId => {
+      if (this.purchasedTiles[tileId] > 0 ) {
+        this.currentShippingInfo.boxesRecommended[tileId] = Math.floor(this.purchasedTiles[tileId] / this.hushShippingData[tileId].capacity);
+        this.tilesRemaining[tileId] = this.purchasedTiles[tileId] % this.hushShippingData[tileId].capacity;
       }
-    }
+    });
+    this.fillRemainingBoxes();
+  }
 
-    function calcShippingBoxes () {
-      const purchasedTiles = this.purchasedTiles;
-      console.warn('purchasedTiles', purchasedTiles);
-      const tilesRemaining = JSON.parse(JSON.stringify(purchasedTiles));
-      // pre-flight for full boxes
-      Object.keys(purchasedTiles).forEach(tileId1 => {
-        if (purchasedTiles[tileId1] > 0 ) {
-          hushShippingInfo.boxesRecommended[tileId1] = Math.floor(purchasedTiles[tileId1] / this.hushShippingData[tileId1].capacity);
-          tilesRemaining[tileId1] = purchasedTiles[tileId1] % this.hushShippingData[tileId1].capacity;
-        }
-      });
-      // console.log('tilesRemaining after Preflight');
-      // console.log(tilesRemaining);
-      // console.log('hushShippingInfo after Preflight');
-      // console.log(hushShippingInfo);
+  private fillRemainingBoxes() {
+    const tilesRemaining = this.tilesRemaining;
+    let oneXTileSizes = [];
+    let twoXTileSizes = [];
 
-      // check remaining tiles recursively
-      function checkRemainingTiles() {
-        const tileSizesLeft = [];
-        // get remaining tile sizes
-        Object.keys(tilesRemaining).forEach(tileId2 => {
-          if (tilesRemaining[tileId2] > 0 ) {
-            tileSizesLeft.push(tileId2);
-          }
-        });
-        console.log('tileSizesLeft:', tileSizesLeft);
-        // Order of Operations
-        // if only 1x or 2x
-        const tileMix = getTileMix(tileSizesLeft);
-        console.log('tileMix:', tileMix);
-        switch (tileMix) {
-          case '1xOnly':
-            fill1xBoxes(tileSizesLeft, tilesRemaining, this.shippingData);
+    // divide remaining tiles into 1x and 2x
+    Object.keys(tilesRemaining).forEach(tileId => {
+      if (tilesRemaining[tileId] > 0 ) {
+        const tileCategory = parseInt(tileId.slice(0, 1), 10);
+        switch (tileCategory) {
+          case 1:
+            oneXTileSizes.push(parseInt(tileId.slice(2, 3), 10));
             break;
-          case '2xOnly':
-            console.log('2x');
-            // 2x2 boxes first get filled then triangle
+          case 2:
+            twoXTileSizes.push(parseInt(tileId.slice(2, 3), 10));
             break;
-          case 'mixed':
-            // NOTE: just learned that mixed boxes aren't going to be shipped.
-            console.log('mixed');
-            // fill 2x boxes first
-            // 2x2 => 2x2t => 1x2 => 1x1
-            // fill 1x boxes last
-            // use
+          default:
+            console.warn('unsupported tile category found:', tileCategory);
             break;
         }
-
-
       }
+    });
+    oneXTileSizes = this.sortHighToLow(oneXTileSizes);
+    twoXTileSizes = this.sortHighToLow(twoXTileSizes);
 
-      let tilesRemainingStop = 0; // TODO: this is just a stop for the recursion.  Remove when ready.
-      Object.keys(tilesRemaining).forEach(tileId => {
-        if (tilesRemaining[tileId] > 0 && tilesRemainingStop < 2) { checkRemainingTiles.apply(this); tilesRemainingStop++; }
-      })
+    // fill the boxes
+    if (oneXTileSizes.length > 0) { this.fillA1xBox(oneXTileSizes); }
+    if (twoXTileSizes.length > 0) { this.fill2xBoxes(twoXTileSizes); }
 
-      // TODO: RESTORE THIS WHEN RECURSION IS READY
-      // Object.keys(tilesRemaining).forEach(tileId => {
-      //   if (tilesRemaining[tileId] > 0) { checkRemainingTiles(tilesRemaining); }
-      // })
+  }
 
+  private fillA1xBox(sizesRemaining1x) {
+    // start with biggest box needed
+    const biggestBoxLeft = sizesRemaining1x[0];
+    this.currentShippingInfo.boxesRecommended[biggestBoxLeft]++;
+    const largestSizeLeft = `1-${sizesRemaining1x[0]}-2`;
+
+    // populate remaining spaces array
+    const spacesAvailable = [];
+    const remainingSpaces = this.hushShippingData[largestSizeLeft].capacity - this.tilesRemaining[largestSizeLeft];
+    for (let ii = 0; ii < remainingSpaces; ii++) {
+      spacesAvailable.push(biggestBoxLeft);
     }
 
-    function getTileMix(tileSizesLeft) {
-      const txoxtwo = (tileSizesLeft.includes('2-2-2') || tileSizesLeft.includes('2-2-2-t'));
-      const onexone = (tileSizesLeft.includes('1-1-2') || tileSizesLeft.includes('1-2-2') || tileSizesLeft.includes('1-3-2') || tileSizesLeft.includes('1-4-2'));
-      switch (true) {
-        case (!onexone && txoxtwo):
-          return '2xOnly';
-        case (onexone && !txoxtwo):
-          return '1xOnly';
-        default:
-          return 'mixed';
+    // zero out the tilesRemaining for the biggest box left
+    // can do this because complete boxes have already been filled
+    this.tilesRemaining[largestSizeLeft] = 0;
+
+    // spaces needed to fill order
+    let spacesNeeded = [];
+    sizesRemaining1x.map(size => {
+      const sizeCount = this.tilesRemaining[`1-${size}-2`];
+      for (let jj = 0; jj < sizeCount; jj++) {
+        spacesNeeded.push(size);
       }
-    }
+    });
+    spacesNeeded = this.sortHighToLow(spacesNeeded);
 
-    function fill1xBoxes(tilesMix, tilesRemaining, hushShippingData) {
-      console.warn('tilesMix:');
-      console.log(tilesMix);
-      console.warn('tilesRemaining:');
-      console.log(tilesRemaining);
-
-      let newTilesRemaining = tilesRemaining;
-
-      // map through tilesMix to find the needed sizes from largest to smallest
-      const neededSizes = [];
-      tilesMix.map(tile => {
-        neededSizes.push(parseInt(tile.slice(2, 3), 10));
-      });
-      neededSizes.sort((a, b) => b - a);
-      console.log('neededSizes', neededSizes);
-      // get the box capacity of largest size
-      const largestSizeLeft = `1-${neededSizes[0]}-2`;
-      const currentBoxCapacity = (newTilesRemaining[largestSizeLeft]);// * hushShippingData[largestSizeLeft].capacity);
-      console.log('currentBoxCapacity', currentBoxCapacity);
-      // find out how much space is left
-      // loop through other sizes largest to smallest
-      switch(tilesMix) {
-        case tilesMix.includes('1-4-2'):
-            // get linear square feet
-            // longest boxes first get filled the shortest boxes
-          break;
+    // fill spacesAvailable with spacesNeeded
+    console.log('spacesNeeded:', spacesNeeded);
+    console.log('spacesAvailable', spacesAvailable);
+    spacesAvailable.map((block) => {
+      // first check next size down and it's inverse
+      let sizeToCheck = block - 1;
+      while (sizeToCheck > 0) {
+        if (spacesNeeded.includes(sizeToCheck)) {
+          console.warn('found one:', sizeToCheck);
+          this.tilesRemaining[`1-${sizeToCheck}-2`]--;
+          spacesAvailable.splice(spacesAvailable.indexOf(sizeToCheck), 1);
+          spacesNeeded.splice(spacesNeeded.indexOf(sizeToCheck), 1);
+          sizeToCheck = block - sizeToCheck;
+        } else {
+          console.log('checking different size');
+          sizeToCheck--;
+        }
       }
+    })
+    console.log('spacesNeeded:', spacesNeeded);
+  }
 
-      return newTilesRemaining;
-    }
-
-
-
-    function calcTotalWeight() {
-      // TODO
-      console.log('calc Hush weight');
-
-    }
-
-    calcShippingBoxes.apply(this);
-    calcTotalWeight();
-    return hushShippingInfo;
+  private fill2xBoxes(sizesRemaining) {
+    // console.log('2x remaining sizes:', sizesRemaining);
   }
 
 
+  private calcTotalWeight() {
+    // TODO
+    console.log('calc Hush weight');
+
+  }
+
+  private sortHighToLow(arr) {
+    return arr.sort((a, b) => b - a);
+  }
 }
