@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { Location } from '@angular/common';
 import { GridSection } from '../_models/grid-section';
 import { PricesService } from '../_services/prices.service';
+import { HushBlocksShippingService } from './../_services/hush-blocks-shipping.service';
 
 @Injectable()
 export class Feature {
@@ -78,7 +79,8 @@ export class Feature {
     public debug: DebugService,
     public location: Location,
     public alert: AlertService,
-    public pricesService: PricesService
+    public pricesService: PricesService,
+    public hushShipping: HushBlocksShippingService
   ) {}
 
   setDesign(design: any) {
@@ -357,6 +359,8 @@ export class Feature {
     Object.keys(tileCount).forEach(tileId => {
       allServicesCost += servicePrices[tileId] * tileCount[tileId];
     });
+
+    const shippingInfo = this.hushShipping.hushBlocksShippingTotals(tileCount);
 
     // set totals
     this.services_amount = allServicesCost;
