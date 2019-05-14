@@ -48,7 +48,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   // Table Properties
   dataSource: TableDataSource | null;
   dataSubject = new BehaviorSubject<Order[]>([]);
-  displayedColumns = ['material', 'used', 'receiving', 'unused', 'total', 'edit'];
+  displayedColumns = ['material', 'used', 'receiving', 'unused', 'edit'];
 
   featureTitle = '';
   dimensionsText = '';
@@ -201,19 +201,19 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   setComponentProperties() {
     switch (this.feature.feature_type) {
       case 'hush':
-        this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
+        this.displayedColumns = ['hush-material', 'hush-receiving', 'edit'];
         this.showQuantityEstimator = false;
         this.showDesignYourFeatureButton = false;
         this.soldInSingleQuantities = true;
         break;
       case 'hushSwoon':
-        this.displayedColumns = ['hush-material', 'hush-receiving', 'total', 'edit'];
+        this.displayedColumns = ['hush-material', 'hush-receiving', 'edit'];
         this.dimensionsText = 'Hush Swoon tiles are 8.66" wide x 5.21" high x 1" deep';
         this.dimensionsImgUrl = '/assets/images/tiles/hush-swoon/hush-swoon-measurement.png';
         this.showDesignYourFeatureButton = false;
         break;
       case 'profile':
-        this.displayedColumns = ['profile-material', 'used', 'receiving', 'unused', 'total', 'edit'];
+        this.displayedColumns = ['profile-material', 'used', 'receiving', 'unused', 'edit'];
         this.dimensionsText = 'Swoon tiles are 8.66" wide x 5.21" high x 1" deep'; // TODO FOR DIFFERENT PROFILE TYPES
         this.dimensionsImgUrl = '/assets/images/tiles/hush-swoon/hush-swoon-measurement.png'; // TODO: get a profile one
         break;
