@@ -75,7 +75,7 @@
       </div>
       <div class="request-quote">
         <span appStyledButton='primary-right' *ngIf="!feature.quoted">
-          <button [disabled]="!feature.canQuote || !feature.estimated_amount" (click)="requestQuote()">Request
+          <button [disabled]="!feature.canQuote || !(feature.estimated_amount || seeyond.estimated_amount)" (click)="requestQuote()">Request
             Quote</button>
         </span>
       </div>
