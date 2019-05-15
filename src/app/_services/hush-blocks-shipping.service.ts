@@ -80,27 +80,33 @@ export class HushBlocksShippingService {
       }
     }
 
-    this.fillFullBoxes();
-    this.fillRemainingBoxes();
+    this.fillBoxes();
   }
 
-  private fillFullBoxes() {
-    // fill full boxes first
+  private fillBoxes() {
+    // For loop that fills each full box
     Object.keys(this.tilesRemaining).forEach(tileId => {
       const capacity1x4 = this.hushShippingData[tileId].box_capacity.oneByFour;
       const capacity2x2 = this.hushShippingData[tileId].box_capacity.twoByTwo;
       if (!!capacity1x4 && this.tilesRemaining[tileId] >= capacity1x4) {
-        console.log(`${tileId}: add ${Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.oneByFour)} boxes`);
+        // console.log(`${tileId}: add ${Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.oneByFour)} boxes`);
         this.currentShippingInfo.boxesRecommended.oneByFour += Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.oneByFour);
         this.tilesRemaining[tileId] = this.tilesRemaining[tileId] % this.hushShippingData[tileId].box_capacity.oneByFour;
       }
       if (!!capacity2x2 && this.tilesRemaining[tileId] >= capacity2x2) {
-        console.log(`${tileId}: add ${Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.twoByTwo)} boxes`);
+        // console.log(`${tileId}: add ${Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.twoByTwo)} boxes`);
         this.currentShippingInfo.boxesRecommended.twoByTwo += Math.floor(this.tilesRemaining[tileId] / this.hushShippingData[tileId].box_capacity.twoByTwo);
         this.tilesRemaining[tileId] = this.tilesRemaining[tileId] % this.hushShippingData[tileId].box_capacity.twoByTwo;
       }
     });
-    console.log('Shipping Info:', this.currentShippingInfo);
+    // console.log('Shipping Info:', this.currentShippingInfo);
+
+    let partialBoxes = false;
+    Object.entries(this.tilesRemaining).map(size => {
+      if (size[1] > 0) { partialBoxes = true; }
+    })
+
+    if (partialBoxes) { this.fillRemainingBoxes(); }
   }
 
   private fillRemainingBoxes() {
@@ -147,41 +153,70 @@ export class HushBlocksShippingService {
   private fillAOneByFourBox() {
     this.currentShippingInfo.boxesRecommended.oneByFour++;
     let boxCapacity = [4, 4, 4, 4, 4, 4];
+
     const sizesRemaining = this.getSizesRemaining('1');
     const tilesUsed = [];
 
-    for (let i = sizesRemaining.length - 1; i >= 0; i--) {
-      if (boxCapacity.includes(sizesRemaining[i])) {
-        tilesUsed.push(sizesRemaining[i]);
-        sizesRemaining.splice(i, 1);
-        boxCapacity = boxCapacity.splice(boxCapacity.indexOf(sizesRemaining[i]), 1);
+    function fillSpaces(tilesRemaining) {
+      // fill boxes with largest size first
+      for (let i = sizesRemaining.length - 1; i >= 0; i--) {
+        if (boxCapacity.includes(sizesRemaining[i])) {
+          tilesUsed.push(sizesRemaining[i]);
+          const tileId = `1-${sizesRemaining[i]}-2`;
+          tilesRemaining[tileId]--;
+          sizesRemaining.splice(i, 1);
+          boxCapacity = boxCapacity.splice(boxCapacity.indexOf(sizesRemaining[i]), 1);
+          if (sizesRemaining[i] === 3) {
+            // check for 1
+            console.log('look for 1');
+          }
+        }
       }
     }
+
+    const checkSizesToFill = [4, 3, 2, 1];
     if (boxCapacity.length > 0) {
-      const newBox = [];
-      let sizeAdjustment = 1;
-      boxCapacity.map(size => {
-        newBox.push(size - sizeAdjustment);
-        newBox.push(sizeAdjustment);
+      checkSizesToFill.map(size => {
+        let newBox = [];
+        switch (size) {
+          case 4:
+            newBox = [4, 4, 4, 4, 4, 4];
+            boxCapacity = newBox.sort((a, b) => b - a);
+            fillSpaces(this.tilesRemaining);
+            break;
+          case 3:
+            boxCapacity.map(ii => { newBox.push(3); newBox.push(1); });
+            boxCapacity = newBox.sort((a, b) => b - a);
+            fillSpaces(this.tilesRemaining);
+            break;
+          case 2:
+            boxCapacity.map(jj => {
+              if (jj === 3) {
+                newBox.push(2);
+                newBox.push(2);
+              }
+            })
+            boxCapacity = newBox.sort((a, b) => b - a);
+            fillSpaces(this.tilesRemaining);
+            break;
+          case 1:
+            const sum = boxCapacity.reduce((a, b) => a + b, 0);
+            newBox = Array(sum).fill(1)
+            boxCapacity = newBox.sort((a, b) => b - a);
+            fillSpaces(this.tilesRemaining);
+            break;
+        }
       })
-      boxCapacity = newBox;
     }
-
-    boxCapacity = this.sortHighToLow(boxCapacity);
-    console.log('sizesRemaining:', sizesRemaining);
-    console.log('box:', boxCapacity);
-
-    //remove the tiles
-    tilesUsed.map(tileSize => {
-      let tileId =`1-${tileSize}-2`;
-      this.tilesRemaining[tileId]--;
-    })
+    console.log('1xBoxesUsed:', this.currentShippingInfo.boxesRecommended.oneByFour);
+    if (this.getSizesRemaining('1').length > 0) {
+      this.fillRemainingBoxes();
+    }
   }
 
   private getSizesRemaining(tileType) {
     let sizesRemaining = [];
     Object.keys(this.tilesRemaining).forEach(tileId => {
-      console.log('tileId:', tileId);
       switch (tileType) {
         case '1':
           if (tileId.slice(0, 1) === '1') {
@@ -192,10 +227,10 @@ export class HushBlocksShippingService {
           }
           break;
         case '2':
-          console.log('2X2 box needed');
+          // console.log('2X2 box needed');
           break;
         case 'either':
-          console.log('either box needed');
+          // console.log('either box needed');
           break;
       }
     });
@@ -203,81 +238,29 @@ export class HushBlocksShippingService {
   }
 
   private fillATwoByTwoBox() {
-    console.log('fill twoByTwo');
+    // console.log('fill twoByTwo');
 
   }
 
   private fillEither() {
     console.log('fill either');
-
-  }
-
-  private fillA1xBox(sizesRemaining1x) {
-    // console.log('sizesRemaining1x', sizesRemaining1x);
-    // start with biggest box needed
-    const biggestBoxLeft = sizesRemaining1x[0];
-    this.currentShippingInfo.boxesRecommended[biggestBoxLeft]++;
-    const largestSizeLeft = `1-${sizesRemaining1x[0]}-2`;
-
-    // populate remaining spaces array
-    const spacesAvailable = [];
-    const remainingSpaces = this.hushShippingData[largestSizeLeft].capacity - this.tilesRemaining[largestSizeLeft];
-    for (let ii = 0; ii < remainingSpaces; ii++) {
-      spacesAvailable.push(biggestBoxLeft);
+    const boxesRecommended = this.currentShippingInfo.boxesRecommended;
+    if (boxesRecommended.oneByFour >= boxesRecommended.twoByTwo) {
+      this.fillAOneByFourBox();
+    } else {
+      this.fillATwoByTwoBox();
     }
-
-    // zero out the tilesRemaining for the biggest box left
-    // can do this because complete boxes have already been filled
-    this.tilesRemaining[largestSizeLeft] = 0;
-
-    // spaces needed to fill order
-    let spacesNeeded = [];
-    sizesRemaining1x.map(size => {
-      const sizeCount = this.tilesRemaining[`1-${size}-2`];
-      for (let jj = 0; jj < sizeCount; jj++) {
-        spacesNeeded.push(size);
-      }
-    });
-    spacesNeeded = this.sortHighToLow(spacesNeeded);
-
-    // fill spacesAvailable with spacesNeeded
-    // console.log('spacesNeeded:', spacesNeeded);
-    // console.log('spacesAvailable', spacesAvailable);
-    spacesAvailable.map((block) => {
-      // first check next size down and it's inverse
-      let sizeToCheck = block - 1;
-      while (sizeToCheck > 0) {
-        if (spacesNeeded.includes(sizeToCheck)) {
-          // console.warn('found one:', sizeToCheck);
-          this.tilesRemaining[`1-${sizeToCheck}-2`]--;
-          spacesAvailable.splice(spacesAvailable.indexOf(sizeToCheck), 1);
-          spacesNeeded.splice(spacesNeeded.indexOf(sizeToCheck), 1);
-          const complimentingSize = block - sizeToCheck;
-          if (spacesNeeded.includes(complimentingSize)) {
-            // console.warn('found compliment:', complimentingSize);
-            this.tilesRemaining[`1-${complimentingSize}-2`]--;
-            spacesAvailable.splice(spacesAvailable.indexOf(complimentingSize), 1);
-            spacesNeeded.splice(spacesNeeded.indexOf(complimentingSize), 1);
-          }
-          return;
-        } else {
-          // console.log('checking different size');
-          sizeToCheck--;
-        }
-      }
-    })
-    // console.log('spacesNeeded:', spacesNeeded);
-    if (spacesNeeded.length > 0) { this.fillA1xBox }
   }
+
 
   private fill2xBoxes(sizesRemaining) {
-    // console.log('2x remaining sizes:', sizesRemaining);
+    // // console.log('2x remaining sizes:', sizesRemaining);
   }
 
 
   private calcTotalWeight() {
     // TODO
-    // console.log('calc Hush weight');
+    // // console.log('calc Hush weight');
 
   }
 
