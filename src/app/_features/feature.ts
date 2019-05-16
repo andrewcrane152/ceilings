@@ -39,7 +39,12 @@ export class Feature {
   public tiles: any;
   public design_data_url: any;
   public hardware: any;
-  public estimated_amount = 0.0;
+  public estimated_amount = 0.0; // used to calc pricing for legacy purposes
+  public list_price = 0.0;
+  public discount_terms = [50, 10];
+  public discount_terms_string = '50/10';
+  public discount_amount = 0.0;
+  public net_price = 0.0;
   public services_amount = 0.0;
   public front_relief = true; // boolean
   public back_relief = false; // boolean
@@ -143,6 +148,7 @@ export class Feature {
     this.archived = false; // boolean
     this.updated_at = undefined;
     this.quantity = 1;
+    this.applyDealerPricing();
     this.resetAllValues.emit();
   }
 
@@ -165,7 +171,22 @@ export class Feature {
         this.getHushSwoonEstimate(tilesArray);
         break;
     }
+    this.applyDealerPricing();
     return this.estimated_amount;
+  }
+
+  applyDealerPricing() {
+    let discountTermsString = '';
+    const basePrice = this.estimated_amount * this.quantity;
+    this.estimated_amount = basePrice;
+    let discountedListPrice = this.list_price = basePrice * 2.5;
+    this.discount_terms.map(discount => {
+      discountTermsString = discountTermsString.concat(`${discount}/`);
+      discountedListPrice = discountedListPrice * (1 - (discount * 0.01));
+    });
+    this.net_price = discountedListPrice;
+    this.discount_terms_string = discountTermsString.substring(0, discountTermsString.length - 1);
+    this.discount_amount = this.list_price - this.net_price;
   }
 
   getDeprecatedMaterials() {
@@ -658,6 +679,7 @@ export class Feature {
   clearGridData() {
     this.gridData = undefined;
     this.estimated_amount = 0.0;
+    this.applyDealerPricing();
     this.buildGrid();
   }
 

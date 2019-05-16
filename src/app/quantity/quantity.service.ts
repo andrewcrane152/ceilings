@@ -127,6 +127,7 @@ export class QuantityService {
         this.feature.getHushSwoonEstimate(row);
         break;
     }
+    this.feature.applyDealerPricing();
   }
 
   updateSummary() {

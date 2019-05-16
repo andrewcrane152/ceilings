@@ -96,20 +96,29 @@
 
       .totals {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         justify-content: space-between;
         flex-direction: row;
-        height: 50px;
-        margin: 10px 0px;
+        margin: 20px 0px;
 
-        .est-total {
-          .total {
-            font-size: 1.1em;
-            font-weight: 600;
+        .est-totals {
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            .total {
+              font-weight: 600;
+              margin-left: 15px;
+              padding: 5px 0px;
+            }
+          }
+          hr {
+            margin: 5px;
           }
         }
 
-        .details-btn {}
+        .details-btn {
+          margin-bottom: -10px;
+        }
       }
     }
   }

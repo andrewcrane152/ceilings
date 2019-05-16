@@ -57,14 +57,28 @@
               <div class="description-text">Order multiples of your design</div>
             </span>
             <span class="multiples-input">
-              <input type="number" [(ngModel)]="feature.quantity" (change)="multiplesChanged()">
+              <input type="number" [(ngModel)]="requestedQuantity" (change)="multiplesChanged()">
             </span>
           </div>
-          <div id="estimated-total" class="info-section">
+          <div id="estimated-totals" class="info-section">
             <div class="info-line">
-              <span class="sub-header">Estimated total:</span>
-              <span>{{estimatedTotal | currency:'USD'}}</span>
+              <span class="sub-header">List:</span>
+              <span  class="total">{{feature.list_price | currency:'USD'}}</span>
             </div>
+            <div class="info-line">
+              <span class="sub-header">Discount:</span>
+              <span class="total">{{feature.discount_terms_string}}</span>
+            </div>
+            <div class="info-line">
+              <span class="sub-header">Discount ammount:</span>
+              <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
+            </div>
+            <hr>
+            <div class="info-line">
+              <span class="sub-header">Net (USD):</span>
+              <span class="total">{{feature.estimated_amount | currency:'USD'}}</span>
+            </div>
+            <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
         </div>
         <div class="input-line">
@@ -83,7 +97,7 @@
               </button>
             </span>
             <span>
-              <button class="cancel-modal-btn" (click)="dialogRef.close('cancel')">
+              <button class="cancel-modal-btn" (click)="closeDialog()">
                 <span>Cancel</span>
               </button>
             </span>
@@ -97,139 +111,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div *ngIf="user.uid"> -->
-<!-- <ng-container *ngIf="!feature.quoted">
-    <p class="text-center md" *ngIf="!feature.is_quantity_order">Confirm Your Design</p>
-    <p class="text-center md" *ngIf="feature.is_quantity_order">Confirm Your Quantity Order</p>
-  </ng-container> -->
-<!-- <h2 mat-dialog-title class="text-center" [ngClass]="{'hidden': !feature.quoted}">Your Design Has Been Received
-    <p class="subtitle">Check your inbox for details</p>
-    <p class="subtitle">
-      <a href="{{this.feature.feature_type}}/design/{{this.feature.id}}/details">View Printable Details Page</a>
-    </p>
-  </h2>
-  <div mat-dialog-content> -->
-
-
-
-<!-- NOT SEEYOND -->
-<!-- <dl class="dl-horizontal" *ngIf="feature.feature_type !== 'seeyond'">
-      <dt>Feature</dt>
-      <dd>{{feature.feature_type | capitalize}}</dd>
-      <ng-container *ngIf="!feature.is_quantity_order">
-        <dt>Width</dt>
-        <dd>{{feature.width}}{{units}}</dd>
-        <dt>Length</dt>
-        <dd>{{feature.length}}{{units}}</dd>
-      </ng-container>
-      <ng-container *ngIf="feature.is_quantity_order">
-        <dt>Tiles Used</dt>
-        <dd>{{feature.qtyTilesUsed}}</dd>
-        <dt>Tiles Receiving</dt>
-        <dd>{{feature.qtyTilesReceiving}}</dd>
-      </ng-container>
-      <dt>Estimated Amount</dt>
-      <dd>{{feature.estimated_amount | currency:'USD'}} USD</dd>
-      <dt *ngIf="feature.quoted">Project Name</dt>
-      <dd *ngIf="feature.quoted">{{feature.project_name}}</dd>
-      <dt *ngIf="feature.quoted">Specifier</dt>
-      <dd *ngIf="feature.quoted">{{feature.specifier}}</dd>
-    </dl> -->
-
-
-
-<!-- IS SEEYOND -->
-<!-- <dl class="dl-horizontal" *ngIf="feature.feature_type === 'seeyond'">
-      <dt>Feature</dt>
-      <dd>{{seeyond.seeyond_feature_type | capitalize}}</dd>
-      <dt>Width</dt>
-      <dd>{{seeyond.width}}{{units}}</dd>
-      <dt *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</dt>
-      <dt *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</dt>
-      <dd>{{seeyond.height}}{{units}}</dd>
-      <dt *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">Radius</dt>
-      <dd *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">{{seeyond.radius}}{{units}}</dd>
-      <dt *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">Ceiling Length</dt>
-      <dd *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">{{seeyond.ceiling_length}}{{units}}</dd>
-      <dt>Pattern</dt>
-      <dd>{{seeyond.tessellationStr | capitalize}}</dd>
-      <dt>Pattern Strength</dt>
-      <dd>{{seeyond.pattern_strength}}</dd>
-      <dt>Color</dt>
-      <dd>{{seeyond.material | capitalize}}</dd>
-      <dt *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling' || seeyond.seeyond_feature_type === 'ceiling'">Cove
-        Lighting</dt>
-      <dd *ngIf="!seeyond.cove_lighting && (seeyond.seeyond_feature_type === 'wall-to-ceiling' || seeyond.seeyond_feature_type === 'ceiling')">No</dd>
-      <dd *ngIf="seeyond.cove_lighting && (seeyond.seeyond_feature_type === 'wall-to-ceiling' || seeyond.seeyond_feature_type === 'ceiling')">Yes</dd>
-      <dt>Estimated Amount</dt>
-      <dd>{{seeyond.estimated_amount | currency:'USD'}} USD</dd>
-      <dt *ngIf="seeyond.quoted">Project Name</dt>
-      <dd *ngIf="seeyond.quoted">{{seeyond.project_name}}</dd>
-      <dt *ngIf="seeyond.quoted">Specifier</dt>
-      <dd *ngIf="seeyond.quoted">{{seeyond.specifier}}</dd>
-    </dl> -->
-
-
-
-<!-- ORDER MULTIPLES ==== seeyond and others -->
-<!-- <div class="row multiples-section" *ngIf="!feature.is_quantity_order">
-      <p class="multiples md">Order Multiples of Your Design</p>
-      <div class="multiples">
-        <div class="multiples-row">
-          <span>Quantity</span>
-          <input *ngIf="feature.feature_type !== 'seeyond'" [(ngModel)]="feature.quantity" type="number" class="number-input quantity-input">
-          <input *ngIf="feature.feature_type === 'seeyond'" [(ngModel)]="seeyond.quantity" type="number" class="number-input quantity-input">
-        </div>
-        <div class="multiples-row">
-          <span>Estimated Total</span>
-          <span *ngIf="feature.feature_type !== 'seeyond'">{{(feature.estimated_amount * feature.quantity) |
-            currency:'USD'}}</span>
-          <span *ngIf="feature.feature_type === 'seeyond'">{{(seeyond.estimated_amount * feature.quantity) |
-            currency:'USD'}}</span>
-        </div>
-      </div>
-      <hr>
-    </div> -->
-
-<!-- TEXT INPUTS -->
-<!-- <form (ngSubmit)="quoteConfirmed()" #confirmQuote="ngForm" *ngIf="!feature.quoted">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-            <mat-form-field class="full-width">
-              <input *ngIf="feature.feature_type !== 'seeyond'" type="text" placeholder="Project Name" name="project_name"
-                id="project_name" matInput mat-input required [(ngModel)]="feature.project_name">
-              <input *ngIf="feature.feature_type === 'seeyond'" type="text" placeholder="Project Name" name="project_name"
-                id="project_name" matInput mat-input required [(ngModel)]="seeyond.project_name">
-            </mat-form-field>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-            <mat-form-field class="full-width">
-              <input *ngIf="feature.feature_type !== 'seeyond'" type="text" placeholder="Specifier" name="specifier" id="specifier"
-                matInput mat-input required [(ngModel)]="feature.specifier">
-              <input *ngIf="feature.feature_type === 'seeyond'" type="text" placeholder="Specifier" name="specifier" id="specifier"
-                matInput mat-input required [(ngModel)]="seeyond.specifier">
-            </mat-form-field>
-          </div>
-        </div>
-      </div> -->
-
-<!-- BUTTONS -->
-<!-- <div class="text-center confirm-cancel">
-        <button mat-button type="submit" class="button button-gray" [disabled]="!validInputs()" [ngClass]="{'hidden': feature.quoted}">Confirm</button>
-        <button mat-button type="button" (click)="dialogRef.close('cancel')" class="button button-gray">Cancel</button>
-      </div>
-    </form> -->
-
-<!-- TILE USAGE -->
-<!-- <ng-container *ngIf="feature.feature_type !=='seeyond' && !feature.is_quantity_order">
-      <app-tile-usage [isImbedded]="true" *ngIf="feature.feature_type !=='velo'"></app-tile-usage>
-      <app-velo-tile-usage [isImbedded]="true" *ngIf="feature.feature_type === 'velo'"></app-velo-tile-usage>
-    </ng-container>
-  </div>
-</div> -->

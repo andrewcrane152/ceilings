@@ -35,6 +35,8 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   seeyondMaterial: string;
   seeyondCoveLighting: string;
 
+  requestedQuantity = 1;
+
   constructor(
     private router: Router,
     private debug: DebugService,
@@ -84,9 +86,12 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.formattedWidth = `${this.feature.width}${this.units}`;
       this.formattedLength = `${this.feature.length}${this.units}`;
     }
+    this.feature.applyDealerPricing();
   }
 
   multiplesChanged() {
+    this.feature.estimated_amount = this.feature.estimated_amount / this.feature.quantity;
+    this.feature.quantity = this.requestedQuantity;
     this.debug.log('quote-dialog', `multiples: ${this.feature.quantity}`);
     this.setTemplateValues();
   }
@@ -177,6 +182,12 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
         this.location.go(`seeyond/design/${feature.seeyond.name}/${feature.seeyond.id}`);
       });
     }
+    this.dialogRef.close();
+  }
+
+  closeDialog() {
+    this.requestedQuantity = 1;
+    this.multiplesChanged();
     this.dialogRef.close();
   }
 
