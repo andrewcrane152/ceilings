@@ -44,6 +44,7 @@ export class Feature {
   public discount_terms = [50, 10];
   public discount_terms_string = '50/10';
   public discount_amount = 0.0;
+  public pricing_multiplier = 2.5;
   public net_price = 0.0;
   public services_amount = 0.0;
   public front_relief = true; // boolean
@@ -179,7 +180,7 @@ export class Feature {
     let discountTermsString = '';
     const basePrice = this.estimated_amount * this.quantity;
     this.estimated_amount = basePrice;
-    let discountedListPrice = this.list_price = basePrice * 2.5;
+    let discountedListPrice = this.list_price = basePrice * this.pricing_multiplier;
     this.discount_terms.map(discount => {
       discountTermsString = discountTermsString.concat(`${discount}/`);
       discountedListPrice = discountedListPrice * (1 - (discount * 0.01));

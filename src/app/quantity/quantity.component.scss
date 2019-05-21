@@ -97,6 +97,7 @@
           justify-content: space-between;
           border-top: 1px solid #bbb;
           padding-top: 15px;
+          align-items: flex-end;
 
           .est-total-text {
             margin-right: 50px;
@@ -187,4 +188,19 @@ mat-header-cell:last-child {
 
 .height-adjust {
   height: 48px;
+}
+
+.est-totals {
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    .total {
+      font-weight: 600;
+      margin-left: 15px;
+      padding: 5px 0px;
+    }
+  }
+  hr {
+    margin: 5px;
+  }
 }

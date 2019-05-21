@@ -62,7 +62,6 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked() {}
 
   setTemplateValues() {
-    this.debug.log('quote-dialog', 'got here');
     this.isSeeyond = this.feature.getFeatureNameForUrl() === 'seeyond';
     this.isQuantityOrder = this.feature.is_quantity_order;
     this.featureType = this.feature.getFeatureHumanName();
@@ -86,12 +85,22 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.formattedWidth = `${this.feature.width}${this.units}`;
       this.formattedLength = `${this.feature.length}${this.units}`;
     }
+    if (this.isQuantityOrder) {
+      this.formattedWidth = '';
+      this.formattedLength = '';
+    }
     this.feature.applyDealerPricing();
   }
 
   multiplesChanged() {
     this.feature.estimated_amount = this.feature.estimated_amount / this.feature.quantity;
     this.feature.quantity = this.requestedQuantity;
+
+    // TODO: IMPORTANT, FIX THIS FOR SEEYOND
+    if (this.feature.feature_type === 'seeyond') {
+      this.seeyond.estimated_amount = this.seeyond.estimated_amount / this.feature.quantity;
+      this.seeyond.quantity = this.requestedQuantity;
+    }
     this.debug.log('quote-dialog', `multiples: ${this.feature.quantity}`);
     this.setTemplateValues();
   }

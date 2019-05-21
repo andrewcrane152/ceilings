@@ -1,129 +1,235 @@
 <ng-container *ngIf="!!design">
-  <div class="row">
-    <div class="col-sm-2">
-      <a class="hidden-print back-to-design" (click)="backToDesign()">
-        <span class="icomoon-chevron-left orange"></span> Back to Design</a>
-    </div>
-  </div>
-  <div class="row header">
-    <div class="col-sm-12">
-      <div class="row">
-        <div class="col-sm-6">
-          <p class="sm">Project:
-            <span class="md info">{{design.project_name}}</span>
-          </p>
-        </div>
-        <div class="col-sm-5">
-          <p class="sm">Feature:
-            <span class="md info">{{design.title}} - ID: {{design.id}}</span>
-          </p>
-        </div>
-        <div class="col-sm-1 hidden-print">
-          <p class="sm bold print" (click)="print()">
-            <span class="icomoon-print orange"></span> Print</p>
-        </div>
+  <div *ngIf="isSeeyond" class="details-ui">
+    <div class="top-section">
+      <div class="top-section-header">
+        <span class="project-name">
+          <!-- TODO: DO WE DISPLAY PROJECT NAME OR DESIGN NAME? -->
+          <span>{{design.design_name}}</span>
+        </span>
+        <span class="header-navigation">
+          <span id="print-icon" (click)="print()" class="icomoon-print orange">
+            <!-- TODO: REPLACE THIS WITH A PRINTER IMAGE FROM MAT -->
+            Print
+          </span>
+          <span appStyledButton='secondary-left' class="back-to-design">
+            <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
+          </span>
+        </span>
       </div>
-
-      <div class="row">
-        <div class="col-sm-6">
-          <p class="sm">Specifier:
-            <span class="md info">{{design.specifier}}</span>
-          </p>
-        </div>
-        <div class="col-sm-5">
-          <p class="sm">Design Total:
-            <span class="md info">{{design.estimated_amount | currency:'USD'}}
-              <sup>*</sup> USD</span>
-          </p>
-        </div>
-        <div class="col-sm-1">
-          <p class="xs bold">{{design.updated_at | date:'shortDate'}}</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <hr>
-
-  <div class="row">
-    <div class="col-sm-6">
-      <p class="sm">Dimensions:
-        <span class="md info">{{dimensionsStr}}</span>
-      </p>
-      <img class="grid-guide img-responsive" src="{{design.design_data_url}}" alt="Feature Image">
-    </div>
-    <div class="col-sm-6">
-      <dl class="dl-horizontal">
-        <dt>Feature</dt>
-        <dd>{{design.name | capitalize}}</dd>
-        <dt *ngIf="design.name === 'ceiling'">Length</dt>
-        <dt *ngIf="design.name !== 'ceiling'">Height</dt>
-        <dd>{{design.height}} {{design.units | shortendUnits}}</dd>
-        <dt>Width</dt>
-        <dd>{{design.width}} {{design.units | shortendUnits}}</dd>
-        <dt *ngIf="design.name === 'curved-partition'">Radius</dt>
-        <dd *ngIf="design.name === 'curved-partition'">{{design.radius}} {{design.units | shortendUnits}}</dd>
-        <dt *ngIf="design.name === 'wall-to-ceiling'">Ceiling Length</dt>
-        <dd *ngIf="design.name === 'wall-to-ceiling'">{{design.ceiling_length}} {{design.units | shortendUnits}}</dd>
-        <dt>Pattern</dt>
-        <dd>{{tessellationStr | capitalize}}</dd>
-        <dt>Pattern Strength</dt>
-        <dd>{{design.pattern_strength}}</dd>
-        <dt>Color</dt>
-        <dd>{{design.material | capitalize}}</dd>
-        <dt *ngIf="design.name === 'wall-to-ceiling' || design.name === 'ceiling'">Cove Lighting</dt>
-        <dd *ngIf="!design.cove_lighting && (design.name === 'wall-to-ceiling' || design.name === 'ceiling')">No</dd>
-        <dd *ngIf="design.cove_lighting && (design.name === 'wall-to-ceiling' || design.name === 'ceiling')">Yes</dd>
-        <dt>Estimated Amount</dt>
-        <dd>{{design.estimated_amount | currency:'USD'}} USD</dd>
-        <dt>Project Name</dt>
-        <dd>{{design.project_name}}</dd>
-        <dt>Specifier</dt>
-        <dd>{{design.specifier}}</dd>
-      </dl>
-      <div class="row multiples-section">
-        <p class="multiples md">Total Quantity Ordered</p>
-        <div class="multiples">
-          <div class="multiples-row">
-            <span>Quantity Ordered</span>
-            <span>{{design.quantity || 1}}</span>
+      <div class="design-details">
+        <!-- LEFT-COLUMN -->
+        <div class="contact-info rfq-data">
+          <div class="top-row">
+            <div class="left">
+              <div>
+                <span class="orange-bold">ID</span>
+                <span>{{design.id}}</span>
+              </div>
+              <div>
+                <span class="orange-bold">Specifier</span>
+                <span>{{design.specifier}}</span>
+              </div>
+              <div>
+                <span class="orange-bold">Date</span>
+                <!-- TODO: GET THE DATE TO DISPLAY IT -->
+                <span>{{design.updated_at | date:'shortDate'}}</span>
+              </div>
+            </div>
+            <div class="right" *ngIf="!!rep">
+              <div class="orange-bold">Sales Representative</div>
+              <div>{{rep.name}}</div>
+              <div>{{rep.email}}</div>
+              <div>{{rep.phone}}</div>
+            </div>
           </div>
-          <div class="multiples-row">
-            <span>Estimated Total</span>
-            <span>{{((design.estimated_amount * design.quantity) || (design.estimated_amount))| currency:'USD'}}
-              <sup>*</sup>
-            </span>
+          <div class="bottom-row">
+              <div class="details-header">Est. Total</div>
+              <div id="estimated-totals" class="info-section">
+                <div class="info-line">
+                  <span>List:</span>
+                  <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>
+                </div>
+                <div class="info-line">
+                  <span>Discount:</span>
+                  <span class="total">{{seeyond.discount_terms_string}}</span>
+                </div>
+                <div class="info-line">
+                  <span>Discount amount:</span>
+                  <span class="total">{{seeyond.discount_amount | currency:'USD'}}</span>
+                </div>
+                <hr>
+                <div class="info-line net">
+                  <span class="details-header">Net (USD):</span>
+                  <span class="total details-header">{{seeyond.estimated_amount | currency:'USD'}}</span>
+                </div>
+                <div class="description-text">Taxes, shipping & handling not included</div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+
+          <!-- RIGHT-COLUMN -->
+          <div class="feature-info rfq-data">
+            <div class="top-row">
+              <div class="left">
+                <div class="details-header">Feature</div>
+                <!-- TODO: GET THE SEEYOND FEATURE TYPE, NOT JUST SEEYOND -->
+                <div>{{featureHumanName}}</div>
+              </div>
+              <div class="right">
+                <div class="details-header">Quantity Receiving</div>
+                <div>Total - {{design.quantity || 1}}</div>
+              </div>
+            </div>
+            <div class="bottom-row">
+              <div class="left">
+                <div class="details-header">Dimensions</div>
+                <div>{{dimensionStr}}</div>
+              </div>
+              <div class="right"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="row footer">
-    <div class="col-sm-6">
-      <div class="row">
-        <div class="col-sm-2">
-          <div class="logo">
-            <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
-          </div>
+      <div class="bottom-section">
+        <div class="left-side">
         </div>
-        <div class="col-sm-10" *ngIf="rep">
-          <p class="rep-name">
-            <span class="bold">{{rep.name}}</span> Sales Rep</p>
-          <p class="rep-info">{{rep.phone}} | {{rep.email}}</p>
+        <div class="right-side">
+          <div class="details-header">Design</div>
+          <img class="grid-guide img-responsive" src="{{design.design_data_url}}" alt="Grid Guide Image">
         </div>
       </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="row">
-        <div class="col-sm-9">
-          <p class="xs">
-            <sup>*</sup>Taxes, Shipping and Handling not included</p>
-        </div>
-        <div class="col-sm-3">
-          <p class="xs orange pull-right">3-form.com</p>
-        </div>
+      <div class="logo-footer">
+        <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
       </div>
     </div>
-  </div>
 </ng-container>
+
+
+    <!-- <div class="row">
+      <div class="col-sm-2">
+        <a class="hidden-print back-to-design" (click)="backToDesign()">
+          <span class="icomoon-chevron-left orange"></span> Back to Design</a>
+      </div>
+    </div>
+    <div class="row header">
+      <div class="col-sm-12">
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="sm">Project:
+              <span class="md info">{{design.project_name}}</span>
+            </p>
+          </div>
+          <div class="col-sm-5">
+            <p class="sm">Feature:
+              <span class="md info">{{design.title}} - ID: {{design.id}}</span>
+            </p>
+          </div>
+          <div class="col-sm-1 hidden-print">
+            <p class="sm bold print" (click)="print()">
+              <span class="icomoon-print orange"></span> Print</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <p class="sm">Specifier:
+              <span class="md info">{{design.specifier}}</span>
+            </p>
+          </div>
+          <div class="col-sm-5">
+            <p class="sm">Design Total:
+              <span class="md info">{{design.estimated_amount | currency:'USD'}}
+                <sup>*</sup> USD</span>
+            </p>
+          </div>
+          <div class="col-sm-1">
+            <p class="xs bold">{{design.updated_at | date:'shortDate'}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <p class="sm">Dimensions:
+          <span class="md info">{{dimensionsStr}}</span>
+        </p>
+        <img class="grid-guide img-responsive" src="{{design.design_data_url}}" alt="Feature Image">
+      </div>
+      <div class="col-sm-6">
+        <dl class="dl-horizontal">
+          <dt>Feature</dt>
+          <dd>{{design.name | capitalize}}</dd>
+          <dt *ngIf="design.name === 'ceiling'">Length</dt>
+          <dt *ngIf="design.name !== 'ceiling'">Height</dt>
+          <dd>{{design.height}} {{design.units | shortendUnits}}</dd>
+          <dt>Width</dt>
+          <dd>{{design.width}} {{design.units | shortendUnits}}</dd>
+          <dt *ngIf="design.name === 'curved-partition'">Radius</dt>
+          <dd *ngIf="design.name === 'curved-partition'">{{design.radius}} {{design.units | shortendUnits}}</dd>
+          <dt *ngIf="design.name === 'wall-to-ceiling'">Ceiling Length</dt>
+          <dd *ngIf="design.name === 'wall-to-ceiling'">{{design.ceiling_length}} {{design.units | shortendUnits}}</dd>
+          <dt>Pattern</dt>
+          <dd>{{tessellationStr | capitalize}}</dd>
+          <dt>Pattern Strength</dt>
+          <dd>{{design.pattern_strength}}</dd>
+          <dt>Color</dt>
+          <dd>{{design.material | capitalize}}</dd>
+          <dt *ngIf="design.name === 'wall-to-ceiling' || design.name === 'ceiling'">Cove Lighting</dt>
+          <dd *ngIf="!design.cove_lighting && (design.name === 'wall-to-ceiling' || design.name === 'ceiling')">No</dd>
+          <dd *ngIf="design.cove_lighting && (design.name === 'wall-to-ceiling' || design.name === 'ceiling')">Yes</dd>
+          <dt>Estimated Amount</dt>
+          <dd>{{design.estimated_amount | currency:'USD'}} USD</dd>
+          <dt>Project Name</dt>
+          <dd>{{design.project_name}}</dd>
+          <dt>Specifier</dt>
+          <dd>{{design.specifier}}</dd>
+        </dl>
+        <div class="row multiples-section">
+          <p class="multiples md">Total Quantity Ordered</p>
+          <div class="multiples">
+            <div class="multiples-row">
+              <span>Quantity Ordered</span>
+              <span>{{design.quantity || 1}}</span>
+            </div>
+            <div class="multiples-row">
+              <span>Estimated Total</span>
+              <span>{{((design.estimated_amount * design.quantity) || (design.estimated_amount))| currency:'USD'}}
+                <sup>*</sup>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row footer">
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-2">
+            <div class="logo">
+              <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+            </div>
+          </div>
+          <div class="col-sm-10" *ngIf="rep">
+            <p class="rep-name">
+              <span class="bold">{{rep.name}}</span> Sales Rep</p>
+            <p class="rep-info">{{rep.phone}} | {{rep.email}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="row">
+          <div class="col-sm-9">
+            <p class="xs">
+              <sup>*</sup>Taxes, Shipping and Handling not included</p>
+          </div>
+          <div class="col-sm-3">
+            <p class="xs orange pull-right">3-form.com</p>
+          </div>
+        </div>
+      </div>
+    </div> -->

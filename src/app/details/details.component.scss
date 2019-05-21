@@ -2,21 +2,25 @@
   margin: 30px 0px;
 
   .top-section {
-    .section-header {
-      font-size: 2em;
-      font-weight: 500;
+    .top-section-header {
       display: flex;
       justify-content: space-between;
 
-      .orange {
-        // TODO: REPLACE THIS WITH IMG FROM MAT
-        height: 15px;
-        color: #ff9e1b;
+      .project-name {
+        font-size: 2em;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+
       }
 
-      .back-to-design {
-        font-size: 1em;
-        font-weight: 400;
+      .header-navigation {
+        display: flex;
+
+        .back-to-design {
+          font-size: 1em;
+          font-weight: 400;
+        }
       }
     }
 
@@ -33,9 +37,9 @@
         border-top: 4px solid black;
         padding: 15px 0px;
 
-        .top-row,
-        .bottom-row {
+        .top-row {
           display: flex;
+          margin-bottom: 10px;
 
           .left,
           .right {
@@ -44,8 +48,30 @@
           }
         }
 
-        .top-row {
-          margin-bottom: 10px;
+        .bottom-row {
+          hr {
+            margin: 5px 0px;
+          }
+
+          .info-section {
+            width: 100%;
+            padding-right: 35%;
+          }
+
+          .info-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 1.5em;
+
+            .total {
+              text-align: right;
+            }
+          }
+
+          .net {
+            margin: 5px 0px;
+          }
         }
       }
 

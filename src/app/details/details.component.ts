@@ -48,6 +48,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
       const designId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10);
       if (!!designId) {
         if (params['type'] === 'seeyond') {
+          this.feature.feature_type = 'seeyond';
           this.isSeeyond = true;
           this.seeyondApi.loadFeature(designId).subscribe(design => {
             if (!design.quoted) {
@@ -95,13 +96,35 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   ngAfterContentInit() {}
 
   setTemplateValues() {
+    if (this.isSeeyond) {
+      this.setSeeyondValues();
+    }
     this.featureHumanName = this.feature.getFeatureHumanName();
     this.dimensionStr = this.setDimensionStr();
     this.tilesSoldString = this.feature.packageInformation();
     this.getTotals();
+    this.feature.applyDealerPricing();
+  }
+
+  setSeeyondValues() {
+    this.seeyond.estimated_amount = this.design.estimated_amount;
+    this.seeyond.applyDealerPricing();
+    this.seeyond.depth = this.design.depth;
+    this.seeyond.width = this.design.width;
+    this.seeyond.height = this.design.height;
+    this.seeyond.ceiling_length = this.design.ceiling_length;
+    this.seeyond.radius = this.design.radius;
   }
 
   setDimensionStr() {
+    if (this.isSeeyond) {
+      this.seeyond.depth = this.design.depth;
+      this.seeyond.width = this.design.width;
+      this.seeyond.height = this.design.height;
+      this.seeyond.ceiling_length = this.design.ceiling_length;
+      this.seeyond.radius = this.design.radius;
+      return this.seeyond.getDimensionString(this.feature.units);
+    }
     const unitAbbreviation = this.feature.units === 'inches' ? `\"` : `cm`;
     switch (this.feature.feature_type) {
       case 'tetria':
