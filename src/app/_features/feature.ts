@@ -47,6 +47,7 @@ export class Feature {
   public pricing_multiplier = 2.5;
   public net_price = 0.0;
   public services_amount = 0.0;
+  public showPricing = false;
   public front_relief = true; // boolean
   public back_relief = false; // boolean
   public quoted = false; // boolean

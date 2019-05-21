@@ -17,6 +17,7 @@ export class ApiService {
   public onUserLoggedIn = new EventEmitter();
   apiUrl = 'https://' + environment.API_URL + '/ceilings/';
   loginUrl = 'https://' + environment.API_URL + '/auth/login';
+  accessUrl = 'https://' + environment.API_URL + '/auth/check_access';
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
@@ -166,6 +167,29 @@ export class ApiService {
           localStorage.setItem('3formUser', JSON.stringify(res.result.user));
           this.user = res.result.user;
           this.onUserLoggedIn.emit(this.user);
+          return res;
+        } else {
+          this.alert.apiAlert(res.result.error);
+        }
+      }),
+      catchError(res => {
+        this.alert.error(res.error.result.message);
+        return 'error';
+      })
+    );
+  }
+
+  checkAccessToPricing() {
+    const userInfo = JSON.parse(localStorage.getItem('3formUser'));
+    const uid = !!userInfo ? userInfo.uid : '';
+    const accessUrl = `${this.accessUrl}?permission=Employee&uid=${userInfo.uid}`;
+    return this.http.post(accessUrl, {}).pipe(
+      map((res: any) => {
+        if (res && !res.result.error) {
+          userInfo['showPricing'] = res.result.access;
+          this.feature.showPricing = res.result.access;
+          localStorage.setItem('3formUser', JSON.stringify(userInfo));
+          console.log('user:', localStorage.getItem('3formUser'));
           return res;
         } else {
           this.alert.apiAlert(res.result.error);

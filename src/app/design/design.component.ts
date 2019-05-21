@@ -272,6 +272,18 @@ export class DesignComponent implements OnInit, OnDestroy {
   }
 
   setVisualProperties(feature) {
+    if (!!localStorage.getItem('3formUser')) {
+      this.api.checkAccessToPricing().subscribe(
+        data => {
+            this.feature.showPricing = data.result.access;
+        },
+        error => {
+          if (error) {
+            this.api.handleError(error);
+          }
+        }
+      );
+    }
     switch (feature) {
       case 'seeyond':
         this.showSeeyondOptions = true;
