@@ -1,16 +1,18 @@
 <app-seeyond-details *ngIf="isSeeyond"></app-seeyond-details>
 <div *ngIf="!isSeeyond" class="details-ui">
   <div class="top-section">
-    <div class="section-header">
-      <span>
-        <span>{{feature.project_name}}</span>
-        <!-- <span appStyledButton='secondary-left' class="back-to-design">
-          <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
-        </span> -->
-      </span>
-      <!--TODO: get the image-->
-      <span id="print-icon" (click)="print()" class="icomoon-print orange"></span>
-    </div>
+      <div class="top-section-header">
+          <span class="project-name">
+            <!-- TODO: DO WE DISPLAY PROJECT NAME OR DESIGN NAME? -->
+            <span>{{feature.design_name}}</span>
+          </span>
+          <span class="header-navigation">
+            <img src="/assets/icons/printer_icon.png" (click)="print()">
+            <span appStyledButton='secondary-left' class="back-to-design">
+              <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
+            </span>
+          </span>
+        </div>
     <div class="design-details">
 
       <!-- LEFT-COLUMN -->
