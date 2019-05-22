@@ -401,6 +401,7 @@ export class SeeyondFeature extends Feature {
 
     this.estimated_amount = totalProductsCost + totalHardwareCost + this.services_amount;
     this.debug.log('seeyond', `estimated amount: ${this.estimated_amount}`);
+    this.applyDealerPricing();
     return this.estimated_amount;
   }
 

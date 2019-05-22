@@ -37,7 +37,7 @@
     </div>
     <div class="grid-footer" *ngIf="!showSeeyondOptions">
       <span class="tile-usage" appStyledButton='secondary-left'>
-        <button (click)="tileUsage()">View tile usage</button>
+        <button [disabled]="feature.feature_type === 'seeyond' || (!feature.canQuote || !feature.estimated_amount)" (click)="tileUsage()">View tile usage</button>
       </span>
       <span class="quantities-sold" *ngIf="!!quantitiesString">
         <span class="sub-header">{{quantitiesString}}</span>
@@ -60,291 +60,69 @@
     </div>
     <div class="bottom-section">
       <div class="totals">
-        <span class="est-total">
-          <span class="sub-header">Est. Total:&nbsp;&nbsp;</span>
-          <span *ngIf="feature.feature_type !== 'seeyond'" class="total">{{feature.estimated_amount | currency:'USD'}}
-            USD</span>
-          <span *ngIf="feature.feature_type === 'seeyond'" class="total">{{seeyond.estimated_amount | currency:'USD'}}
-            USD</span>
+        <span class="est-totals" *ngIf="feature.feature_type !== 'seeyond' && feature.showPricing" >
+          <div class="total-row">
+            <span class="sub-header">List:</span>
+            <span  class="total">{{feature.list_price | currency:'USD'}}</span>
+          </div>
+          <div class="total-row">
+            <span class="sub-header">Discount:</span>
+            <span class="total">{{feature.discount_terms_string}}</span>
+          </div>
+          <div class="total-row">
+            <span class="sub-header">Discount amount:</span>
+            <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
+          </div>
+          <hr>
+          <div class="total-row">
+            <span class="sub-header">Net (USD):</span>
+            <span class="total">{{feature.estimated_amount | currency:'USD'}}</span>
+          </div>
         </span>
-        <span class="details-btn">
+        <span class="est-totals" *ngIf="feature.feature_type === 'seeyond' && feature.showPricing" >
+          <div class="total-row">
+            <span class="sub-header">List:</span>
+            <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>
+          </div>
+          <div class="total-row">
+            <span class="sub-header">Discount:</span>
+            <span class="total">{{seeyond.discount_terms_string}}</span>
+          </div>
+          <div class="total-row">
+            <span class="sub-header">Discount amount:</span>
+            <span class="total">{{seeyond.discount_amount | currency:'USD'}}</span>
+          </div>
+          <hr>
+          <div class="total-row">
+            <span class="sub-header">Net (USD):</span>
+            <span class="total">{{seeyond.estimated_amount | currency:'USD'}}</span>
+          </div>
+        </span>
+
+        <span class="details-btn" *ngIf="feature.feature_type !== 'seeyond'">
           <span appStyledButton='secondary-left' *ngIf="feature.quoted">
             <button (click)="viewDetails()">Details</button>
           </span>
         </span>
+        <span class="details-btn" *ngIf="feature.feature_type === 'seeyond'">
+          <span appStyledButton='secondary-left' *ngIf="seeyond.quoted">
+            <button (click)="viewDetails()">Details</button>
+          </span>
+        </span>
       </div>
-      <div class="request-quote">
+
+      <div class="request-quote" *ngIf="feature.feature_type !== 'seeyond'">
         <span appStyledButton='primary-right' *ngIf="!feature.quoted">
           <button [disabled]="!feature.canQuote || !feature.estimated_amount" (click)="requestQuote()">Request
+            Quote</button>
+        </span>
+      </div>
+      <div class="request-quote" *ngIf="feature.feature_type === 'seeyond'">
+        <span appStyledButton='primary-right' *ngIf="!seeyond.quoted">
+          <button [disabled]="!seeyond.canQuote || !seeyond.estimated_amount" (click)="requestQuote()">Request
             Quote</button>
         </span>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
-
-<!-- <div class="row" *ngIf="canQtyOrder">
-      <div class="col-sm-4 navigation">
-        <a class="hidden-print back-to-design" (click)="goToQtyOrder()">
-          <span class="icomoon-chevron-left orange"></span>Order by quantity</a>
-      </div>
-    </div>
-    <div class="design-header">
-      <div class="row">
-        <div class="col-sm-4">
-          <p class="md project-name">{{feature.design_name | capitalize}}
-            <a id="edit-project-name" class="edit-link" title="Edit Project Name" (click)="editOptions()">Edit</a>
-          </p>
-        </div>
-        <div class="col-sm-8">
-          <div class="row">
-            <div class="col-sm-8">
-              <p class="md">Est. Total: {{feature.estimated_amount | currency:'USD'}} USD
-                <span class="sm">
-                  <sup>*</sup>Taxes, Shipping and Handling not included.</span>
-              </p>
-            </div>
-            <div class="col-sm-4">
-              <button *ngIf="!feature.quoted" class="button button-orange design-quote pull-right" [disabled]="!feature.canQuote" (click)="requestQuote()">Request Quote</button>
-              <button *ngIf="feature.quoted" class="button button-orange design-quote pull-right" (click)="viewDetails()">View Details</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="bg-white">
-      <div class="separator"></div>
-    </div>
-    <div class="design-ui">
-      <div class="row full-height">
-        <div class="col-sm-9 full-height">
-          <div class="grid-wrapper col-sm-12">
-            <div class="grid-header">
-              <div *ngIf="feature.feature_type!='velo'">
-                <p *ngIf="feature.feature_type!='hush' && feature.feature_type!='clario'">{{feature.width}} W x {{feature.length}} L ({{feature.units | shortendUnits}}) | 24 x {{feature.tile_size}}
-                  {{feature.feature_type | capitalize}}
-                  <a id="edit-grid" class="edit-link" title="Edit Grid Size" (click)="editOptions()">Edit</a>
-                </p>
-                <p *ngIf="feature.feature_type=='clario'">{{feature.width}} W x {{feature.length}} L ({{feature.units | shortendUnits}}) | {{clarioGrids.selectedTileSize?.name}}
-                  {{feature.feature_type | capitalize}}
-                  <a id="edit-grid" class="edit-link" title="Edit Grid Size" (click)="editOptions()">Edit</a>
-                </p>
-                <p *ngIf="feature.feature_type=='hush'">{{feature.width}} W x {{feature.length}} H ({{feature.units | shortendUnits}}) | 24 x {{feature.tile_size}}
-                  Hush Blocks &nbsp;
-                  <a id="edit-grid" class="edit-link" title="Edit Grid Size" (click)="editOptions()">Edit</a>
-                </p>
-              </div>
-              <div>
-                <p>
-                  <a id="save-btn" title="save design" (click)="saveDesign()">
-                    <span class="icomoon-folder orange"></span>
-                    <span *ngIf="user.isLoggedIn()">Save</span>
-                    <span *ngIf="!user.isLoggedIn()">Login to save</span>
-                  </a> |
-                  <a id="load-btn" title="load saved designs" (click)="loadDesigns()">Load</a>
-                </p>
-              </div>
-              <div *ngIf="feature.feature_type=='velo'">
-                <div class="toggle-button-form-wrapper">
-                  <mat-button-toggle-group #units="matButtonToggleGroup" (change)="feature.updateGridUnits(units.value)" value="{{feature.units}}">
-                    <mat-button-toggle value="inches" id="inches-toggle" class="small-toggle">IN</mat-button-toggle>
-                    <mat-button-toggle value="centimeters" id="cm-toggle" class="small-toggle">CM</mat-button-toggle>
-                  </mat-button-toggle-group>
-                </div>
-                <button id="toggle-grid-labels" title="toggle the guide" class="button button-gray orange" (click)="feature.toggleGuide()">Guides</button>
-                <button id="view3d-btn" title="view design in 3D" class="button button-gray orange" [disabled]="(!feature.tiles)" (click)="feature.view3d()">3D View</button>
-              </div>
-              <div *ngIf="feature.feature_type!='velo'">
-                <button id="toggle-grid-labels" title="toggle the guide" class="button button-gray orange" (click)="feature.toggleGuide()">Guides</button>
-                <button id="view3d-btn" title="view design in 3D" class="button button-gray orange" [disabled]="(!feature.tiles)" (click)="feature.view3d()">3D View</button>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-12">
-                <app-grid *ngIf="!useCanvasGrid"></app-grid>
-                <app-canvas-grids *ngIf="useCanvasGrid" class="canvas-grid-container"></app-canvas-grids>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-3 full-height" *ngIf="featureTiles">
-          <div class="row tiles">
-            <p class="md">Design</p>
-
-
-            <div *ngIf="feature.feature_type === 'clario'" class="tile-options">
-              <div *ngFor="let tile of featureTiles | keys" matTooltip="{{tile.name | capitalize}}" [matTooltipPosition]="position" (click)="feature.updateSelectedTile(tile)"
-                class="tile-option-row" [class.hide]="feature.tile_image_type==24 && tile.tile_size==48">
-                <div *ngIf="tile.tile_size_type === clarioGrids.tile_size_type">
-                  <div class="tile" [class.selected]="feature.selectedTile?.tile_size==tile.tile_size">
-                    <img src="{{tile.image}}" alt="{{tile.tile | capitalize}}" class="img-responsive">
-                  </div>
-                  <p class="text-center xs">{{tile.name | capitalize}}</p>
-                </div>
-              </div>
-            </div>
-
-
-            <div *ngIf="(feature.feature_type !== 'hush') && (feature.feature_type !== 'clario')" class="tile-options">
-              <div *ngFor="let tile of featureTiles | keys" matTooltip="{{tile.name | capitalize}}" [matTooltipPosition]="position" (click)="feature.updateSelectedTile(tile)"
-                class="tile-option-row tooltip-host">
-                <div class="tile" [class.selected]="feature.selectedTile?.tile==tile.tile">
-                  <img src="{{tile.image}}" alt="{{tile.tile | capitalize}}" class="img-responsive">
-                </div>
-                <p class="text-center xs">{{tile.name | capitalize}}</p>
-              </div>
-            </div>
-          </div>
-          <div class="row velo-materials" *ngIf="feature.feature_type === 'velo'">
-            <mat-tab-group class="velo-materials-tab-group" mat-stretch-tabs>
-              <mat-tab label="Merino">
-                <div class="merino-felt-materials" *ngIf="materials.felt">
-                  <div *ngFor="let felt of materials.felt | keys" (click)="feature.updateSelectedMaterial(felt.material, felt.hex, 'felt')">
-                    <div *ngIf="felt.status === 'active'" matTooltip="{{felt.material | capitalize}}" [matTooltipPosition]="position" [attr.data-hex]="felt.hex"
-                      class="col-sm-2 material tooltip-host">
-                      <img src="{{felt.image}}" alt="{{felt.material | capitalize}}" class="circle img-responsive" [class.selected]="feature.material==felt.material">
-                    </div>
-                  </div>
-                </div>
-              </mat-tab>
-              <mat-tab label="Varia">
-                <div class="varia-materials" *ngIf="materials.varia">
-                  <div *ngFor="let varia of materials.varia.color | keys last as isLast" (click)="feature.updateSelectedMaterial(varia.material, varia.hex, 'varia')">
-                    <div *ngIf="varia.status === 'active'" matTooltip="{{varia.material | capitalize}}" [matTooltipPosition]="position" class="col-sm-2 material tooltip-host">
-                      <div *ngIf="!isLast" class="circle" [class.selected]="feature.material==varia.material" [style.background-color]="varia.hex"
-                        [ngClass]="{'is-clear': varia.material==='clear'}"></div>
-                      <div *ngIf="isLast" class="circle no-color-selection" [ngClass]="{'block-selected': feature.material==varia.material}">
-                        <span class="icomoon-blocked"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="varia-list">
-                  <ul class="list-inline velo-diffusion-list">
-                    <li *ngIf="feature.feature_type == 'velo'" (click)="feature.updateSelectedDiffusion('avalanche_d01')">
-                      <div class="tool velo-diffusion" [class.selected]="feature.diffusion=='avalanche_d01'">
-                        <img class="img-responsive" src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01">
-                      </div>
-                      <p class="text-center diffusion">Avalanche D01</p>
-                    </li>
-                    <li *ngIf="feature.feature_type == 'velo'" (click)="feature.updateSelectedDiffusion('vapor_w05')">
-                      <div class="tool velo-diffusion" [class.selected]="feature.diffusion=='vapor_w05'">
-                        <img class="img-responsive" src="/assets/icons/tools/vapor_w05.jpg" alt="Vapor W05">
-                      </div>
-                      <p class="text-center diffusion">Vapor W05</p>
-                    </li>
-                  </ul>
-                </div>
-              </mat-tab>
-            </mat-tab-group>
-          </div>
-          <div class="row materials" *ngIf="feature.feature_type !== 'velo'">
-            <div *ngFor="let material of materials | keys" (click)="feature.updateSelectedMaterial(material.material)">
-              <div *ngIf="material.status === 'active'" matTooltip="{{material.material | capitalize}}" class="material col-sm-2 tooltip-host"
-                [matTooltipPosition]="position">
-                <img src="{{material.image}}" alt="{{material.material | capitalize}}" class="circle img-responsive" [class.selected]="feature.material==material.material">
-              </div>
-              <div class="varia-list">
-                <ul class="list-inline velo-diffusion-list">
-                  <li *ngIf="feature.feature_type == 'velo'" (click)="feature.updateSelectedDiffusion('avalanche_d01')">
-                    <div class="tool velo-diffusion" [class.selected]="feature.diffusion=='avalanche_d01'">
-                      <img class="img-responsive" src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01">
-                    </div>
-                    <p class="text-center diffusion">Avalanche D01</p>
-                  </li>
-                  <li *ngIf="feature.feature_type == 'velo'" (click)="feature.updateSelectedDiffusion('vapor_w05')">
-                    <div class="tool velo-diffusion" [class.selected]="feature.diffusion=='vapor_w05'">
-                      <img class="img-responsive" src="/assets/icons/tools/vapor_w05.jpg" alt="Vapor W05">
-                    </div>
-                    <p class="text-center diffusion">Vapor W05</p>
-                  </li>
-                </ul>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-        </div>
-        <div class="row materials" *ngIf="feature.feature_type !== 'velo'">
-          <div *ngFor="let material of materials | keys" (click)="feature.updateSelectedMaterial(material.material, material.hex)">
-            <div *ngIf="material.status === 'active'" matTooltip="{{material.material | capitalize}}" class="material col-sm-2 tooltip-host"
-              [matTooltipPosition]="position">
-              <img src="{{material.image}}" alt="{{material.material | capitalize}}" class="circle img-responsive" [class.selected]="feature.material==material.material">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12 actions">
-              <button *ngIf="feature.feature_type!='velo'" class="button button-gray return-ceilings orange" (click)="feature.applyAll()">Apply All</button>
-              <button class="button button-gray return-ceilings orange" (click)="feature.clearGridData()">Clear All</button>
-            </div>
-          </div>
-          <hr class="nine-pixels">
-          <div class="row">
-            <div class="col-sm-12 tools-header">
-              <p class="md no-bottom-margin" *ngIf="feature.feature_type!='hush'">Modify</p>
-              <p class="md no-bottom-margin" *ngIf="feature.feature_type=='hush'">Modify Tiles</p>
-            </div>
-          </div>
-          <ul class="row tools list-inline">
-            <li *ngFor="let tool of feature.toolsArray last as isLast; index as i" (click)="feature.updateSelectedTool(tool)" class="tool-container"
-              [class.add-margin-left]="i === 2" [class.hide]="feature.feature_type=='velo' && tool !='remove'">
-              <div class="tool" [class.selected]="feature.selectedTool==tool" [class.add-border-right]="isLast || i === 1">
-                <img src="/assets/icons/tools/{{tool}}.png" alt="{{tool | capitalize}}" class="img-responsive">
-              </div>
-              <p class="text-center no-bottom-margin">{{tool | capitalize}}</p>
-            </li>
-          </ul>
-
-          <div *ngIf="feature.feature_type=='hush'">
-            <hr class="nine-pixels">
-            <div class="row">
-              <div class="col-sm-12 tools-header">
-                <p class="md no-bottom-margin">Modify Grid</p>
-              </div>
-            </div>
-            <ul class="row tools list-inline">
-              <li class="tool-container">
-                <p class="no-bottom-margin">Column</p>
-                <div class="grid-tool" (click)="adjustGridDimensions('addColumn')">
-                  <span class="icomoon-plus img-responsive"></span>
-                </div>
-              </li>
-              <li class="tool-container">
-                <p class="no-bottom-margin">&#8203;</p>
-                <div class="grid-tool add-border-right" (click)="adjustGridDimensions('removeColumn')">
-                  <span class="icomoon-minus img-responsive"></span>
-                </div>
-              </li>
-              <li class="tool-container grid-tool-spacer">
-                <p class="no-bottom-margin">Row</p>
-                <div class="grid-tool" (click)="adjustGridDimensions('addRow')">
-                  <span class="icomoon-plus img-responsive"></span>
-                </div>
-              </li>
-              <li class="tool-container">
-                <p class="no-bottom-margin">&#8203;</p>
-                <div class="grid-tool add-border-right" (click)="adjustGridDimensions('removeRow')">
-                  <span class="icomoon-minus img-responsive"></span>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-2">
-        <div class="logo">
-          <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
-        </div>
-      </div>
-      <div class="col-sm-7">
-        <p class="tile-package-information">
-          {{feature.packageInformation()}}
-          <a id="tile-usage-details" (click)="tileUsage()">View Tile Usage</a>
-        </p>
-      </div>
-    </div> -->

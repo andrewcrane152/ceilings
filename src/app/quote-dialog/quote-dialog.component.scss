@@ -6,6 +6,10 @@
     padding-bottom: 15px;
     margin-bottom: 15px;
 
+    hr {
+      margin: 0px;
+    }
+
     .info-line {
       display: flex;
       justify-content: space-between;
@@ -29,7 +33,7 @@
   }
 }
 
-#estimated-total {
+#estimated-totals {
   border-bottom: none;
   margin-bottom: 0px;
 }

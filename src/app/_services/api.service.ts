@@ -17,6 +17,7 @@ export class ApiService {
   public onUserLoggedIn = new EventEmitter();
   apiUrl = 'https://' + environment.API_URL + '/ceilings/';
   loginUrl = 'https://' + environment.API_URL + '/auth/login';
+  accessUrl = 'https://' + environment.API_URL + '/auth/check_access';
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
@@ -40,6 +41,10 @@ export class ApiService {
     this.debug.log('api', 'updating design');
     // we can't forget about the hardware...
     this.debug.log('api', this.feature.tiles);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -61,11 +66,16 @@ export class ApiService {
       hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hushShippingInfo: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
@@ -81,6 +91,10 @@ export class ApiService {
   saveDesign() {
     this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -101,11 +115,16 @@ export class ApiService {
       hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hushShippingInfo: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
@@ -158,6 +177,29 @@ export class ApiService {
           localStorage.setItem('3formUser', JSON.stringify(res.result.user));
           this.user = res.result.user;
           this.onUserLoggedIn.emit(this.user);
+          return res;
+        } else {
+          this.alert.apiAlert(res.result.error);
+        }
+      }),
+      catchError(res => {
+        this.alert.error(res.error.result.message);
+        return 'error';
+      })
+    );
+  }
+
+  checkAccessToPricing() {
+    const userInfo = JSON.parse(localStorage.getItem('3formUser'));
+    const uid = !!userInfo ? userInfo.uid : '';
+    const accessUrl = `${this.accessUrl}?permission=Employee&uid=${userInfo.uid}`;
+    return this.http.post(accessUrl, {}).pipe(
+      map((res: any) => {
+        if (res && !res.result.error) {
+          userInfo['showPricing'] = res.result.access;
+          this.feature.showPricing = res.result.access;
+          localStorage.setItem('3formUser', JSON.stringify(userInfo));
+          console.log('user:', localStorage.getItem('3formUser'));
           return res;
         } else {
           this.alert.apiAlert(res.result.error);
