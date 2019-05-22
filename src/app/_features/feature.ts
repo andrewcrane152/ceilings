@@ -44,7 +44,7 @@ export class Feature {
   public discount_terms = [50, 10];
   public discount_terms_string = '50/10';
   public discount_amount = 0.0;
-  public pricing_multiplier = 2.5;
+  public dealer_markup = 2.5;
   public net_price = 0.0;
   public services_amount = 0.0;
   public showPricing = false;
@@ -59,6 +59,13 @@ export class Feature {
   public qtyTilesReceiving = 0;
   public grid_type: string = undefined;
   public canvasGridScale = 1.0;
+  public hushShippingInfo = {
+    totalWeight: 0,
+    boxesRecommended: {
+      'oneByFour': 0,
+      'twoByTwo': 0
+    }
+  }
 
   // attributes for the tool
   public tile_type = 'tile';
@@ -181,7 +188,7 @@ export class Feature {
     let discountTermsString = '';
     const basePrice = this.estimated_amount * this.quantity;
     this.estimated_amount = basePrice;
-    let discountedListPrice = this.list_price = basePrice * this.pricing_multiplier;
+    let discountedListPrice = this.list_price = basePrice * this.dealer_markup;
     this.discount_terms.map(discount => {
       discountTermsString = discountTermsString.concat(`${discount}/`);
       discountedListPrice = discountedListPrice * (1 - (discount * 0.01));

@@ -41,6 +41,10 @@ export class ApiService {
     this.debug.log('api', 'updating design');
     // we can't forget about the hardware...
     this.debug.log('api', this.feature.tiles);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -65,12 +69,13 @@ export class ApiService {
       list_price: this.feature.list_price,
       discount_terms: this.feature.discount_terms,
       discount_amount: this.feature.discount_amount,
-      pricing_multiplier: this.feature.pricing_multiplier,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hushShippingInfo: hushShippingInfo
     };
 
     return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
@@ -86,6 +91,10 @@ export class ApiService {
   saveDesign() {
     this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -109,12 +118,13 @@ export class ApiService {
       list_price: this.feature.list_price,
       discount_terms: this.feature.discount_terms,
       discount_amount: this.feature.discount_amount,
-      pricing_multiplier: this.feature.pricing_multiplier,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hushShippingInfo: hushShippingInfo
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
