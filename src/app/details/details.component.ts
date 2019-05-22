@@ -96,6 +96,18 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   ngAfterContentInit() {}
 
   setTemplateValues() {
+    if (!!localStorage.getItem('3formUser')) {
+      this.api.checkAccessToPricing().subscribe(
+        data => {
+            this.feature.showPricing = data.result.access;
+        },
+        error => {
+          if (error) {
+            this.api.handleError(error);
+          }
+        }
+      );
+    }
     if (this.isSeeyond) {
       this.setSeeyondValues();
     }

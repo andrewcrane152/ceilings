@@ -13,7 +13,7 @@ import { ApiService } from '../../_services/api.service';
 @Component({
   selector: 'app-quantity-details',
   templateUrl: './quantity-details.component.html',
-  styleUrls: ['./quantity-details.component.scss']
+  styleUrls: ['../details.component.scss', './quantity-details.component.scss']
 })
 export class QuantityDetailsComponent implements OnInit {
   public rep: any;
@@ -47,7 +47,7 @@ export class QuantityDetailsComponent implements OnInit {
       }
       this.feature.feature_type = this.feature.setFeatureType(params['type']);
       if (this.feature.feature_type === 'hush') {
-        this.displayedColumns = ['hush-receiving', 'hush-material'];
+        this.displayedColumns = ['hush-material', 'used', 'receiving', 'unused'];
       }
       const orderId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10);
       if (!!orderId) {
