@@ -67,7 +67,7 @@ export class ApiService {
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
       list_price: this.feature.list_price,
-      discount_terms: this.feature.discount_terms,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
       discount_amount: this.feature.discount_amount,
       dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
@@ -75,7 +75,7 @@ export class ApiService {
       archived: this.feature.archived,
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
-      hushShippingInfo: hushShippingInfo
+      hushShippingInfo: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
@@ -116,7 +116,7 @@ export class ApiService {
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
       list_price: this.feature.list_price,
-      discount_terms: this.feature.discount_terms,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
       discount_amount: this.feature.discount_amount,
       dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
@@ -124,7 +124,7 @@ export class ApiService {
       archived: this.feature.archived,
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
-      hushShippingInfo: hushShippingInfo
+      hushShippingInfo: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
