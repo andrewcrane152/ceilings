@@ -55,7 +55,7 @@
             <hr>
             <div class="info-line net">
               <span class="details-header">Net (USD):</span>
-              <span class="total details-header">{{feature.estimated_amount | currency:'USD'}}</span>
+              <span class="total details-header">{{feature.net_price | currency:'USD'}}</span>
             </div>
             <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
@@ -74,9 +74,9 @@
           </div>
           <div class="right">
             <div class="details-header">Quantity</div>
-            <div>Tiles - {{totalReceiving}}</div> <!-- TODO baffles included -->
+            <div>Tiles - {{feature.qtyTilesReceiving}}</div> <!-- TODO baffles included -->
             <div>Designs - {{feature.quantity || 1}}</div>
-            <div>Total - {{totalReceiving * (feature.quantity || 1)}}</div>
+            <div>Total - {{feature.qtyTilesReceiving * (feature.quantity || 1)}}</div>
           </div>
         </div>
         <div class="bottom-row">
@@ -87,9 +87,9 @@
     </div>
   </div>
   <div class="bottom-section">
-    <div class="row order-data">
+    <div class="order-data">
       <div *ngIf="!!qtyOrder" class="details-table-container summary">
-        <h3>Order Summary</h3>
+        <div class="design-summary">Design Summary</div>
         <mat-table #table [dataSource]="qtyOrder.data" *ngIf="(qtyOrder.data.length > 0)">
 
           <ng-container matColumnDef="used">
@@ -140,9 +140,8 @@
         </mat-table>
       </div>
       <div class="totals">
-        <!-- <p class="sm md">Usage Totals</p> -->
-        <p class="sm">Tiles Used / Receiving: {{feature.qtyTilesUsed}} / {{feature.qtyTilesReceiving}}</p>
-        <p class="sm">SqFt. Used / Receiving: {{qtySrv.sqAreaUsed}} / {{qtySrv.sqAreaReceiving}}</p>
+        <p>SqFt. Used / Receiving: {{qtySrv.sqAreaUsed}} / {{qtySrv.sqAreaReceiving}}</p>
+        <p>Tiles Used / Receiving: {{feature.qtyTilesUsed}} / {{feature.qtyTilesReceiving}}</p>
       </div>
     </div>
   </div>

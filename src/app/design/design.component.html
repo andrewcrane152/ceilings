@@ -76,7 +76,7 @@
           <hr>
           <div class="total-row">
             <span class="sub-header">Net (USD):</span>
-            <span class="total">{{feature.estimated_amount | currency:'USD'}}</span>
+            <span class="total">{{feature.net_price | currency:'USD'}}</span>
           </div>
         </span>
         <span class="est-totals" *ngIf="feature.feature_type === 'seeyond' && seeyond.showPricing" >
@@ -95,7 +95,7 @@
           <hr>
           <div class="total-row">
             <span class="sub-header">Net (USD):</span>
-            <span class="total">{{seeyond.estimated_amount | currency:'USD'}}</span>
+            <span class="total">{{seeyond.net_price | currency:'USD'}}</span>
           </div>
         </span>
 

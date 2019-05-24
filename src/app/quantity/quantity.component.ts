@@ -199,18 +199,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   setComponentProperties() {
-    if (!!localStorage.getItem('3formUser')) {
-      this.api.checkAccessToPricing().subscribe(
-        data => {
-            this.feature.showPricing = data.result.access;
-        },
-        error => {
-          if (error) {
-            this.api.handleError(error);
-          }
-        }
-      );
-    }
+    this.api.checkToShowPricing();
 
     switch (this.feature.feature_type) {
       case 'hush':

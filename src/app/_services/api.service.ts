@@ -69,13 +69,14 @@ export class ApiService {
       list_price: this.feature.list_price,
       discount_terms: JSON.stringify(this.feature.discount_terms),
       discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
       dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
-      hushShippingInfo: JSON.stringify(hushShippingInfo)
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
@@ -118,13 +119,14 @@ export class ApiService {
       list_price: this.feature.list_price,
       discount_terms: JSON.stringify(this.feature.discount_terms),
       discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
       dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
-      hushShippingInfo: JSON.stringify(hushShippingInfo)
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
@@ -187,6 +189,21 @@ export class ApiService {
         return 'error';
       })
     );
+  }
+
+  checkToShowPricing() {
+    if (!!localStorage.getItem('3formUser')) {
+      this.checkAccessToPricing().subscribe(
+        data => {
+            this.feature.showPricing = data.result.access;
+        },
+        error => {
+          if (error) {
+            this.handleError(error);
+          }
+        }
+      );
+    }
   }
 
   checkAccessToPricing() {
