@@ -64,15 +64,14 @@
       <div class="divider"></div>
 
       <!-- RIGHT-COLUMN -->
-      <div class="feature-info rfq-data">
+      <div class="rfq-data">
         <div class="top-row">
-          <div class="left">
+          <div class="left feature-info">
             <div class="details-header">Feature</div>
             <div>{{featureHumanName}}</div>
-            <div>24" x 24" tiles</div> <!-- TODO make this dynamic -->
-            <div class="description-text">{{tilesSoldString}}</div>
+            <div class="description-text tiles-sold-text">{{tilesSoldString}}</div>
           </div>
-          <div class="right">
+          <div class="right feature-info">
             <div class="details-header">Quantity</div>
             <div>Tiles - {{feature.qtyTilesReceiving}}</div> <!-- TODO baffles included -->
             <div>Designs - {{feature.quantity || 1}}</div>
@@ -115,18 +114,26 @@
           <ng-container matColumnDef="material">
             <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
             <mat-cell *matCellDef="let element" class="material-column">
-              <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img"
-                alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
-              {{element.material_size}}
+              <span>
+                <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img"
+                  alt="{{element.material.name_str | capitalize}}">
+              </span>
+              <span>
+                  {{element.material | capitalize}} - {{element.material_size}}
+              </span>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="hush-material">
             <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
             <mat-cell *matCellDef="let element" class="material-column">
-              <img src="{{element.image}}" class="img-responsive table-img rotate-90"
-                alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} -
-              {{element.material_size}}
+              <span>
+                <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                  alt="{{element.material.name_str | capitalize}}">
+              </span>
+              <span>
+                  {{element.material | capitalize}} - {{element.material_size}}
+              </span>
             </mat-cell>
           </ng-container>
 

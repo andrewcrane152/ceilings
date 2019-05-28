@@ -27,9 +27,20 @@ hr {
   font-weight: 500;
 }
 
+.tiles-sold-text {
+  margin-right: 15px;
+}
+
+.feature_info {
+  font-size: 3em;
+  div {
+    margin-bottom: 25px;
+  }
+}
+
 .totals {
   margin: 15px 0px;
-  padding: 0px 20%;
+  padding: 0px 15%;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -97,8 +108,15 @@ hr {
   align-items: center;
 }
 
-.material-column img {
-  margin-right: 10px;
+.material-column {
+  display: flex;
+  flex-direction: row;
+  span {
+    min-width: 150px;
+    img {
+      margin-right: 10px;
+    }
+  }
 }
 
 .table-img {
