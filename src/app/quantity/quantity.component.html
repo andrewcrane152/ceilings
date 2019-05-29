@@ -110,22 +110,28 @@
               <ng-container matColumnDef="profile-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
-                    alt="{{element.material.name_str | capitalize}}">
-                  <!-- TODO: SEE IF THE BELOW WILL WORK FOR STANDARD FINISHES -->
-                  <!-- <img *ngIf="element.tile.tile !== 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img" [style.background]="url(element.image)"> {{element.material | capitalize}} - {{element.material_type}} -->
-                  <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
-                    class="table-img" [style.backgroundColor]="element.image"> {{element.material | capitalize}} -
-                  {{element.material_type}}
+                  <span>
+                    <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
+                      alt="{{element.material.name_str | capitalize}}">
+                    <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
+                      class="table-img" [style.backgroundColor]="element.image">
+                  </span>
+                  <span>
+                    {{element.material | capitalize}} - {{element.material_type}}
+                  </span>
                 </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="hush-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column hush-material-row">
-                  <img src="{{element.image}}" class="img-responsive table-img rotate-90"
-                    alt="{{element.material.name_str | capitalize}}">
-                  {{element.material | capitalize}} - {{element.material_size}}
+                  <span>
+                    <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                      alt="{{element.material.name_str | capitalize}}">
+                    </span>
+                    <span>
+                        {{element.material | capitalize}} - {{element.humanized_size}}
+                    </span>
                 </mat-cell>
               </ng-container>
 

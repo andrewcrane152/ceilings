@@ -171,6 +171,12 @@ mat-header-cell:last-child {
   display: flex;
   flex-direction: row;
   align-items: center;
+  span {
+    min-width: 150px;
+    img {
+      margin-right: 10px;
+    }
+  }
 }
 
 .material-column img,

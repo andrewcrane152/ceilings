@@ -267,4 +267,21 @@ export class HushBlocksShippingService {
   private sortHighToLow(arr) {
     return arr.sort((a, b) => b - a);
   }
+
+  public humanizeHushBlocksSizes(size) {
+    switch (size) {
+      case '1-1-2':
+        return `1'x1'`;
+      case '1-2-2':
+        return `1'x2'`;
+      case '1-3-2':
+        return `1'x3'`;
+      case '1-4-2':
+        return `1'x4'`;
+      case '2-2-2':
+        return `2'x2'`;
+      case '2-2-2-t':
+        return `2'x2' triangle`;
+    }
+  }
 }

@@ -151,7 +151,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.location.go(`${qtyOrder.feature_type}/quantity/${qtyOrder.id}`);
     }
     if (this.feature.feature_type === 'hush') {
-      let tilesObj = JSON.parse(qtyOrder.tiles);
+      const tilesObj = JSON.parse(qtyOrder.tiles);
       if (!!tilesObj) {
         for (const tileType in tilesObj) {
           if (tilesObj[tileType].tile.tile === '00') {
