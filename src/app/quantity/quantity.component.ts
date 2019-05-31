@@ -19,6 +19,27 @@ import { QuantityService } from './quantity.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+export class TableDataSource extends MatTableDataSource<any> {
+  constructor(private subject: BehaviorSubject<Order[]>) {
+    super();
+  }
+}
+
+export interface Order {
+  material: any;
+  qty: number;
+  size: string;
+  type: string;
+}
+
+export interface TileRow {
+  purchased: number;
+  image: string;
+  used: number;
+  material: string;
+  tile: any;
+}
+
 @Component({
   selector: 'app-quantity',
   templateUrl: './quantity.component.html',
@@ -117,6 +138,15 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         this.order.data = [];
         this.qtySrv.updateSummary();
       });
+
+      // subscribe to the loggedIn event and set the user attributes
+      this.api.onUserLoggedIn.subscribe(data => {
+        this.user.uid = data.uid;
+        this.user.email = data.email;
+        this.user.firstname = data.firstname;
+        this.user.lastname = data.lastname;
+        this.setComponentProperties();
+      });
     });
 
     this.dataSource = new TableDataSource(this.dataSubject);
@@ -151,7 +181,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.location.go(`${qtyOrder.feature_type}/quantity/${qtyOrder.id}`);
     }
     if (this.feature.feature_type === 'hush') {
-      let tilesObj = JSON.parse(qtyOrder.tiles);
+      const tilesObj = JSON.parse(qtyOrder.tiles);
       if (!!tilesObj) {
         for (const tileType in tilesObj) {
           if (tilesObj[tileType].tile.tile === '00') {
@@ -199,6 +229,8 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   }
 
   setComponentProperties() {
+    this.api.checkToShowPricing();
+
     switch (this.feature.feature_type) {
       case 'hush':
         this.displayedColumns = ['hush-material', 'hush-receiving', 'edit'];
@@ -334,9 +366,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public saveQuantity() {
     this.saveQtyDialogRef = this.dialog.open(SaveDesignComponent, new MatDialogConfig());
-    if (!this.user.isLoggedIn()) {
-      this.loginDialog();
-    }
   }
 
   public loginDialog(load: boolean = false) {
@@ -380,25 +409,4 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         });
     }
   }
-}
-
-export class TableDataSource extends MatTableDataSource<any> {
-  constructor(private subject: BehaviorSubject<Order[]>) {
-    super();
-  }
-}
-
-export interface Order {
-  material: any;
-  qty: number;
-  size: string;
-  type: string;
-}
-
-export interface TileRow {
-  purchased: number;
-  image: string;
-  used: number;
-  material: string;
-  tile: any;
 }

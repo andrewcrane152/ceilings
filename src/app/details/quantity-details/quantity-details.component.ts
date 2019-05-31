@@ -13,7 +13,7 @@ import { ApiService } from '../../_services/api.service';
 @Component({
   selector: 'app-quantity-details',
   templateUrl: './quantity-details.component.html',
-  styleUrls: ['./quantity-details.component.scss']
+  styleUrls: ['../details.component.scss', './quantity-details.component.scss']
 })
 export class QuantityDetailsComponent implements OnInit {
   public rep: any;
@@ -22,7 +22,9 @@ export class QuantityDetailsComponent implements OnInit {
   dataSource: TableDataSource | null;
   dataSubject = new BehaviorSubject<Order[]>([]);
   // displayedColumns = ['ordered', 'material', 'total'];
-  displayedColumns = ['used', 'receiving', 'unused', 'material'];
+  displayedColumns = ['material', 'used', 'receiving', 'unused'];
+  featureHumanName = '';
+  tilesSoldString = '';
 
   constructor(
     private location: Location,
@@ -47,7 +49,7 @@ export class QuantityDetailsComponent implements OnInit {
       }
       this.feature.feature_type = this.feature.setFeatureType(params['type']);
       if (this.feature.feature_type === 'hush') {
-        this.displayedColumns = ['hush-receiving', 'hush-material'];
+        this.displayedColumns = ['hush-material', 'used', 'receiving', 'unused'];
       }
       const orderId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10);
       if (!!orderId) {
@@ -76,10 +78,12 @@ export class QuantityDetailsComponent implements OnInit {
           this.qtyOrder = this.qtySrv.order;
         });
       }
+      this.feature.applyDealerPricing();
     });
   }
 
   setOrderData(qtyOrder) {
+    this.api.checkToShowPricing()
     this.feature.is_quantity_order = true;
     this.feature.project_name = qtyOrder.project_name;
     this.feature.specifier = qtyOrder.specifier;
@@ -89,6 +93,9 @@ export class QuantityDetailsComponent implements OnInit {
     this.feature.tiles = qtyOrder.tiles;
     this.feature.material = qtyOrder.material;
     this.feature.quoted = qtyOrder.quoted;
+    this.feature.updated_at = qtyOrder.updated_at;
+    this.featureHumanName = this.feature.getFeatureHumanName();
+    this.tilesSoldString = this.feature.packageInformation();
 
     if (this.qtyOrder.data.length < 1) {
       const tilesObj = JSON.parse(qtyOrder.tiles);

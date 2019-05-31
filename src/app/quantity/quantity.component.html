@@ -14,9 +14,11 @@
         </span>
         <span class="save-load save-load-btn-fmt">
           <img src="/assets/icons/tools/load.png" alt="load icon">
-          <a title="save design" (click)="saveQuantity()">
-            <span class="sub-header" *ngIf="user.isLoggedIn()">Save</span>
-            <span class="sub-header" *ngIf="!user.isLoggedIn()">Login to Save</span>
+          <a title="save design" (click)="loginDialog()" *ngIf="!user.isLoggedIn()" [ngClass]="{'span-disabled': ((order.data.length === 0) || !feature.design_name)}">
+            <span class="sub-header">Login to Save</span>
+          </a> |
+          <a title="save design" (click)="saveQuantity()" *ngIf="user.isLoggedIn()" [ngClass]="{'span-disabled': ((order.data.length === 0) || !feature.design_name)}">
+            <span class="sub-header">Save</span>
           </a> |
           <a class="sub-header" title="load saved quantity" (click)="loadQuantity()">Load</a>
         </span>
@@ -110,22 +112,28 @@
               <ng-container matColumnDef="profile-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column">
-                  <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
-                    alt="{{element.material.name_str | capitalize}}">
-                  <!-- TODO: SEE IF THE BELOW WILL WORK FOR STANDARD FINISHES -->
-                  <!-- <img *ngIf="element.tile.tile !== 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img" [style.background]="url(element.image)"> {{element.material | capitalize}} - {{element.material_type}} -->
-                  <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
-                    class="table-img" [style.backgroundColor]="element.image"> {{element.material | capitalize}} -
-                  {{element.material_type}}
+                  <span>
+                    <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
+                      alt="{{element.material.name_str | capitalize}}">
+                    <img *ngIf="element.tile.tile === 'chroma'" src="/assets/images/profile/swoon/swoon-chroma-blank.png"
+                      class="table-img" [style.backgroundColor]="element.image">
+                  </span>
+                  <span>
+                    {{element.material | capitalize}} - {{element.material_type}}
+                  </span>
                 </mat-cell>
               </ng-container>
 
               <ng-container matColumnDef="hush-material">
                 <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
                 <mat-cell *matCellDef="let element" class="material-column hush-material-row">
-                  <img src="{{element.image}}" class="img-responsive table-img rotate-90"
-                    alt="{{element.material.name_str | capitalize}}">
-                  {{element.material | capitalize}} - {{element.material_type}}
+                  <span>
+                    <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                      alt="{{element.material.name_str | capitalize}}">
+                    </span>
+                    <span>
+                        {{element.material | capitalize}} - {{element.humanized_size}}
+                    </span>
                 </mat-cell>
               </ng-container>
 
@@ -163,7 +171,7 @@
           <span appStyledButton='primary-right' *ngIf="feature.quoted">
             <button (click)="viewDetails()">View Details</button>
           </span>
-          <span class="est-totals" *ngIf="feature.feature_type !== 'seeyond'" >
+          <span class="est-totals" *ngIf="feature.feature_type !== 'seeyond' && feature.showPricing" >
               <div class="total-row">
                 <span class="sub-header">List:</span>
                 <span  class="total">{{feature.list_price | currency:'USD'}}</span>
@@ -179,7 +187,7 @@
               <hr>
               <div class="total-row">
                 <span class="sub-header">Net (USD):</span>
-                <span class="total">{{feature.estimated_amount | currency:'USD'}}</span>
+                <span class="total">{{feature.net_price | currency:'USD'}}</span>
               </div>
             </span>
           <!-- <span class="est-total-text">

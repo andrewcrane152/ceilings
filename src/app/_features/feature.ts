@@ -1353,9 +1353,10 @@ export class Feature {
       case 'tetria':
         return 'Tiles are sold in quantities of 4.';
       case 'clario':
-        return this.tile_image_type === 48
-          ? '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
-          : 'Baffles are sold in quantities of 4.';
+        return '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
+        // return this.tile_image_type === 48
+        //   ? '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
+        //   : 'Baffles are sold in quantities of 4.';
       case 'velo':
         return 'Velo tiles are sold in quantities of 8.';
       case 'hush':

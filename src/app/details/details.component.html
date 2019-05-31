@@ -1,18 +1,17 @@
 <app-seeyond-details *ngIf="isSeeyond"></app-seeyond-details>
 <div *ngIf="!isSeeyond" class="details-ui">
   <div class="top-section">
-      <div class="top-section-header">
-          <span class="project-name">
-            <!-- TODO: DO WE DISPLAY PROJECT NAME OR DESIGN NAME? -->
-            <span>{{feature.design_name}}</span>
-          </span>
-          <span class="header-navigation">
-            <img src="/assets/icons/printer_icon.png" (click)="print()">
-            <span appStyledButton='secondary-left' class="back-to-design">
-              <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
-            </span>
-          </span>
-        </div>
+    <div class="top-section-header">
+      <span class="project-name">
+        <span>{{feature.design_name}}</span>
+      </span>
+      <span class="header-navigation">
+        <img src="/assets/icons/printer_icon.png" (click)="print()">
+        <span appStyledButton='secondary-left' class="back-to-design">
+          <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
+        </span>
+      </span>
+    </div>
     <div class="design-details">
 
       <!-- LEFT-COLUMN -->
@@ -39,7 +38,7 @@
             <div>{{rep.phone}}</div>
           </div>
         </div>
-        <div class="bottom-row">
+        <div class="bottom-row" *ngIf="feature.showPricing">
           <div class="details-header">Est. Total</div>
           <div id="estimated-totals" class="info-section">
             <div class="info-line">
@@ -57,7 +56,7 @@
             <hr>
             <div class="info-line net">
               <span class="details-header">Net (USD):</span>
-              <span class="total details-header">{{feature.estimated_amount | currency:'USD'}}</span>
+              <span class="total details-header">{{feature.net_price | currency:'USD'}}</span>
             </div>
             <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
@@ -94,6 +93,7 @@
   <div class="bottom-section">
     <div class="left-side">
       <!-- <div class="details-header">TODO: WHAT DOES THIS LOOK LIKE?</div>  -->
+      <!-- TODO: IS THE TILE USAGE COMPONENT? -->
     </div>
     <div class="right-side">
       <div class="details-header">Design</div>

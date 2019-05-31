@@ -5,10 +5,8 @@
         <span class="project-name">{{feature.design_name || seeyond.design_name}}</span>
         <span class="save-load save-load-btn-fmt">
           <img src="/assets/icons/tools/load.png" alt="load icon">
-          <a title="save design" (click)="saveDesign()">
-            <span class="sub-header" *ngIf="user.isLoggedIn()">Save</span>
-            <span class="sub-header" *ngIf="!user.isLoggedIn()">Login to Save</span>
-          </a> |
+          <a class="sub-header" title="save design" *ngIf="!user.isLoggedIn()" (click)="loginDialog()">Login to Save</a>
+          <a class="sub-header" title="save design" *ngIf="user.isLoggedIn()" (click)="saveDesign()">Save</a> |
           <a class="sub-header" title="load saved designs" (click)="loadDesigns()">Load</a>
         </span>
       </div>
@@ -76,7 +74,7 @@
           <hr>
           <div class="total-row">
             <span class="sub-header">Net (USD):</span>
-            <span class="total">{{feature.estimated_amount | currency:'USD'}}</span>
+            <span class="total">{{feature.net_price | currency:'USD'}}</span>
           </div>
         </span>
         <span class="est-totals" *ngIf="feature.feature_type === 'seeyond' && feature.showPricing" >
@@ -95,7 +93,7 @@
           <hr>
           <div class="total-row">
             <span class="sub-header">Net (USD):</span>
-            <span class="total">{{seeyond.estimated_amount | currency:'USD'}}</span>
+            <span class="total">{{seeyond.net_price | currency:'USD'}}</span>
           </div>
         </span>
 

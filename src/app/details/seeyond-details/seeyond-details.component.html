@@ -41,7 +41,7 @@
           </div>
           <div class="bottom-row">
               <div class="details-header">Est. Total</div>
-              <div id="estimated-totals" class="info-section">
+              <div id="estimated-totals" class="info-section" *ngIf="feature.showPricing">
                 <div class="info-line">
                   <span>List:</span>
                   <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>
@@ -57,7 +57,7 @@
                 <hr>
                 <div class="info-line net">
                   <span class="details-header">Net (USD):</span>
-                  <span class="total details-header">{{seeyond.estimated_amount | currency:'USD'}}</span>
+                  <span class="total details-header">{{seeyond.net_price | currency:'USD'}}</span>
                 </div>
                 <div class="description-text">Taxes, shipping & handling not included</div>
               </div>

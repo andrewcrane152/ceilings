@@ -1,3 +1,4 @@
+import { HushBlocksShippingService } from './../_services/hush-blocks-shipping.service';
 import { ClarioGridsService } from './../_services/clario-grids.service';
 import { TileObj } from './quantity.service';
 import { MatTableDataSource } from '@angular/material';
@@ -17,7 +18,7 @@ export class QuantityService {
   order = new MatTableDataSource();
   rowIndexNum = 1;
 
-  constructor(private debug: DebugService, public feature: Feature, private route: ActivatedRoute, private clarioGrids: ClarioGridsService) {}
+  constructor(private debug: DebugService, public feature: Feature, private route: ActivatedRoute, private clarioGrids: ClarioGridsService, private hushBlocksShippingService: HushBlocksShippingService) {}
 
   doAddRow(row) {
     this.debug.log('quantity', row);
@@ -40,6 +41,9 @@ export class QuantityService {
     newRow.id = this.rowIndexNum++;
     newRow.material_size = this.setMaterialSize(newRow);
     newRow.material_type = this.setMaterialType();
+    if (this.feature.feature_type === 'hush') {
+      newRow.humanized_size = this.hushBlocksShippingService.humanizeHushBlocksSizes(newRow.material_size);
+    }
     return newRow;
   }
 

@@ -171,6 +171,12 @@ mat-header-cell:last-child {
   display: flex;
   flex-direction: row;
   align-items: center;
+  span {
+    min-width: 150px;
+    img {
+      margin-right: 10px;
+    }
+  }
 }
 
 .material-column img,
@@ -203,4 +209,9 @@ mat-header-cell:last-child {
   hr {
     margin: 5px;
   }
+}
+
+.span-disabled {
+  pointer-events: none;
+  color: #999999;
 }

@@ -96,6 +96,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   ngAfterContentInit() {}
 
   setTemplateValues() {
+    this.api.checkToShowPricing();
     if (this.isSeeyond) {
       this.setSeeyondValues();
     }
