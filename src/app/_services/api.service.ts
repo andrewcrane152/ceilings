@@ -195,7 +195,9 @@ export class ApiService {
     if (!!localStorage.getItem('3formUser')) {
       this.checkAccessToPricing().subscribe(
         data => {
+          if (!!data.result) {
             this.feature.showPricing = data.result.access;
+          }
         },
         error => {
           console.log('denied pricing access');
@@ -240,11 +242,11 @@ export class ApiService {
     // if (!!error.error.result.message) { this.alert.error(error.error.result.message); }
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      this.debug.log('api', `An error occurred: ${error.error}`);
+      console.log('api', `An error occurred: ${error.error}`);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      this.debug.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
+      console.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
     }
     // return an ErrorObservable with a user-facing error message
     return throwError('Something bad happened; please try again later.');
