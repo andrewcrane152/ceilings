@@ -198,9 +198,10 @@ export class ApiService {
             this.feature.showPricing = data.result.access;
         },
         error => {
-          if (error) {
-            this.handleError(error);
-          }
+          console.log('denied pricing access');
+          // if (error) {
+          //   this.handleError(error);
+          // }
         }
       );
     }

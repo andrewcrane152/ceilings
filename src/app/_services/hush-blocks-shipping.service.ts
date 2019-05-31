@@ -242,7 +242,7 @@ export class HushBlocksShippingService {
   }
 
   private fillEither() {
-    console.log('fill either');
+    // console.log('fill either');
     const boxesRecommended = this.currentShippingInfo.boxesRecommended;
     if (boxesRecommended.oneByFour >= boxesRecommended.twoByTwo) {
       this.fillAOneByFourBox();
