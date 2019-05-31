@@ -207,7 +207,7 @@ export class HushBlocksShippingService {
         }
       })
     }
-    console.log('1xBoxesUsed:', this.currentShippingInfo.boxesRecommended.oneByFour);
+    // console.log('1xBoxesUsed:', this.currentShippingInfo.boxesRecommended.oneByFour);
     if (this.getSizesRemaining('1').length > 0) {
       this.fillRemainingBoxes();
     }
