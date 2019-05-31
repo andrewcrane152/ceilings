@@ -63,7 +63,6 @@ export class HushBlocksShippingService {
   private tilesRemaining = {};
 
   hushBlocksShippingTotals(tileCount) {
-    // console.warn(tileCount);
     this.purchasedTiles = tileCount;
     this.tilesRemaining = JSON.parse(JSON.stringify(this.purchasedTiles));
     this.calcShippingBoxes();

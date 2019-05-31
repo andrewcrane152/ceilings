@@ -14,9 +14,11 @@
         </span>
         <span class="save-load save-load-btn-fmt">
           <img src="/assets/icons/tools/load.png" alt="load icon">
-          <a title="save design" (click)="saveQuantity()">
-            <span class="sub-header" *ngIf="user.isLoggedIn()">Save</span>
-            <span class="sub-header" *ngIf="!user.isLoggedIn()">Login to Save</span>
+          <a title="save design" (click)="loginDialog()" *ngIf="!user.isLoggedIn()" [ngClass]="{'span-disabled': ((order.data.length === 0) || !feature.design_name)}">
+            <span class="sub-header">Login to Save</span>
+          </a> |
+          <a title="save design" (click)="saveQuantity()" *ngIf="user.isLoggedIn()" [ngClass]="{'span-disabled': ((order.data.length === 0) || !feature.design_name)}">
+            <span class="sub-header">Save</span>
           </a> |
           <a class="sub-header" title="load saved quantity" (click)="loadQuantity()">Load</a>
         </span>

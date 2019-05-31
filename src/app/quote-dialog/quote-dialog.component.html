@@ -80,7 +80,7 @@
             </div>
             <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
-          <div *ngIf="feature.feature_type ==='seeyond' && seeyond.showPricing" id="estimated-totals" class="info-section">
+          <div *ngIf="feature.feature_type ==='seeyond' && feature.showPricing" id="estimated-totals" class="info-section">
             <div class="info-line">
               <span class="sub-header">List:</span>
               <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>

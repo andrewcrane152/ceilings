@@ -251,12 +251,12 @@ export class DesignComponent implements OnInit, OnDestroy {
       });
 
     // subscribe to the loggedIn event and set the user attributes
-    // and close the dialog
     this.api.onUserLoggedIn.subscribe(data => {
       this.user.uid = data.uid;
       this.user.email = data.email;
       this.user.firstname = data.firstname;
       this.user.lastname = data.lastname;
+      this.setVisualProperties(this.feature.feature_type);
     });
 
     // subscribe to the onView3d event and build the dialog
@@ -382,11 +382,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   }
 
   public saveDesign() {
-    // let saveDialog: MatDialog;
     this.saveDesignDialogRef = this.dialog.open(SaveDesignComponent, new MatDialogConfig());
-    if (!this.user.isLoggedIn()) {
-      this.loginDialog();
-    }
   }
 
   public loginDialog(load: boolean = false) {

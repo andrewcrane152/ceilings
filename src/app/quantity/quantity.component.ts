@@ -19,6 +19,27 @@ import { QuantityService } from './quantity.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+export class TableDataSource extends MatTableDataSource<any> {
+  constructor(private subject: BehaviorSubject<Order[]>) {
+    super();
+  }
+}
+
+export interface Order {
+  material: any;
+  qty: number;
+  size: string;
+  type: string;
+}
+
+export interface TileRow {
+  purchased: number;
+  image: string;
+  used: number;
+  material: string;
+  tile: any;
+}
+
 @Component({
   selector: 'app-quantity',
   templateUrl: './quantity.component.html',
@@ -116,6 +137,15 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         // reset table data if the selected tile dimensions change
         this.order.data = [];
         this.qtySrv.updateSummary();
+      });
+
+      // subscribe to the loggedIn event and set the user attributes
+      this.api.onUserLoggedIn.subscribe(data => {
+        this.user.uid = data.uid;
+        this.user.email = data.email;
+        this.user.firstname = data.firstname;
+        this.user.lastname = data.lastname;
+        this.setComponentProperties();
       });
     });
 
@@ -336,9 +366,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public saveQuantity() {
     this.saveQtyDialogRef = this.dialog.open(SaveDesignComponent, new MatDialogConfig());
-    if (!this.user.isLoggedIn()) {
-      this.loginDialog();
-    }
   }
 
   public loginDialog(load: boolean = false) {
@@ -382,25 +409,4 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         });
     }
   }
-}
-
-export class TableDataSource extends MatTableDataSource<any> {
-  constructor(private subject: BehaviorSubject<Order[]>) {
-    super();
-  }
-}
-
-export interface Order {
-  material: any;
-  qty: number;
-  size: string;
-  type: string;
-}
-
-export interface TileRow {
-  purchased: number;
-  image: string;
-  used: number;
-  material: string;
-  tile: any;
 }
