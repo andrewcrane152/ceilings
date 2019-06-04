@@ -17,8 +17,8 @@
           </tr>
           <tr *ngFor="let tile of feltTiles | keys">
             <td *ngIf="tile.image">
-              <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle" matTooltip="{{tile.material | capitalize}}"
-                [matTooltipPosition]="position">
+              <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle"
+                matTooltip="{{tile.material | capitalize}}" [matTooltipPosition]="position">
             </td>
             <td>{{tile.convex}}</td>
             <td>{{tile.concave}}</td>
@@ -45,8 +45,8 @@
           </tr>
           <tr *ngFor="let tile of variaTiles | keys">
             <td *ngIf="tile.image">
-              <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle" matTooltip="{{variaTooltip(tile) | capitalize}}"
-                [matTooltipPosition]="position">
+              <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle"
+                matTooltip="{{variaTooltip(tile) | capitalize}}" [matTooltipPosition]="position">
             </td>
             <td>{{diffusionString(tile.diffusion)}}</td>
             <td>{{tile.convex}}</td>
@@ -67,64 +67,3 @@
     </div>
   </div>
 </div>
-
-<!-- <h3>Tile Usage Information</h3>
-<p class="sm">Velo tiles are sold in quantities of 8.
-  <span class="note">(single material and color with any combination of convex and concave tiles)</span>
-</p>
-<table class="table table-striped" *ngIf="this.feature.veloHasFelt()">
-  <tr>
-    <th width="92px">Merino Felt</th>
-    <th>Convex</th>
-    <th>Concave</th>
-    <th>Unused</th>
-    <th class="border-left">Receiving</th>
-  </tr>
-  <tr *ngFor="let tile of feltTiles | keys">
-    <td *ngIf="tile.image">
-      <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle" matTooltip="{{tile.material | capitalize}}"
-        [matTooltipPosition]="position">
-    </td>
-    <td>{{tile.convex}}</td>
-    <td>{{tile.concave}}</td>
-    <td>{{tile.purchased - (tile.convex + tile.concave)}}</td>
-    <td class="border-left">{{tile.purchased}}</td>
-  </tr>
-  <tr>
-    <th width="92px">Totals</th>
-    <th>{{totalFeltConvex}}</th>
-    <th>{{totalFeltConcave}}</th>
-    <th>{{totalFeltUnused}}</th>
-    <th class="border-left">{{totalFeltReceiving}}</th>
-  </tr>
-</table>
-
-<table class="table table-striped" *ngIf="this.feature.veloHasVaria()">
-  <tr>
-    <th width="92px">Varia</th>
-    <th>Diffusion</th>
-    <th>Convex</th>
-    <th>Concave</th>
-    <th>Unused</th>
-    <th class="border-left">Receiving</th>
-  </tr>
-  <tr *ngFor="let tile of variaTiles | keys">
-    <td *ngIf="tile.image">
-      <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" class="circle" matTooltip="{{variaTooltip(tile) | capitalize}}"
-        [matTooltipPosition]="position">
-    </td>
-    <td>{{diffusionString(tile.diffusion)}}</td>
-    <td>{{tile.convex}}</td>
-    <td>{{tile.concave}}</td>
-    <td>{{tile.purchased - (tile.convex + tile.concave)}}</td>
-    <td class="border-left">{{tile.purchased}}</td>
-  </tr>
-  <tr>
-    <th width="92px">Totals</th>
-    <td></td>
-    <th>{{totalVariaConvex}}</th>
-    <th>{{totalVariaConcave}}</th>
-    <th>{{totalVariaUnused}}</th>
-    <th class="border-left">{{totalVariaReceiving}}</th>
-  </tr>
-</table> -->
