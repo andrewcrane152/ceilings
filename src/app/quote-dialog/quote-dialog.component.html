@@ -51,7 +51,7 @@
               <span>{{seeyondCoveLighting}}</span>
             </div>
           </div>
-          <div id="order-multiples" class="info-section">
+          <div id="order-multiples" class="info-section" *ngIf="uiType === 'quantity'">
             <span class="help-text">
               <div class="sub-header">Quantity</div>
               <div class="description-text">Order multiples of your design</div>
@@ -60,10 +60,11 @@
               <input type="number" [(ngModel)]="requestedQuantity" (change)="multiplesChanged()">
             </span>
           </div>
-          <div *ngIf="feature.feature_type !=='seeyond' && feature.showPricing" id="estimated-totals" class="info-section">
+          <div *ngIf="feature.feature_type !=='seeyond' && feature.showPricing" id="estimated-totals"
+            class="info-section">
             <div class="info-line">
               <span class="sub-header">List:</span>
-              <span  class="total">{{feature.list_price | currency:'USD'}}</span>
+              <span class="total">{{feature.list_price | currency:'USD'}}</span>
             </div>
             <div class="info-line">
               <span class="sub-header">Discount:</span>
@@ -80,10 +81,11 @@
             </div>
             <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
-          <div *ngIf="feature.feature_type ==='seeyond' && feature.showPricing" id="estimated-totals" class="info-section">
+          <div *ngIf="feature.feature_type ==='seeyond' && feature.showPricing" id="estimated-totals"
+            class="info-section">
             <div class="info-line">
               <span class="sub-header">List:</span>
-              <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>
+              <span class="total">{{seeyond.list_price | currency:'USD'}}</span>
             </div>
             <div class="info-line">
               <span class="sub-header">Discount:</span>

@@ -37,35 +37,3 @@
     </div>
   </div>
 </div>
-
-<!-- <h3>
-  Tile Usage Information</h3>
-<div *ngIf="!purchasedTiles">
-  <p class="md">Select tiles for your design.</p>
-</div>
-<div *ngIf="!!purchasedTiles">
-  <p class="sm">{{feature.packageInformation()}}</p>
-  <table class="table table-striped">
-    <tr>
-      <th>{{feature.getTileType() | capitalize}}</th>
-      <th *ngIf="feature.feature_type!='hush'">Used</th>
-      <th *ngIf="feature.feature_type!='hush'">Receiving</th>
-      <th *ngIf="feature.feature_type=='hush'">Quantity</th>
-      <th *ngIf="feature.feature_type!='hush'">Unused</th>
-    </tr>
-    <tr *ngFor="let tile of purchasedTiles | keys">
-      <td *ngIf="tile.image">
-        <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" matTooltip="{{tooltip(tile)}}" [matTooltipPosition]="position">
-      </td>
-      <td *ngIf="feature.feature_type!='hush'">{{tile.used}}</td>
-      <td>{{tile.purchased}}</td>
-      <td *ngIf="feature.feature_type!='hush'">{{tile.purchased - tile.used}}</td>
-    </tr>
-    <tr>
-      <th>Total</th>
-      <th *ngIf="feature.feature_type!='hush'">{{totalUsed}}</th>
-      <th>{{totalReceiving}}</th>
-      <th *ngIf="feature.feature_type!='hush'">{{totalUnused}}</th>
-    </tr>
-  </table>
-</div> -->

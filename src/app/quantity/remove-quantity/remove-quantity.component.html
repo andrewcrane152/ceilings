@@ -13,7 +13,8 @@
           </tr>
           <tr>
             <td class="selection-descriptor sub-header">
-              <img src="{{selection.row.image}}" class="img-responsive" alt="{{selection.row.material | capitalize}}"> {{selection.row.material | capitalize}} {{selection.row.tile.tile}}
+              <img src="{{selection.row.image}}" class="img-responsive" alt="{{selection.row.material | capitalize}}">
+              {{selection.row.material | capitalize}} {{selection.row.tile.tile}}
             </td>
             <td class="sub-header">{{selection.row.purchased}}</td>
           </tr>
@@ -36,22 +37,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div class="removeQty-dialog-container">
-  <div class='section'>
-    <div class="selection-summary">
-      <p class="md selection">
-        Remove {{selection.row.purchased}} {{selection.row.material | capitalize}}-{{selection.row.tile.tile}} tiles?
-      </p>
-      <div class="img-container">
-        <img src="{{selection.row.image}}" class="img-responsive" alt="{{selection.row.material | capitalize}}">
-      </div>
-    </div>
-  </div>
-  <div class="footer section">
-    <div class="action-btns">
-      <button class="button button-gray" (click)="cancel()">Cancel</button>
-      <button class="button button-gray" (click)="removeFromOrder()">Remove</button>
-    </div>
-  </div>
-</div> -->

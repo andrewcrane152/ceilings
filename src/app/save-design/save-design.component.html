@@ -67,38 +67,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-<!-- <div class="center-div" *ngIf="!user.uid">
-  <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
-</div>
-
-
-<div *ngIf="feature.uid && user.uid && feature.uid != user.uid">
-  <p>You can't save a design that is not yours.</p>
-</div>
-
-<div *ngIf="(feature.uid && feature.uid === user.uid) || (user.uid && !feature.id)">
-  <h2 mat-dialog-title class="text-center">Save Your Design</h2>
-  <div mat-dialog-content>
-    <form (ngSubmit)="saveInvoked()" #saveForm="ngForm" class="save-form">
-      <div class="col-sm-12">
-        <div class="form-group">
-          <mat-form-field class="full-width">
-            <input type="text" placeholder="Design Name" name="design_name" id="design-name" matInput required [(ngModel)]="feature.design_name">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="text-center">
-        <button class="button button-gray" *ngIf="newDesign" type="submit">Save</button>
-        <button class="button button-gray" *ngIf="!newDesign || feature.quoted" type="submit">Overwrite</button>
-        <button class="button button-gray" *ngIf="!newDesign" (click)="newButtonClick()">Save New</button>
-        <div class="center-div" *ngIf="saving">
-          <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
-        </div>
-      </div>
-    </form>
-  </div>
-</div> -->
