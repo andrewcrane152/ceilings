@@ -62,10 +62,10 @@ export class Feature {
   public hushShippingInfo = {
     totalWeight: 0,
     boxesRecommended: {
-      'oneByFour': 0,
-      'twoByTwo': 0
+      oneByFour: 0,
+      twoByTwo: 0
     }
-  }
+  };
 
   // attributes for the tool
   public tile_type = 'tile';
@@ -188,10 +188,10 @@ export class Feature {
     let discountTermsString = '';
     const basePrice = this.estimated_amount * this.quantity;
     this.estimated_amount = basePrice;
-    let discountedListPrice = this.list_price = basePrice * this.dealer_markup;
+    let discountedListPrice = (this.list_price = basePrice * this.dealer_markup);
     this.discount_terms.map(discount => {
       discountTermsString = discountTermsString.concat(`${discount}/`);
-      discountedListPrice = discountedListPrice * (1 - (discount * 0.01));
+      discountedListPrice = discountedListPrice * (1 - discount * 0.01);
     });
     this.net_price = discountedListPrice;
     this.discount_terms_string = discountTermsString.substring(0, discountTermsString.length - 1);
@@ -390,7 +390,7 @@ export class Feature {
       allServicesCost += servicePrices[tileId] * tileCount[tileId];
     });
 
-    const shippingInfo = this.hushShipping.hushBlocksShippingTotals(tileCount);
+    this.hushShippingInfo = this.hushShipping.hushBlocksShippingTotals(tileCount);
 
     // set totals
     this.services_amount = allServicesCost;
@@ -1353,10 +1353,10 @@ export class Feature {
       case 'tetria':
         return 'Tiles are sold in quantities of 4.';
       case 'clario':
-        return '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
-        // return this.tile_image_type === 48
-        //   ? '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
-        //   : 'Baffles are sold in quantities of 4.';
+        return '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.';
+      // return this.tile_image_type === 48
+      //   ? '24x24 baffles are sold in qty of 4, and 24x48 baffles are sold in qty of 2.'
+      //   : 'Baffles are sold in quantities of 4.';
       case 'velo':
         return 'Velo tiles are sold in quantities of 8.';
       case 'hush':

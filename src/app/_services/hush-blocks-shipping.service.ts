@@ -59,8 +59,8 @@ export class HushBlocksShippingService {
     }
   };
 
-  private purchasedTiles = {};
-  private tilesRemaining = {};
+  private purchasedTiles: any;
+  private tilesRemaining: Object;
 
   hushBlocksShippingTotals(tileCount) {
     this.purchasedTiles = tileCount;
@@ -160,21 +160,18 @@ export class HushBlocksShippingService {
   private fillAOneByFourBox() {
     this.currentShippingInfo.boxesRecommended.oneByFour++;
     let boxCapacity = [4, 4, 4, 4, 4, 4];
-
     const sizesRemaining = this.getSizesRemaining('1');
-    const tilesUsed = [];
 
     function fillSpaces(tilesRemaining) {
       // fill boxes with largest size first
       for (let i = sizesRemaining.length - 1; i >= 0; i--) {
         if (boxCapacity.includes(sizesRemaining[i])) {
-          tilesUsed.push(sizesRemaining[i]);
           const tileId = `1-${sizesRemaining[i]}-2`;
           tilesRemaining[tileId]--;
           sizesRemaining.splice(i, 1);
           boxCapacity = boxCapacity.splice(boxCapacity.indexOf(sizesRemaining[i]), 1);
           if (sizesRemaining[i] === 3) {
-            // check for 1
+            // TODO check for 1
             console.log('look for 1');
           }
         }
@@ -218,7 +215,6 @@ export class HushBlocksShippingService {
         }
       });
     }
-    // console.log('1xBoxesUsed:', this.currentShippingInfo.boxesRecommended.oneByFour);
     if (this.getSizesRemaining('1').length > 0) {
       this.fillRemainingBoxes();
     }
@@ -244,8 +240,13 @@ export class HushBlocksShippingService {
             sizesRemaining = sizesRemaining.concat(tileSizeCount);
           }
           break;
-        case 'either':
-          // console.log('either box needed');
+        case 'small1xFor2xBox':
+          if (tileId === '1-1-2' || tileId === '1-2-2') {
+            const size = parseInt(tileId.slice(2, 3), 10);
+            const howMany = this.tilesRemaining[tileId];
+            const tileSizeCount = Array(howMany).fill(size);
+            sizesRemaining = sizesRemaining.concat(tileSizeCount);
+          }
           break;
       }
     });
@@ -254,14 +255,12 @@ export class HushBlocksShippingService {
 
   private fillATwoByTwoBox() {
     this.currentShippingInfo.boxesRecommended.twoByTwo++;
-    const sizesRemaining = this.getSizesRemaining('2');
+    let sizesRemaining = this.getSizesRemaining('2');
     let boxCapacity = [2, 2, 2, 2, 2, 2];
-    const tilesUsed = [];
 
     function fillSpaces(tilesRemaining) {
       for (let i = sizesRemaining.length - 1; i >= 0; i--) {
         if (sizesRemaining[i] > 0) {
-          tilesUsed.push(sizesRemaining[i]);
           const tileId = sizesRemaining[i] === 2 ? `2-2-2` : `2-2-2-t`;
           tilesRemaining[tileId]--;
           sizesRemaining.splice(i, 1);
@@ -270,7 +269,7 @@ export class HushBlocksShippingService {
       }
     }
 
-    const checkSizesToFill = ['2-2-2', '2-2-2-t'];
+    let checkSizesToFill = ['2-2-2', '2-2-2-t'];
     if (boxCapacity.length > 0) {
       checkSizesToFill.map(size => {
         let newBox = [];
@@ -286,14 +285,27 @@ export class HushBlocksShippingService {
             boxCapacity = newBox.sort((a, b) => b - a);
             fillSpaces(this.tilesRemaining);
             break;
-
-          // TODO: add a case for 1X2 and 1x1 boxes
         }
       });
     }
 
     if (this.getSizesRemaining('2').length > 0) {
       this.fillRemainingBoxes();
+    }
+
+    if (boxCapacity.length > 0) {
+      sizesRemaining = this.getSizesRemaining('small1xFor2xBox');
+      checkSizesToFill = ['1-2-2', '1-1-2'];
+
+      for (let i = sizesRemaining.length - 1; i >= 0; i--) {
+        checkSizesToFill.map(size => {
+          if (this.tilesRemaining[size] > 0) {
+            this.tilesRemaining[size]--;
+            sizesRemaining.splice(i, 1);
+            boxCapacity = boxCapacity.splice(boxCapacity.indexOf(sizesRemaining[i]), 1);
+          }
+        });
+      }
     }
   }
 
@@ -307,8 +319,13 @@ export class HushBlocksShippingService {
   }
 
   private calcTotalWeight() {
-    // TODO
-    // handled by the api for now
+    let totalWeight = 0;
+    Object.keys(this.purchasedTiles).forEach(tileId => {
+      if (this.purchasedTiles[tileId] > 0) {
+        totalWeight += this.hushShippingData[tileId].weight * this.purchasedTiles[tileId];
+      }
+    });
+    this.currentShippingInfo.totalWeight = totalWeight;
   }
 
   private sortHighToLow(arr) {
