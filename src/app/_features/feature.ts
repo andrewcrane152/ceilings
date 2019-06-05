@@ -496,6 +496,8 @@ export class Feature {
     let feltConnectionKitsNeeded = 0;
     let cablesNeeded = 0;
     let variaPunchToolNeeded = false;
+    let C1cableKit = 0;
+    let C2cableKit = 0;
 
     // CABLE COST CALCULATION
     // we need to calculate the cable hardware for each individual island
@@ -508,8 +510,10 @@ export class Feature {
         const tilesInIsland = island.length;
         const islandConnections = this.getVeloConnections(island);
         const sharedEdges = islandConnections['totalConnections'];
-        const cablesTypesNeeded = this.getVeloCables(island, sharedEdges);
-        console.warn(`Cable Kit Totals: C1: ${cablesTypesNeeded[0]}, C2: ${cablesTypesNeeded[1]}`);
+        const cableTypesNeeded = this.getVeloCables(island, sharedEdges);
+        C1cableKit += cableTypesNeeded[0];
+        C2cableKit += cableTypesNeeded[1];
+        console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
 
         // ratio = (number_of_shared_edges / number_of_tiles)
         // if ratio < 1 then cableCount = Math.ceil(cables * .75)
