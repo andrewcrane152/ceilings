@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material';
+import { Component, OnInit, Input } from '@angular/core';
 import { DebugService } from './../_services/debug.service';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 
 @Component({
   selector: 'app-velo-tile-usage',
   templateUrl: './velo-tile-usage.component.html',
-  styleUrls: ['./velo-tile-usage.component.css']
+  styleUrls: ['../tile-usage/tile-usage.component.scss', './velo-tile-usage.component.scss']
 })
 export class VeloTileUsageComponent implements OnInit {
+  @Input()
+  isImbedded = false;
   public feltTiles: {};
   public variaTiles: {};
   public position = 'above';
@@ -21,10 +24,7 @@ export class VeloTileUsageComponent implements OnInit {
   public totalVariaReceiving: number;
   hasTotals = false;
 
-  constructor(
-    private debug: DebugService,
-    public feature: Feature
-  ) { }
+  constructor(private debug: DebugService, public feature: Feature, public dialogRef: MatDialogRef<VeloTileUsageComponent>) {}
 
   ngOnInit() {
     this.feltTiles = this.feature.getPurchasedVeloTiles('felt');
@@ -55,7 +55,7 @@ export class VeloTileUsageComponent implements OnInit {
       if (purchasedFelt.hasOwnProperty(felt)) {
         incrementTotalFeltConvex = purchasedFelt[felt].convex;
         incrementTotalFeltConcave = purchasedFelt[felt].concave;
-        incrementTotalFeltUnused = (purchasedFelt[felt].purchased - (purchasedFelt[felt].concave + purchasedFelt[felt].concave));
+        incrementTotalFeltUnused = purchasedFelt[felt].purchased - (purchasedFelt[felt].concave + purchasedFelt[felt].convex);
         incrementTotalFeltReceiving = purchasedFelt[felt].purchased;
         totalFeltConvex += incrementTotalFeltConvex;
         totalFeltConcave += incrementTotalFeltConcave;
@@ -67,7 +67,7 @@ export class VeloTileUsageComponent implements OnInit {
       if (purchasedVaria.hasOwnProperty(varia)) {
         incrementTotalVariaConvex = purchasedVaria[varia].convex;
         incrementTotalVariaConcave = purchasedVaria[varia].concave;
-        incrementTotalVariaUnused = (purchasedVaria[varia].purchased - (purchasedVaria[varia].concave + purchasedVaria[varia].concave));
+        incrementTotalVariaUnused = purchasedVaria[varia].purchased - (purchasedVaria[varia].concave + purchasedVaria[varia].convex);
         incrementTotalVariaReceiving = purchasedVaria[varia].purchased;
         totalVariaConvex += incrementTotalVariaConvex;
         totalVariaConcave += incrementTotalVariaConcave;
@@ -88,7 +88,7 @@ export class VeloTileUsageComponent implements OnInit {
   public variaTooltip(tile) {
     if (tile.diffusion) {
       return tile.material + ' + ' + tile.diffusion;
-    }else {
+    } else {
       return tile.material;
     }
   }
@@ -96,11 +96,16 @@ export class VeloTileUsageComponent implements OnInit {
   public diffusionString(diffusion: string) {
     let humanString: string;
     switch (diffusion) {
-      case 'avalanche_d01': humanString = 'Avalanche D01'; break;
-      case 'vapor_w05': humanString = 'Vapor W05'; break;
-      default: humanString = 'None'; break;
+      case 'avalanche_d01':
+        humanString = 'Avalanche D01';
+        break;
+      case 'vapor_w05':
+        humanString = 'Vapor W05';
+        break;
+      default:
+        humanString = 'None';
+        break;
     }
     return humanString;
   }
-
 }

@@ -1,0 +1,64 @@
+<mat-expansion-panel #clarioDimensions hideToggle="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title class="sub-header">
+      Dimensions
+    </mat-panel-title>
+    <mat-icon *ngIf="!clarioDimensions.expanded" svgIcon="accordian_open"></mat-icon>
+    <mat-icon *ngIf="clarioDimensions.expanded" svgIcon="accordian_close"></mat-icon>
+  </mat-expansion-panel-header>
+  <div class="inputs clario-inputs">
+    <div class="input">
+      <div class="sub-header">Ceiling Grid Type</div>
+      <span appStyledSelect [width]="135">
+        <select (change)="clarioGridSizeChanged($event.target.value)" id="gridOptions" [(ngModel)]="feature.grid_type">
+          <option [value]="'15/16'">15/16" (24mm)</option>
+          <option [value]="'9/16'">9/16"</option>
+        </select>
+      </span>
+    </div>
+    <div class="input">
+      <div class="sub-header">Tile Size</div>
+      <span appStyledSelect [width]="135">
+        <select (change)="clarioTileSizeChanged($event.target.value)" id="gridOptions">
+          <option disabled [value]="undefined" [selected]="clarioGrids.selectedTileSize === undefined">-- select --</option>
+          <option *ngFor="let gridOption of clarioGrids.tileSizeOptions | keys" [value]="gridOption.name" [selected]="clarioGrids.selectedTileSize?.name === gridOption.name">{{gridOption.name}}</option>
+        </select>
+      </span>
+    </div>
+  </div>
+  <div class="inputs">
+    <div class="input">
+      <div class="sub-header">Width</div>
+      <input [(ngModel)]="feature.width" class="unit-input" type="text" (blur)="updateGrid()">
+      <div class="max-min"></div>
+    </div>
+    <div class="input">
+      <div class="sub-header">Height</div>
+      <input [(ngModel)]="feature.length" class="unit-input" type="text" (blur)="updateGrid()">
+      <div class="max-min"></div>
+    </div>
+    <div class="input">
+      <div>&nbsp;</div>
+      <span class="toggle-btns units-input">
+        <button (click)="updateGridUnits('inches')" [class.selected]="feature.units === 'inches'">IN</button>
+        <button (click)="updateGridUnits('centimeters')" [class.selected]="feature.units === 'centimeters'">CM</button>
+      </span>
+    </div>
+  </div>
+  <div class="inputs">
+    <div class="input">
+      <div class="sub-header">Columns</div>
+      <div class="add-remove">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustGridDimensions('addColumn')" alt="Add Column">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustGridDimensions('removeColumn')" alt="Remove Column">
+      </div>
+    </div>
+    <div class="input">
+      <div class="sub-header">Rows</div>
+      <div class="add-remove">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustGridDimensions('addRow')" alt="Add Row">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustGridDimensions('removeRow')" alt="Remove Row">
+      </div>
+    </div>
+  </div>
+</mat-expansion-panel>

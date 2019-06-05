@@ -5,24 +5,20 @@ import { AlertService } from '../_services/alert.service';
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.css']
+  styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit {
   message: any;
 
-  constructor(
-    private alert: AlertService,
-    public snackBar: MatSnackBar
-  ) { }
+  constructor(private alert: AlertService, public snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.alert.getMessage().subscribe(message => {
       const config = new MatSnackBarConfig();
-      config.extraClasses = message.type === 'error' ? ['ceilings-alert-error'] : ['ceilings-alert-success'];
+      config.panelClass = message.type === 'error' ? ['ceilings-alert-error'] : ['ceilings-alert-success'];
       config.duration = message.type === 'success' ? 1000 : null;
       config.announcementMessage = message.text;
       this.snackBar.open(message.text, 'dismiss', config);
     });
   }
-
 }

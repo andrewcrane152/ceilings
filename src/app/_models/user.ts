@@ -10,9 +10,7 @@ export class User {
   firstname: string;
   lastname: string;
 
-  constructor(
-    private debug: DebugService = new DebugService()
-  ) {
+  constructor(private debug: DebugService = new DebugService()) {
     if (User._instance) {
       return User._instance;
     }

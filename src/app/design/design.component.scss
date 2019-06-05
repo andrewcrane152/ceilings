@@ -1,0 +1,204 @@
+.design-ui {
+  display: flex;
+  justify-content: space-between;
+
+  .left-side {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+
+    .grid-header {
+      display: flex;
+      flex-direction: column;
+
+      .top {
+        display: flex;
+        align-items: center;
+        padding: 15px 0px;
+        border-bottom: 4px solid black;
+        width: 100%;
+
+        .project-name {
+          font-size: 2em;
+          line-height: 20px;
+          font-weight: 500;
+          width: 50%;
+        }
+
+        .save-load {
+          display: flex;
+          width: 50%;
+        }
+      }
+
+      .bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .left {
+          display: flex;
+          flex-direction: row;
+
+          .guides {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 15px;
+
+            .guides-text {
+              margin-left: 10px;
+            }
+          }
+
+          .three-d {}
+        }
+      }
+    }
+
+    .grid {
+      height: 530px;
+      overflow: auto;
+    }
+
+    .grid-footer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .quantities-sold {
+        margin-right: 30px;
+        display: flex;
+        flex-direction: column;
+
+        .sub-header {
+          padding: 0px;
+        }
+      }
+
+      .tile-usage {}
+    }
+  }
+
+  .right-side {
+    width: 420px;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .expansion-panels {}
+
+    .bottom-section {
+      // this will not be necessary the footer is brought back
+      margin-bottom: 50px;
+
+      .totals {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-direction: row;
+        margin: 20px 0px;
+
+        .est-totals {
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            .total {
+              font-weight: 600;
+              margin-left: 15px;
+              padding: 5px 0px;
+            }
+          }
+          hr {
+            margin: 5px;
+          }
+        }
+
+        .details-btn {
+          margin-bottom: -10px;
+        }
+      }
+    }
+  }
+
+  .canvas-grid-container {
+    position: relative;
+  }
+}
+
+.expansion-panel-section-header {
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.mat-expansion-panel-body div:last-child {
+  margin-bottom: 10px;
+}
+
+.selected {
+  border: 2px solid #ff9e1b !important;
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+
+  .input {
+    margin-right: 20px;
+  }
+
+  .input input {
+    max-width: 75px;
+    line-height: 2;
+  }
+
+  .name-input {
+    width: 280px;
+    margin-right: 20px;
+    line-height: 2;
+    text-indent: 8px;
+  }
+
+  .max-min {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7em;
+    line-height: 1;
+    margin-top: 8px;
+  }
+
+  .units-input {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      border: 1px solid #e8e8e8;
+      margin-top: -9px;
+      height: 34px;
+      width: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    span p {
+      margin: 0;
+    }
+  }
+
+  .add-remove {
+    img {
+      height: 30px;
+      padding: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      border: 1px solid #bbb;
+    }
+  }
+}

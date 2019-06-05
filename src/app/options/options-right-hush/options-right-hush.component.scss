@@ -1,0 +1,23 @@
+.grid-and-guide img {
+  max-width: 200px;
+  max-height: 180px;
+}
+
+.design-img {
+  .img-title {
+    font-weight: 500;
+    font-size: 0.8em;
+  }
+  img {
+    max-height: 40px;
+  }
+}
+
+.colors {
+  display: flex;
+}
+
+.colors img {
+  max-width: 30px;
+  max-height: 30px;
+}

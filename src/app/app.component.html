@@ -1,4 +1,15 @@
-<div class="container bg-white">
-  <router-outlet></router-outlet>
-</div>
-<app-alert></app-alert>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav mode="over" position="end" [(opened)]="opened">
+    Sidenav content
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-main-navbar [style.display]="showMainNavbar ? 'inline' : 'none'"></app-main-navbar>
+    <div class="container">
+      <div class="app-container">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+    <!-- <app-main-footer *ngIf="showMainFooter"></app-main-footer> -->
+  </mat-sidenav-content>
+</mat-sidenav-container>

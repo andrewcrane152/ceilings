@@ -1,0 +1,112 @@
+label {
+  color: #676767;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 400;
+}
+
+.align-patterns {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pattern {
+  padding: 0px;
+  max-width: 54px;
+  margin: 2px;
+  border: 2px solid #e7e7e7;
+  cursor: pointer;
+}
+
+.strength-parent,
+.relief-parent {
+  display: flex;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.strength-parent>*,
+.relief-parent>* {
+  width: 50%;
+  margin: auto 3px;
+}
+
+.dimensions-parent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dimensions-parent>* {
+  padding-left: 0px;
+}
+
+.vertical-center {
+  margin: auto 0px;
+}
+
+.selected {
+  border: 3px solid #ff9e1b;
+}
+
+.syd-grid-header {
+  display: flex;
+  margin: 0px;
+}
+
+.syd-grid-header>* {
+  flex-grow: 1
+}
+
+.syd-grid-header :last-child {
+  text-align: right;
+}
+
+.save-load {
+  text-align: center;
+}
+
+.download-icon>a:hover {
+  text-decoration: none;
+}
+
+.align-download-icon {
+  position: relative;
+  top: 4px;
+}
+
+.base-color {
+  color: #666666;
+}
+
+.cove-lighting>div {
+  padding: 0px;
+}
+
+.cove-lighting-label {
+  padding: 0px !important;
+}
+
+.cove-lighting-label {
+  font-size: 18px;
+}
+
+.checkbox {
+  font-size: 18px;
+  padding: 0px;
+  margin: 5px 0px;
+  cursor: pointer;
+  width: auto;
+}
+
+.pattern-relief-radio-group {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/*
+.pattern-relief-radio-button {
+
+} */
