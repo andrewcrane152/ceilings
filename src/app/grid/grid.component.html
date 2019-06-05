@@ -1,12 +1,12 @@
-<div class="grid" id="grid" [ngClass]="feature.selectedTool != undefined ? feature.selectedTool + '-cursor' : ''" [style.width]="getGridWidth() + 'px'" [style.height]="getGridHeight() + 'px'">
-  <div [ngClass]="{'grid-room-guide-border': showGridRoomGuide}" class="grid-room-guide" [class.hide]="!feature.showGuide" [style.width]="getRoomGuideWidth() + 'px'" [style.height]="getRoomGuideHeight() + 'px'" [style.top]="getRoomGuideTopAdjustment() + 'px'" [style.left]="getRoomGuideLeftAdjustment() + 'px'"></div>
+<div class="grid" id="grid" [ngClass]="feature.selectedTool != undefined ? feature.selectedTool + '-cursor' : ''" [style.width]="getGridWidth() + 'px'"
+  [style.height]="getGridHeight() + 'px'">
+  <div [ngClass]="{'grid-room-guide-border': showGridRoomGuide}" class="grid-room-guide" [class.hide]="!feature.showGuide"
+    [style.width]="getRoomGuideWidth() + 'px'" [style.height]="getRoomGuideHeight() + 'px'" [style.top]="getRoomGuideTopAdjustment() + 'px'"
+    [style.left]="getRoomGuideLeftAdjustment() + 'px'"></div>
   <div *ngFor="let row of rows; index as r; last as lastRow">
     <div *ngFor="let col of columns; index as c" id="grid-section-1-1" grid="1-1" class="grid-section-control" [class.add-border-bottom]="lastRow">
-      <div class="grid-section" (click)="updateTile(r, c)" on-mouseup="removeFlag()" on-mousedown="setFlag(r, c)" on-mousemove="updateTile(r, c)"
-      [style.background-image]="getTileBackgroundImage(r, c)"
-      [style.background-position]="'center center'"
-      [style.transform]="'rotate(' + getTileRotation(r, c) + 'deg)'"
-      [style.background-repeat]="'no-repeat'">
+      <div class="grid-section" on-mouseup="removeFlag()" on-mousedown="setFlag(r, c)" on-mousemove="updateTile(r, c)" [style.background-image]="getTileBackgroundImage(r, c)"
+        [style.background-position]="'center center'" [style.transform]="'rotate(' + getTileRotation(r, c) + 'deg)'" [style.background-repeat]="'no-repeat'">
         <div class="grid-label" [class.hide]="!feature.showGuide">{{r}} | {{c}}</div>
       </div>
     </div>

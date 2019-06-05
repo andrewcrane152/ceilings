@@ -16,11 +16,13 @@
       <div class="row">
         <div class="col-sm-9">
           <div class="form-group">
-            <input [(ngModel)]="seeyond.design_name" #designNameInput="ngModel" required type="text" class="form-control square" placeholder="Name" name="design-name" id="design-name-input" autofocus>
+            <input [(ngModel)]="seeyond.design_name" #designNameInput="ngModel" required type="text" class="form-control square" placeholder="Name"
+              name="design-name" id="design-name-input" autofocus>
           </div>
         </div>
         <div class="col-sm-3 options-load">
-          <a id="load-btn" title="load saved designs" (click)="feature.loadDesigns()"><span class="icomoon-folder orange"></span> Load</a>
+          <a id="load-btn" title="load saved designs" (click)="feature.loadDesigns()">
+            <span class="icomoon-folder orange"></span> Load</a>
         </div>
       </div>
       <div id="grid-dimensions">
@@ -28,7 +30,7 @@
         <div class="form-group">
           <div class="col-sm-10 feature-select">
             <select class="form-control" (change)="updateSelectedFeature($event.target.value)">
-              <option *ngFor="let featureOption of seeyond.seeyond_features | keys;" [value]="featureOption.name" [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
+              <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name" [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
             </select>
           </div>
         </div>
@@ -39,7 +41,8 @@
             <div class="col-sm-4">
               <div class="form-group">
                 <label for="width">Width</label>
-                <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="dimensionsDidChange($event.key)" required type="number" class="form-control number-input square" placeholder="Width" name="width" id="width">
+                <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="dimensionsDidChange()" required type="number" class="form-control number-input square"
+                  placeholder="Width" name="width" id="width">
                 <span id="helpBlock" class="help-block">min: {{this.seeyond.widthMin}}, max: {{this.seeyond.widthMax}}</span>
               </div>
             </div>
@@ -47,21 +50,24 @@
               <div class="form-group">
                 <label for="length" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</label>
                 <label for="length" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</label>
-                <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="dimensionsDidChange($event.key)" required type="number" class="form-control number-input square" placeholder="Height" name="length" id="length">
+                <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="dimensionsDidChange()" required type="number" class="form-control number-input square"
+                  placeholder="Height" name="length" id="length">
                 <span id="helpBlock" class="help-block">min: {{this.seeyond.heightMin}}, max: {{this.seeyond.heightMax}}</span>
               </div>
             </div>
             <div class="col-sm-4" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
               <div class="form-group">
                 <label for="length">Radius</label>
-                <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="dimensionsDidChange($event.key)" type="number" class="form-control number-input square" placeholder="Height" name="length" id="length">
+                <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="dimensionsDidChange()" type="number" class="form-control number-input square"
+                  placeholder="Height" name="length" id="length">
                 <span id="helpBlock" class="help-block">min: {{this.seeyond.radiusMin}}, max: {{this.seeyond.radiusMax}}</span>
               </div>
             </div>
             <div class="col-sm-4" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
               <div class="form-group">
                 <label for="length">Ceiling Length</label>
-                <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel" (change)="dimensionsDidChange($event.key)" required type="number" class="form-control number-input square" placeholder="Height" name="length" id="length">
+                <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel" (change)="dimensionsDidChange()" required type="number"
+                  class="form-control number-input square" placeholder="Height" name="length" id="length">
                 <span id="helpBlock" class="help-block">min: {{this.seeyond.ceilLengthMin}}, max: {{this.seeyond.ceilLengthMax}}</span>
               </div>
             </div>
@@ -78,7 +84,8 @@
       </div>
       <button class="button button-orange start-designing" (click)="startDesigning()" [disabled]="!seeyondValidateOptions()">start designing</button>
       <div class="back">
-        <a id="back-to-landing" class="back-to-landing" (click)="goToLanding()">< Choose a New Design Tool</a>
+        <a id="back-to-landing" class="back-to-landing" (click)="goToLanding()">
+          < Choose a New Design Tool</a>
       </div>
     </div>
     <div class="col-xs-12 col-sm-5 col-sm-offset-1 right-pane">
@@ -98,14 +105,30 @@
             </li>
           </ul>
           <ul class="list-inline no-margin">
-            <li class="material"><img src="/assets/images/materials/felt/sola/nickel.png" alt="Nickel" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/citrine.png" alt="Citrine" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/aries.png" alt="Aries" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/ruby.png" alt="Ruby" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/oxford.png" alt="Oxford" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/hunter.png" alt="hunter" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/burnt_umber.png" alt="Burnt Umber" class="img-responsive"></li>
-            <li class="material"><img src="/assets/images/materials/felt/sola/ebony.png" alt="Ebony" class="img-responsive"></li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/nickel.png" alt="Nickel" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/citrine.png" alt="Citrine" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/aries.png" alt="Aries" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/ruby.png" alt="Ruby" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/oxford.png" alt="Oxford" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/hunter.png" alt="hunter" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/burnt_umber.png" alt="Burnt Umber" class="img-responsive">
+            </li>
+            <li class="material">
+              <img src="/assets/images/materials/felt/sola/ebony.png" alt="Ebony" class="img-responsive">
+            </li>
           </ul>
         </div>
         <div *ngIf="((seeyond.seeyond_feature_type === 'wall-to-ceiling') || (seeyond.seeyond_feature_type === 'ceiling'))">

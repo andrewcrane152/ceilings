@@ -1,0 +1,45 @@
+<mat-expansion-panel #dimensions hideToggle="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title class="sub-header">
+      Dimensions
+    </mat-panel-title>
+    <mat-icon *ngIf="!dimensions.expanded" svgIcon="accordian_open"></mat-icon>
+    <mat-icon *ngIf="dimensions.expanded" svgIcon="accordian_close"></mat-icon>
+  </mat-expansion-panel-header>
+  <div class="description" *ngIf="feature.feature_type==='tetria'">A 15/16 or 9/16 grid system is required for this product.</div>
+  <div class="inputs">
+    <div class="input">
+      <div class="sub-header">Width</div>
+      <input [(ngModel)]="feature.width" class="unit-input" type="text" (blur)="updateGrid()">
+      <div class="max-min"></div>
+    </div>
+    <div class="input">
+      <div class="sub-header">Height</div>
+      <input [(ngModel)]="feature.length" class="unit-input" type="text" (blur)="updateGrid()">
+      <div class="max-min"></div>
+    </div>
+    <div class="input">
+      <div>&nbsp;</div>
+      <span class="toggle-btns units-input">
+        <button (click)="updateGridUnits('inches')" [class.selected]="feature.units === 'inches'">IN</button>
+        <button (click)="updateGridUnits('centimeters')" [class.selected]="feature.units === 'centimeters'">CM</button>
+      </span>
+    </div>
+  </div>
+  <div class="inputs">
+    <div class="input">
+      <div class="sub-header">Columns</div>
+      <div class="add-remove">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustGridDimensions('addColumn')" alt="Add Column">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustGridDimensions('removeColumn')" alt="Remove Column">
+      </div>
+    </div>
+    <div class="input">
+      <div class="sub-header">Rows</div>
+      <div class="add-remove">
+        <img src="/assets/icons/tools/add-plus.png" (click)="adjustGridDimensions('addRow')" alt="Add Row">
+        <img src="/assets/icons/tools/remove-minus.png" (click)="adjustGridDimensions('removeRow')" alt="Remove Row">
+      </div>
+    </div>
+  </div>
+</mat-expansion-panel>

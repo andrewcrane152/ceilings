@@ -1,0 +1,19 @@
+<mat-expansion-panel #modify hideToggle="true" [expanded]="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title class="sub-header">
+      Modify
+    </mat-panel-title>
+    <mat-icon *ngIf="!modify.expanded" svgIcon="accordian_open"></mat-icon>
+    <mat-icon *ngIf="modify.expanded" svgIcon="accordian_close"></mat-icon>
+  </mat-expansion-panel-header>
+
+  <div class="modify-selection">
+    <span *ngFor="let tool of feature.toolsArray last as isLast; index as i" (click)="feature.updateSelectedTool(tool)" class="tool-container"
+      [class.add-margin-left]="i === 2">
+      <span class="expansion-panel-section-header">{{tool | capitalize}}</span>
+      <span class="tool" [class.selected]="feature.selectedTool==tool" [class.add-border-right]="isLast || i === 1">
+        <img src="/assets/icons/tools/{{tool}}.png" alt="{{tool | capitalize}}">
+      </span>
+    </span>
+  </div>
+</mat-expansion-panel>

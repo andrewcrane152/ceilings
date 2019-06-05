@@ -1,0 +1,138 @@
+<div class="options-dialog-container">
+  <div class="options-header">
+    <div class="title">
+      {{title | capitalize}}
+    </div>
+    <span appStyledButton='secondary-left'>
+      <button>Return to design tools</button>
+    </span>
+  </div>
+  <div class="options-columns">
+
+    <!-- BEGIN LEFT COLUMN -->
+    <div class="left-column">
+      <div id="project-name" class="left-section">
+        <div class="subtitle">Project name</div>
+        <div class="inputs">
+          <input type="text" class="name-input square" placeholder="Name" autofocus>
+          <a id="load-btn" class="load-btn" title="load saved designs" (click)="feature.loadDesigns()">
+            <img src="/assets/icons/tools/load.png">
+            <span>Load</span>
+          </a>
+        </div>
+      </div>
+
+      <div id="swoon-feature-selection" class="left-section">
+        <div class="subtitle">Feature selection</div>
+        <span appStyledSelect [width]="280">
+          <select (change)="updateSelectedProfileFeature($event.target.value)">
+            <!-- <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name" [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option> -->
+            <option value="swoon">Swoon</option>
+          </select>
+        </span>
+      </div>
+
+      <div id="seeyond-feature-selection" class="left-section">
+        <div class="subtitle">Feature selection</div>
+        <span appStyledSelect [width]="280">
+          <select (change)="updateSelectedProfileFeature($event.target.value)">
+            <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name" [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
+            <!-- <option value="seeyond">seeyond</option> -->
+          </select>
+        </span>
+      </div>
+
+      <div id="seeyond-dimensions" class="left-section">
+        <div class="subtitle">Dimensions</div>
+        <div class="inputs">
+          <div class="input">
+            <div class="sub-header">Width</div>
+            <input class="unit-input" type="text">
+            <div class="max-min">
+              <span>Min {{this.seeyond.widthMin}}</span>
+              <span>Max {{this.seeyond.widthMax}}</span>
+            </div>
+          </div>
+          <div class="input">
+            <div class="sub-header">Height</div>
+            <input class="unit-input" type="text">
+            <div class="max-min">
+              <span>Min {{this.seeyond.heightMin}}</span>
+              <span>Max {{this.seeyond.heightMax}}</span>
+            </div>
+          </div>
+          <div class="input">
+            <div class="sub-header">Ceiling Length</div>
+            <input class="unit-input" type="text">
+            <div class="max-min">
+              <span>Min {{this.seeyond.ceilLengthMin}}</span>
+              <span>Max {{this.seeyond.ceilLengthMax}}</span>
+            </div>
+          </div>
+          <div class="input" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
+            <div class="sub-header">Radius</div>
+            <input class="unit-input" type="text">
+            <div class="max-min">
+              <span>Min {{this.seeyond.radiusMin}}</span>
+              <span>Max {{this.seeyond.radiusMax}}</span>
+            </div>
+          </div>
+          <div class="input sub-header">
+            <div class="units-input">
+              <span>
+                <p class="inches">IN</p>
+              </span>
+              <span>
+                <p class="centimeters">CM</p>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dimensions" class="left-section">
+        <div class="subtitle">Dimensions</div>
+        <div class="inputs">
+          <div class="input">
+            <div class="sub-header">Width</div>
+            <input class="unit-input" type="text">
+            <div class="max-min"></div>
+          </div>
+          <div class="input">
+            <div class="sub-header">Height</div>
+            <input class="unit-input" type="text">
+            <div class="max-min"></div>
+          </div>
+          <div class="input sub-header">
+            <div>&#8203;</div>
+            <div class="units-input">
+              <span>
+                <p class="inches">IN</p>
+              </span>
+              <span>
+                <p class="centimeters">CM</p>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END LEFT COLUMN -->
+
+    <div class="vertical-divider"></div>
+
+    <!-- BEGIN RIGHT COLUMN -->
+    <div class="right-column">
+      <app-options-right-profile></app-options-right-profile>
+    </div>
+    <!-- END RIGHT COLUMN -->
+  </div>
+  <div class="options-footer">
+    <span appStyledButton='primary-right'>
+      <button type="submit" (click)='startDesigning()' class="start-designing">Start designing</button>
+    </span>
+    <span appStyledButton='secondary-left'>
+      <button class="go-to-quantity">Order by quantity</button>
+    </span>
+  </div>
+</div>
