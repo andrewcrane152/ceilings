@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpErrorResponse }
 
 import { environment } from '../../environments/environment';
 import { AlertService } from './alert.service';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { DebugService } from './../_services/debug.service';
 
@@ -17,6 +17,7 @@ export class ApiService {
   public onUserLoggedIn = new EventEmitter();
   apiUrl = 'https://' + environment.API_URL + '/ceilings/';
   loginUrl = 'https://' + environment.API_URL + '/auth/login';
+  accessUrl = 'https://' + environment.API_URL + '/auth/check_access';
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
@@ -40,6 +41,10 @@ export class ApiService {
     this.debug.log('api', 'updating design');
     // we can't forget about the hardware...
     this.debug.log('api', this.feature.tiles);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -61,11 +66,17 @@ export class ApiService {
       hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
@@ -81,6 +92,10 @@ export class ApiService {
   saveDesign() {
     this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
@@ -101,11 +116,17 @@ export class ApiService {
       hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
       estimated_amount: this.feature.estimated_amount,
       services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
+      dealer_markup: this.feature.dealer_markup,
       grid_data: JSON.stringify(this.feature.gridData),
       quoted: this.feature.quoted,
       archived: this.feature.archived,
       quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order
+      is_quantity_order: this.feature.is_quantity_order,
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
@@ -154,7 +175,6 @@ export class ApiService {
 
     return this.http.post(this.loginUrl, formData).pipe(
       map((res: any) => {
-        console.log('login res:', res);
         if (res && !res.result.error) {
           localStorage.setItem('3formUser', JSON.stringify(res.result.user));
           this.user = res.result.user;
@@ -171,22 +191,62 @@ export class ApiService {
     );
   }
 
+  checkToShowPricing() {
+    if (!!localStorage.getItem('3formUser')) {
+      this.checkAccessToPricing().subscribe(
+        data => {
+          if (!!data.result) {
+            this.feature.showPricing = data.result.access;
+          }
+        },
+        error => {
+          console.log('denied pricing access');
+          // if (error) {
+          //   this.handleError(error);
+          // }
+        }
+      );
+    }
+  }
+
+  checkAccessToPricing() {
+    const userInfo = JSON.parse(localStorage.getItem('3formUser'));
+    const uid = !!userInfo ? userInfo.uid : '';
+    const accessUrl = `${this.accessUrl}?permission=Employee&uid=${userInfo.uid}`;
+    return this.http.post(accessUrl, {}).pipe(
+      map((res: any) => {
+        if (res && !res.result.error) {
+          userInfo['showPricing'] = res.result.access;
+          this.feature.showPricing = res.result.access;
+          localStorage.setItem('3formUser', JSON.stringify(userInfo));
+          console.log('user:', localStorage.getItem('3formUser'));
+          return res;
+        } else {
+          this.alert.apiAlert(res.result.error);
+        }
+      }),
+      catchError(res => {
+        // this.alert.error(res.error.result.message);
+        return 'error';
+      })
+    );
+  }
+
   logout() {
     localStorage.removeItem('3formUser');
     this.user = new User();
   }
 
   public handleError(error: HttpErrorResponse) {
-    console.log(error);
     // if (error.status === 500) { this.debug.log('api', error.message); return; }
     // if (!!error.error.result.message) { this.alert.error(error.error.result.message); }
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      this.debug.log('api', `An error occurred: ${error.error}`);
+      console.log('api', `An error occurred: ${error.error}`);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      this.debug.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
+      console.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
     }
     // return an ErrorObservable with a user-facing error message
     return throwError('Something bad happened; please try again later.');

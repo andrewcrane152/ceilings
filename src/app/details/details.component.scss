@@ -1,0 +1,147 @@
+.details-ui {
+  margin: 30px 0px;
+
+  .top-section {
+    .top-section-header {
+      display: flex;
+      justify-content: space-between;
+
+      .project-name {
+        font-size: 2em;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+
+      }
+
+      .header-navigation {
+        display: flex;
+        align-items: center;
+
+        img {
+          max-height: 20px;
+          margin-right: 25px;
+        }
+
+        .back-to-design {
+          font-size: 1em;
+          font-weight: 400;
+        }
+      }
+    }
+
+    .design-details {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid black;
+      margin-bottom: 25px;
+
+      .rfq-data {
+        display: flex;
+        flex-direction: column;
+        width: 49%;
+        border-top: 4px solid black;
+        padding: 15px 0px;
+
+        .top-row {
+          display: flex;
+          margin-bottom: 10px;
+
+          .left,
+          .right {
+            width: 50%;
+            margin-bottom: 5px;
+          }
+        }
+
+        .bottom-row {
+          hr {
+            margin: 10px 0px;
+          }
+
+          .info-section {
+            width: 100%;
+            padding-right: 35%;
+          }
+
+          .info-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 1.5em;
+
+            .total {
+              text-align: right;
+            }
+          }
+
+          .net {
+            margin: 5px 0px;
+          }
+        }
+      }
+
+      .divider {
+        border-right: 1px solid black;
+      }
+    }
+
+    .design-details>div {
+      margin: 15px 5px;
+    }
+  }
+
+  .bottom-section {
+    display: flex;
+    justify-content: space-between;
+
+    .left-side {
+      width: 49%;
+    }
+
+    .right-side {
+      width: 49%;
+
+      div {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .logo-footer {
+    margin-top: 20px;
+    max-width: 100px;
+  }
+}
+
+.orange-bold {
+  color: #ff9e1b;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.details-header {
+  font-size: 1.1em;
+  font-weight: 500;
+}
+
+/*
+ For Printing
+ */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+  }
+
+  .orange {
+    color: #ff9e1b !important;
+  }
+
+  .orange-bold {
+    color: #ff9e1b !important;
+  }
+
+  #print-icon {
+    display: none;
+  }
+}

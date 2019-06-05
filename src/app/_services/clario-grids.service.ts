@@ -1,5 +1,5 @@
 import { DebugService } from './debug.service';
-import { Feature } from 'app/feature';
+import { Feature } from 'app/_features/feature';
 import { MaterialsService } from 'app/_services/materials.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { Options } from 'selenium-webdriver/safari';

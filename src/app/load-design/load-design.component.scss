@@ -1,0 +1,27 @@
+.link:hover {
+  color: #ff9e1b;
+  cursor: pointer;
+}
+
+.designs-table {
+  max-height: 20em;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+tr {
+  line-height: 4em;
+  border-bottom: 1px solid #bbb;
+}
+
+.load-btn {
+  width: 50%;
+}
+
+.delete-icon {
+  cursor: pointer;
+  height: 18px;
+}

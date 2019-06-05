@@ -8,7 +8,7 @@ import { NavigationEnd } from '@angular/router/src/events';
 @Component({
   selector: 'app-seeyond-design',
   templateUrl: './seeyond-design.component.html',
-  styleUrls: ['../design.component.css', './seeyond-design.component.css']
+  styleUrls: ['../design.component.scss', './seeyond-design.component.scss']
 })
 export class SeeyondDesignComponent extends DesignComponent implements OnInit, OnDestroy, AfterContentInit {
   seeyondMaterials = this.feature.materials.felt.sola;

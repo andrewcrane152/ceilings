@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { AlertService } from '../_services/alert.service';
 import { ApiService } from '../_services/api.service';
@@ -9,7 +9,7 @@ import { DebugService } from './../_services/debug.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
   public email: string;
@@ -27,6 +27,14 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.debug.log('login-component', this.user);
+  }
+
+  createAccount() {
+    window.open('https://www.3-form.com/userprofile', '_blank');
+  }
+
+  forgotPassword() {
+    window.open('http://www.3-form.com/userprofile/reset', '_blank');
   }
 
   login() {
@@ -52,5 +60,9 @@ export class LoginComponent implements OnInit {
         this.loading = false;
       }
     );
+  }
+
+  validateSignIn() {
+    return !!this.email && !!this.password;
   }
 }

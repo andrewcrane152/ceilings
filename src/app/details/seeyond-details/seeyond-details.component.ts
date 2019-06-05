@@ -4,7 +4,7 @@ import { DetailsComponent } from '../details.component';
 @Component({
   selector: 'app-seeyond-details',
   templateUrl: './seeyond-details.component.html',
-  styleUrls: ['../details.component.css', './seeyond-details.component.css']
+  styleUrls: ['../details.component.scss', './seeyond-details.component.scss']
 })
 export class SeeyondDetailsComponent extends DetailsComponent implements AfterContentChecked {
   dimensionsStr: string;

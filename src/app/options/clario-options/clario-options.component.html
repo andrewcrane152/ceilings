@@ -77,7 +77,7 @@
         </div>
       </div>
     </div>
-    <button class="button button-orange start-designing" (click)="dialogRef.close('start designing')" [disabled]="validateOptions()">start designing</button>
+    <button class="button button-orange start-designing" (click)="dialogRef.close('start designing')" [disabled]="!validateOptions()">start designing</button>
     <div class="back">
       <a id="back-to-landing" class="back-to-landing" (click)="goToLanding()">
         < Choose a New Design Tool</a>

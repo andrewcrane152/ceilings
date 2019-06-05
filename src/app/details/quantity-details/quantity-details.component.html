@@ -1,118 +1,158 @@
-<div class="row">
-  <div class="col-sm-2">
-    <a class="hidden-print back-to-design" (click)="backToDesign()">
-      <span class="icomoon-chevron-left orange"></span>Back to Order</a>
-  </div>
-</div>
-<div class="row header">
-  <div class="col-sm-12">
-    <div class="row">
-      <div class="col-sm-6">
-        <p class="sm">Project:
-          <span class="md info">{{feature.project_name}}</span>
-        </p>
+<div *ngIf="!isSeeyond" class="details-ui">
+  <div class="top-section">
+    <div class="top-section-header">
+      <span class="project-name">
+        <span>{{feature.design_name}}</span>
+      </span>
+      <span class="header-navigation">
+        <img src="/assets/icons/printer_icon.png" (click)="print()">
+        <span appStyledButton='secondary-left' class="back-to-design">
+          <button (click)="backToDesign()" class="go-to-quantity">Back to design</button>
+        </span>
+      </span>
+    </div>
+    <div class="design-details">
+
+      <!-- LEFT-COLUMN -->
+      <div class="contact-info rfq-data">
+        <div class="top-row">
+          <div class="left">
+            <div>
+              <span class="orange-bold">ID</span>
+              <span>{{feature.id}}</span>
+            </div>
+            <div>
+              <span class="orange-bold">Specifier</span>
+              <span>{{feature.specifier}}</span>
+            </div>
+            <div>
+              <span class="orange-bold">Date</span>
+              <span>{{feature.updated_at | date:'shortDate'}}</span>
+            </div>
+          </div>
+          <div class="right" *ngIf="!!rep">
+            <div class="orange-bold">Sales Representative</div>
+            <div>{{rep.name}}</div>
+            <div>{{rep.email}}</div>
+            <div>{{rep.phone}}</div>
+          </div>
+        </div>
+        <div class="bottom-row" *ngIf="feature.showPricing">
+          <div class="details-header">Est. Total</div>
+          <div id="estimated-totals" class="info-section">
+            <div class="info-line">
+              <span>List:</span>
+              <span class="total">{{feature.list_price | currency:'USD'}}</span>
+            </div>
+            <div class="info-line">
+              <span>Discount:</span>
+              <span class="total">{{feature.discount_terms_string}}</span>
+            </div>
+            <div class="info-line">
+              <span>Discount amount:</span>
+              <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
+            </div>
+            <hr>
+            <div class="info-line net">
+              <span class="details-header">Net (USD):</span>
+              <span class="total details-header">{{feature.net_price | currency:'USD'}}</span>
+            </div>
+            <div class="description-text">Taxes, shipping & handling not included</div>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-5">
-        <p class="sm">Feature:
-          <span class="md info">{{feature.feature_type | capitalize}} - ID: {{feature.id}}</span>
-        </p>
-      </div>
-      <div class="col-sm-1 hidden-print">
-        <p class="sm bold print" (click)="print()">
-          <span class="icomoon-print orange"></span> Print</p>
+      <div class="divider"></div>
+
+      <!-- RIGHT-COLUMN -->
+      <div class="rfq-data">
+        <div class="top-row">
+          <div class="left feature-info">
+            <div class="details-header">Feature</div>
+            <div>{{featureHumanName}}</div>
+            <div class="description-text tiles-sold-text">{{tilesSoldString}}</div>
+          </div>
+          <div class="right feature-info">
+            <div class="details-header">Quantity</div>
+            <div>Tiles - {{feature.qtyTilesReceiving}}</div> <!-- TODO baffles included -->
+            <div>Designs - {{feature.quantity || 1}}</div>
+            <div>Total - {{feature.qtyTilesReceiving * (feature.quantity || 1)}}</div>
+          </div>
+        </div>
+        <div class="bottom-row">
+          <div class="left"></div>
+          <div class="right"></div>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="bottom-section">
+    <div class="order-data">
+      <div *ngIf="!!qtyOrder" class="details-table-container summary">
+        <div class="design-summary">Design Summary</div>
+        <mat-table #table [dataSource]="qtyOrder.data" *ngIf="(qtyOrder.data.length > 0)">
 
-    <div class="row">
-      <div class="col-sm-6">
-        <p class="sm">Specifier:
-          <span class="md info">{{feature.specifier}}</span>
-        </p>
+          <ng-container matColumnDef="used">
+            <mat-header-cell *matHeaderCellDef> Used </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.used}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="receiving">
+            <mat-header-cell *matHeaderCellDef> Receiving </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.purchased}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="hush-receiving">
+            <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.purchased}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="unused">
+            <mat-header-cell *matHeaderCellDef> Unused </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.purchased - element.used}}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="material">
+            <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="material-column">
+              <span>
+                <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}"
+                  class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}">
+              </span>
+              <span>
+                {{element.material | capitalize}} - {{element.material_size}}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="hush-material">
+            <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="material-column">
+              <span>
+                <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                  alt="{{element.material.name_str | capitalize}}">
+              </span>
+              <span>
+                {{element.material | capitalize}} - {{element.humanized_size}}
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <mat-header-cell *matHeaderCellDef> Est. Total </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.total | currency:'USD'}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
       </div>
-      <div class="col-sm-5">
-        <p class="sm">Order Total:
-          <span class="md info">{{feature.estimated_amount | currency:'USD'}}
-            <sup>*</sup> USD</span>
-        </p>
-      </div>
-      <div class="col-sm-1">
-        <p class="xs bold">{{feature.updated_at | date:'shortDate'}}</p>
+      <div class="totals">
+        <p>SqFt. Used / Receiving: {{qtySrv.sqAreaUsed}} / {{qtySrv.sqAreaReceiving}}</p>
+        <p>Tiles Used / Receiving: {{feature.qtyTilesUsed}} / {{feature.qtyTilesReceiving}}</p>
       </div>
     </div>
   </div>
-</div>
-
-<hr>
-
-<div class="row order-data">
-  <div *ngIf="!!qtyOrder" class="details-table-container summary">
-    <h3>Order Summary</h3>
-    <mat-table #table [dataSource]="qtyOrder.data" *ngIf="(qtyOrder.data.length > 0)">
-
-      <ng-container matColumnDef="used">
-        <mat-header-cell *matHeaderCellDef> Used </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.used}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="receiving">
-        <mat-header-cell *matHeaderCellDef> Receiving </mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.purchased}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="hush-receiving">
-        <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.purchased}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="unused">
-        <mat-header-cell *matHeaderCellDef> Unused </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.purchased - element.used}}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="material">
-        <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-        <mat-cell *matCellDef="let element" class="material-column">
-          <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} {{element.material_size}}
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="hush-material">
-        <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-        <mat-cell *matCellDef="let element" class="material-column">
-          <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="total">
-        <mat-header-cell *matHeaderCellDef> Est. Total </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.total | currency:'USD'}} </mat-cell>
-      </ng-container>
-
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    </mat-table>
-  </div>
-  <div class="totals">
-    <!-- <p class="sm md">Usage Totals</p> -->
-    <p class="sm">Tiles Used / Receiving: {{feature.qtyTilesUsed}} / {{feature.qtyTilesReceiving}}</p>
-    <p class="sm">SqFt. Used / Receiving: {{qtySrv.sqAreaUsed}} / {{qtySrv.sqAreaReceiving}}</p>
-  </div>
-</div>
-
-<div class="footer">
-  <div class="logo">
+  <div class="logo-footer">
     <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
-  </div>
-  <div *ngIf="rep">
-    <p class="rep-name">
-      <span class="bold">{{rep.name}}</span> Sales Rep</p>
-    <p class="rep-info">{{rep.phone}} | {{rep.email}}</p>
-  </div>
-  <div class="">
-    <p class="">
-      <sup>*</sup>Taxes, Shipping and Handling not included</p>
-  </div>
-  <div class="">
-    <p class="orange pull-right">3-form.com</p>
   </div>
 </div>

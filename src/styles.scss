@@ -1,0 +1,400 @@
+/* You can add global styles to this file, and also import other style files */
+// @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+/* @import '~https://fonts.googleapis.com/icon?family=Material+Icons'; */
+@import '~@angular/material/theming';
+@include mat-core();
+$primary-black: (50: #000, 100: #000, 200: #000, 300: #000, 400: #000, 500: #000, 600: #000, 700: #000, 800: #000, 900: #000, A100: #e7e7e7, A200: #bbb, A400: #000, A700: #000, contrast: (50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
+$secondary-orange: (50: #ff9e1b, 100: #ff9e1b, 200: #ff9e1b, 300: #ff9e1b, 400: #ff9e1b, 500: #ff9e1b, 600: #ff9e1b, 700: #ff9e1b, 800: #ff9e1b, 900: #ff9e1b, A100: #ff9e1b, A200: #ff9e1b, A400: #ff9e1b, A700: #ff9e1b, contrast: (50: white, 100: white, 200: white, 300: white, 400: white, 500: white, 600: white, 700: white, 800: white, 900: white, A100: white, A200: white, A400: white, A700: white, ));
+$custom-theme-primary: mat-palette($primary-black, A200, A100, A400);
+$custom-theme-accent: mat-palette($secondary-orange, A200, A100, A400);
+// The warn palette is optional (defaults to red).
+$custom-theme-warn: mat-palette($mat-red);
+// Create the theme object (a Sass map containing all of the palettes).
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($custom-theme);
+
+@font-face {
+  font-family: 'Graphik Web';
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-MediumItalic-Web.eot');
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-MediumItalic-Web.eot?#iefix') format('embedded-opentype'), url('https://3form.s3.amazonaws.com/fonts/Graphik-MediumItalic-Web.woff2') format('woff2'), url('https://3form.s3.amazonaws.com/fonts/Graphik-MediumItalic-Web.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-stretch: normal;
+}
+
+.Graphik-MediumItalic-Web {
+  font-family: 'Graphik Web';
+  font-weight: 500;
+  font-style: italic;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: 'Graphik Web';
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-Medium-Web.eot');
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-Medium-Web.eot?#iefix') format('embedded-opentype'), url('https://3form.s3.amazonaws.com/fonts/Graphik-Medium-Web.woff2') format('woff2'), url('https://3form.s3.amazonaws.com/fonts/Graphik-Medium-Web.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+.Graphik-Medium-Web {
+  font-family: 'Graphik Web';
+  font-weight: 500;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: 'Graphik Web';
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-RegularItalic-Web.eot');
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-RegularItalic-Web.eot?#iefix') format('embedded-opentype'), url('https://3form.s3.amazonaws.com/fonts/Graphik-RegularItalic-Web.woff2') format('woff2'), url('https://3form.s3.amazonaws.com/fonts/Graphik-RegularItalic-Web.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-stretch: normal;
+}
+
+.Graphik-RegularItalic-Web {
+  font-family: 'Graphik Web';
+  font-weight: 400;
+  font-style: italic;
+  font-stretch: normal;
+}
+
+@font-face {
+  font-family: 'Graphik Web';
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-Regular-Web.eot');
+  src: url('https://3form.s3.amazonaws.com/fonts/Graphik-Regular-Web.eot?#iefix') format('embedded-opentype'), url('https://3form.s3.amazonaws.com/fonts/Graphik-Regular-Web.woff2') format('woff2'), url('https://3form.s3.amazonaws.com/fonts/Graphik-Regular-Web.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+$primary-orange: #ff9e1b;
+$primary-black: #000;
+
+.Graphik-Regular-Web {
+  font-family: 'Graphik Web';
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+body {
+  font-family: 'Graphik Web';
+  background-color: #fff;
+  color: #1f1f1f;
+  font-size: 14px; // all em sizing should be relative to this
+}
+
+input:focus {
+  outline: none;
+  border: 2px solid $primary-orange !important;
+  box-shadow: none;
+}
+
+select:focus {
+  outline: none;
+  border: 2px solid $primary-orange !important;
+  box-shadow: none;
+}
+
+button:focus {
+  border: 2px solid $primary-orange !important;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+input {
+  text-indent: 8px;
+  line-height: 1.8em;
+}
+
+.toggle-btns {
+
+  button,
+  button:active {
+    // outline: none !important;
+    // box-shadow: none !important;
+    background: none;
+    color: inherit;
+    border: 2px solid #bbb;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+  }
+
+  button:first-child {
+    border-right: 0px;
+  }
+
+  button:last-child {
+    border-left: 0px;
+  }
+
+  button.selected {
+    border: 2px solid $primary-black;
+  }
+}
+
+.toggle-btns.units-input {
+  button {
+    line-height: 2em;
+    width: 50px;
+    text-align: center;
+  }
+}
+
+.sub-header {
+  font-weight: 500;
+  padding: 5px 0px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.description-text {
+  font-size: 0.8em;
+  padding: 2px 0px;
+}
+
+input.square {
+  border-radius: 0;
+}
+
+.save-load-btn-fmt {
+  display: flex;
+  align-items: center;
+}
+
+.save-load-btn-fmt a {
+  cursor: pointer;
+  padding: 0px 5px;
+}
+
+.save-load-btn-fmt img {
+  max-height: 15px;
+  margin-right: 5px;
+}
+
+.load-btn-fmt {
+  display: flex;
+  align-items: center;
+}
+
+.load-btn-fmt span {
+  padding-left: 15px;
+}
+
+.load-btn-fmt img {
+  max-height: 15px;
+}
+
+button:disabled,
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.checkbox {
+  height: 24px;
+  width: 24px;
+  border: 1px solid #bbb;
+  margin: 0px;
+
+  img {
+    width: 100%;
+    padding: 4px;
+    margin-top: 1px;
+    height: 90%;
+  }
+}
+
+.modals-container {
+  padding: 50px;
+  position: relative;
+
+  img.close-btn {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 20px;
+    width: 20px;
+  }
+
+  .modals-body {
+    min-width: 380px;
+    min-height: 280px;
+
+    .modals-header {
+      border-bottom: 4px solid black;
+      padding: 15px 10px 10px 0px;
+      margin-bottom: 20px;
+    }
+
+    .modals-header span:first-child {
+      font-size: 2em;
+      font-weight: 500;
+      margin-right: 15px;
+    }
+
+    .modals-header span:nth-child(2) {
+      font-size: 2em;
+      font-weight: 400;
+    }
+
+    .modals-inputs {
+      padding-bottom: 15px;
+
+      .input-line {
+        margin-bottom: 20px;
+
+        input {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.modals-action-btns {
+  margin-top: 15px;
+
+  .action-btns {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      width: 45%;
+      white-space: nowrap;
+
+      button.cancel-modal-btn {
+        height: 100%;
+        width: 100%;
+        border: none;
+        margin: 0px;
+        display: flex;
+        -webkit-appearance: none;
+        border-radius: 0px;
+        line-height: 3.75;
+        font-weight: 500;
+        text-indent: 8px;
+        background-color: #ddd;
+      }
+    }
+  }
+}
+
+.modals-action-btns>div {
+  margin-bottom: 10px;
+}
+
+// .action-btns {
+//   width: 100%;
+//   display: flex;
+//   justify-content: space-between;
+// }
+// .action-btns>span {
+//   width: 45%;
+// }
+// mat-button-toggle {
+//   border: 1px solid !important;
+//   border-color: #e8e8e8;
+//   height: 34px;
+//   width: 50px;
+// }
+// .mat-button-toggle-checked {
+//   border-color: #000 !important;
+//   background-color: #fff;
+//   color: black;
+// }
+// mat-button-toggle-group {
+//   box-shadow: none !important;
+// }
+// label.mat-button-toggle-label {
+//   height: 100%;
+//   margin-top: -2px;
+//   font-weight: 500;
+// }
+// label div.mat-button-toggle-label-content {
+//   height: 100%;
+// }
+mat-dialog-container {
+  padding: 14px !important;
+}
+
+mat-expansion-panel {
+  box-shadow: none !important;
+  border-bottom: 1px solid #bbb;
+}
+
+mat-expansion-panel-header {
+  padding: 0px 1px !important;
+}
+
+.mat-expansion-panel-body {
+  padding: 0px 0px 20px 0px !important;
+}
+
+mat-expansion-panel-header .mat-content {
+  align-items: center;
+}
+
+mat-expansion-panel-header .mat-content mat-icon {
+  height: 18px;
+  width: 18px;
+}
+
+mat-expansion-panel-header-title,
+mat-expansion-panel-header-description {
+  flex-basis: 0 !important;
+}
+
+mat-expansion-panel-header-description {
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+mat-ink-bar {
+  background-color: #000;
+}
+
+mat-tab-header {
+  border: 0px !important;
+}
+
+.mat-tab-label,
+.mat-tab-label-active {
+  min-width: 0 !important;
+  padding: 0px !important;
+  margin: 0px 15px 0px 0px !important;
+  height: inherit !important;
+}
+
+.mat-tab-label-content {
+  color: black !important;
+  font-size: 0.9em !important;
+  font-weight: 500 !important;
+}
+
+.add-margin-left {
+  margin-left: 20px;
+}
+
+.nav-sub-menu+* .cdk-overlay-pane {
+  margin-top: 54px;
+}
+
+.nav-sub-menu+* .nav-menu-item {
+  width: 225px;
+}

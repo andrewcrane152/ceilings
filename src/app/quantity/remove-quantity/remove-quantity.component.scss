@@ -1,0 +1,37 @@
+.action-btns {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.action-btns>span {
+  width: 45%;
+}
+
+table {
+  width: 100%;
+}
+
+tr {
+  line-height: 4em;
+  border-bottom: 1px solid #bbb;
+}
+
+th {
+  font-weight: 500;
+}
+
+td,
+th {
+  padding: 0px 10px;
+}
+
+td img {
+  max-height: 48px;
+  margin-right: 10px;
+}
+
+.selection-descriptor {
+  display: flex;
+  align-items: center;
+}
