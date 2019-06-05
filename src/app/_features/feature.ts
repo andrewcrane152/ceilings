@@ -508,6 +508,8 @@ export class Feature {
         const tilesInIsland = island.length;
         const islandConnections = this.getVeloConnections(island);
         const sharedEdges = islandConnections['totalConnections'];
+        const cablesTypesNeeded = this.getVeloCables(island, sharedEdges);
+        console.warn(`Cable Kit Totals: C1: ${cablesTypesNeeded[0]}, C2: ${cablesTypesNeeded[1]}`);
 
         // ratio = (number_of_shared_edges / number_of_tiles)
         // if ratio < 1 then cableCount = Math.ceil(cables * .75)
@@ -540,6 +542,7 @@ export class Feature {
 
         cableCount = tilesInIsland;
         cableCost += cableCount * cableKitCost;
+
         // Add the cables for this island to the total cables needed
         cablesNeeded += cableCount;
 
@@ -1191,6 +1194,56 @@ export class Feature {
         return this.gridData[el];
       }
     }
+  }
+
+  getVeloCables(island: any, sharedEdges): any[] {
+    let cableKit1 = 0;
+    let cableKit2 = 0;
+    const veloTiles = [];
+    let edgesArr = [0, 0, 0, 0, 0, 0];
+
+    for (const i in island) {
+      if (island.hasOwnProperty(i)) {
+        veloTiles.push(this.gridData[island[i]]);
+      }
+    }
+    // Ratio
+    const ratio = sharedEdges / veloTiles.length;
+
+    // loop through the tiles and set the number of actualNeighbors for
+    for (const i in veloTiles) {
+      if (veloTiles.hasOwnProperty(i)) {
+        let actualNeighbors = 0;
+        for (const j in veloTiles[i].neighbors) {
+          if (veloTiles[i].neighbors.hasOwnProperty(j)) {
+            const neighbor = this.findVeloTileAt(veloTiles[i].neighbors[j][0], veloTiles[i].neighbors[j][1]);
+            if (!!neighbor.material) {
+              actualNeighbors++;
+            }
+          }
+        }
+        veloTiles[i].actualNeighbors = actualNeighbors;
+        edgesArr[actualNeighbors]++;
+      }
+    }
+
+    console.log('shared edges/tiles ratio:', ratio);
+    console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
+
+    let edgesArrAdjustedValues: number[] = edgesArr.slice();
+    if (ratio <= 1.15) {
+      edgesArrAdjustedValues[1] = Math.ceil(edgesArrAdjustedValues[1] * 0.75);
+      edgesArrAdjustedValues.shift();
+      cableKit1 = Math.ceil(edgesArrAdjustedValues.reduce((a, b) => a + b) * 0.75);
+      cableKit2 = 2;
+    } else {
+      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.75);
+      edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.6);
+      edgesArrAdjustedValues.shift();
+      cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
+      cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
+    }
+    return [cableKit1, cableKit2];
   }
 
   public getVeloConnections(island: any): any[] {
