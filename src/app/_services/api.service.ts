@@ -226,7 +226,7 @@ export class ApiService {
         }
       }),
       catchError(res => {
-        this.alert.error(res.error.result.message);
+        // this.alert.error(res.error.result.message);
         return 'error';
       })
     );
