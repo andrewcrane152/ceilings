@@ -174,7 +174,7 @@
           <span appStyledButton='primary-right' *ngIf="feature.quoted">
             <button (click)="viewDetails()">View Details</button>
           </span>
-          <span class="est-totals" *ngIf="feature.feature_type !== 'seeyond' && feature.showPricing">
+          <span class="est-totals" *ngIf="!feature.legacyPricing && feature.showPricing">
             <div class="total-row">
               <span class="sub-header">List:</span>
               <span class="total">{{feature.list_price | currency:'USD'}}</span>
@@ -193,10 +193,10 @@
               <span class="total">{{feature.net_price | currency:'USD'}}</span>
             </div>
           </span>
-          <!-- <span class="est-total-text">
+          <span class="est-total-text" *ngIf="feature.legacyPricing">
             <span>Est. Total:</span>
             <span>{{feature.estimated_amount | currency:'USD'}} USD</span>
-          </span> -->
+          </span>
         </div>
       </div>
     </div>

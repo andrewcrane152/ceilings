@@ -96,6 +96,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   ngAfterContentInit() {}
 
   setTemplateValues() {
+    this.feature.legacyPricing = !!!this.design.list_price;
     this.api.checkToShowPricing();
     if (this.isSeeyond) {
       this.setSeeyondValues();
@@ -108,6 +109,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   }
 
   setSeeyondValues() {
+    this.seeyond.legacyPricing = !!!this.design.list_price;
     this.seeyond.estimated_amount = this.design.estimated_amount;
     this.seeyond.applyDealerPricing();
     this.seeyond.depth = this.design.depth;

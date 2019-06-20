@@ -40,7 +40,8 @@
         </div>
         <div class="bottom-row" *ngIf="feature.showPricing">
           <div class="details-header">Est. Total</div>
-          <div id="estimated-totals" class="info-section">
+          <div class="details-header" *ngIf="feature.legacyPricing">{{feature.estimated_amount | currency:'USD'}}</div>
+          <div id="estimated-totals" *ngIf="!feature.legacyPricing" class="info-section">
             <div class="info-line">
               <span>List:</span>
               <span  class="total">{{feature.list_price | currency:'USD'}}</span>

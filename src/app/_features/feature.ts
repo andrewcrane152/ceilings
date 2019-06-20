@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { GridSection } from '../_models/grid-section';
 import { PricesService } from '../_services/prices.service';
 import { HushBlocksShippingService } from './../_services/hush-blocks-shipping.service';
+import { ifError } from 'assert';
 
 @Injectable()
 export class Feature {
@@ -46,6 +47,7 @@ export class Feature {
   public discount_amount = 0.0;
   public dealer_markup = 2.5;
   public net_price = 0.0;
+  public legacyPricing = false;
   public services_amount = 0.0;
   public showPricing = false;
   public front_relief = true; // boolean
@@ -113,6 +115,12 @@ export class Feature {
     this.tiles = JSON.parse(design.tiles);
     this.hardware = !!design.hardware ? JSON.parse(design.hardware) : null;
     this.estimated_amount = design.estimated_amount;
+    this.list_price = design.list_price;
+    this.discount_terms = design.discount_terms;
+    this.discount_terms_string = design.discount_terms_string;
+    this.discount_amount = design.discount_amount;
+    this.dealer_markup = design.dealer_markup;
+    this.net_price = design.net_price;
     this.services_amount = design.services_amount;
     this.gridData = JSON.parse(design.grid_data);
     this.front_relief = design.front_relief;
@@ -127,6 +135,7 @@ export class Feature {
     if (!this.quoted) {
       this.updateEstimatedAmount();
     }
+    if (!design.net_price) { this.legacyPricing = true; }
     this.buildGrid();
     this.getDeprecatedMaterials();
   }
@@ -354,8 +363,10 @@ export class Feature {
       if (tilesArray.hasOwnProperty(hushTile)) {
         const hushCurrentTile = tilesArray[hushTile];
         const hushCurrentTileSize = hushCurrentTile.tile_size || hushCurrentTile.tile;
-        tileCount[hushCurrentTileSize] += hushCurrentTile.purchased;
-        totalTileCount += hushCurrentTile.purchased;
+        if (tileCount[hushCurrentTileSize] >= 0) {
+          tileCount[hushCurrentTileSize] += hushCurrentTile.purchased;
+          totalTileCount += hushCurrentTile.purchased;
+        }
       }
     }
 

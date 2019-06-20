@@ -183,15 +183,21 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.feature.feature_type === 'hush') {
       const tilesObj = JSON.parse(qtyOrder.tiles);
       if (!!tilesObj) {
+        console.warn(tilesObj);
         for (const tileType in tilesObj) {
-          if (tilesObj[tileType].tile.tile === '00') {
-            tilesObj.tile.tile = '2-2-2';
-            tilesObj.tile.tile_size = '2-2-2';
-            tilesObj.tile.name = '2-2-2';
-          }
+          // if (tilesObj.hasOwnProperty(tileType)) {
+            // console.log('tilesObj:', tilesObj);
+            // if (typeof tilesObj !== 'undefined' && tilesObj[tileType].tile.tile === '00') {
+            if (tilesObj[tileType].tile.tile === '00') {
+              tilesObj[tileType].tile.tile = '2-2-2';
+              tilesObj[tileType].tile.tile_size = '2-2-2';
+              tilesObj[tileType].tile.name = '2-2-2';
+            }
+          // }
         }
       }
       qtyOrder.tiles = JSON.stringify(tilesObj);
+      console.warn('tiles:', qtyOrder.tiles)
     }
     // this.feature.showMainNavbar.emit(true);
     this.qtySrv.order.data = [];
@@ -206,6 +212,9 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.clarioGrids.loadSelectedTileSize(qtyOrder.tile_size);
     } else {
       this.feature.selectedTile = this.materials;
+    }
+    if (!qtyOrder.net_price) {
+      this.feature.legacyPricing = true;
     }
     const tilesObj = JSON.parse(qtyOrder.tiles);
     const rowsToAdd = Object.keys(tilesObj).map(key => tilesObj[key]);
