@@ -58,14 +58,7 @@
     </div>
     <div class="bottom-section">
       <div class="totals">
-        <span class="est-totals" *ngIf="feature.legacyPricing">
-            <span class="sub-header">Est. Total:&nbsp;&nbsp;</span>
-            <span *ngIf="feature.feature_type !== 'seeyond'" class="total">{{feature.estimated_amount | currency:'USD'}}
-              USD</span>
-            <span *ngIf="feature.feature_type === 'seeyond'" class="total">{{seeyond.estimated_amount | currency:'USD'}}
-              USD</span>
-        </span>
-        <span class="est-totals" *ngIf="!feature.legacyPricing && feature.feature_type !== 'seeyond' && feature.showPricing">
+        <span class="est-totals" *ngIf="feature.feature_type !== 'seeyond' && feature.showPricing">
           <div class="total-row">
             <span class="sub-header">List:</span>
             <span  class="total">{{feature.list_price | currency:'USD'}}</span>
@@ -84,7 +77,7 @@
             <span class="total">{{feature.net_price | currency:'USD'}}</span>
           </div>
         </span>
-        <span class="est-totals" *ngIf="!feature.leagacyPricing && feature.feature_type === 'seeyond' && feature.showPricing" >
+        <span class="est-totals" *ngIf="feature.feature_type === 'seeyond' && feature.showPricing" >
           <div class="total-row">
             <span class="sub-header">List:</span>
             <span  class="total">{{seeyond.list_price | currency:'USD'}}</span>

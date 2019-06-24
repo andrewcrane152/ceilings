@@ -45,9 +45,8 @@ export class Feature {
   public discount_terms = [50, 10];
   public discount_terms_string = '50/10';
   public discount_amount = 0.0;
-  public dealer_markup = 2.5;
+  public dealer_markup = 2.25;
   public net_price = 0.0;
-  public legacyPricing = false;
   public services_amount = 0.0;
   public showPricing = false;
   public front_relief = true; // boolean
@@ -135,7 +134,6 @@ export class Feature {
     if (!this.quoted) {
       this.updateEstimatedAmount();
     }
-    if (!design.net_price) { this.legacyPricing = true; }
     this.buildGrid();
     this.getDeprecatedMaterials();
   }

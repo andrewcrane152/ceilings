@@ -213,9 +213,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     } else {
       this.feature.selectedTile = this.materials;
     }
-    if (!qtyOrder.net_price) {
-      this.feature.legacyPricing = true;
-    }
     const tilesObj = JSON.parse(qtyOrder.tiles);
     const rowsToAdd = Object.keys(tilesObj).map(key => tilesObj[key]);
     rowsToAdd.map(row => {
