@@ -40,7 +40,7 @@ export class Feature {
   public tiles: any;
   public design_data_url: any;
   public hardware: any;
-  public estimated_amount = 0.0; // used to calc pricing for legacy purposes
+  public estimated_amount = 0.0;
   public list_price = 0.0;
   public discount_terms = [50, 10];
   public discount_terms_string = '50/10';
