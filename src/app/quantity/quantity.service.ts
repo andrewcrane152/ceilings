@@ -107,12 +107,12 @@ export class QuantityService {
   }
 
   setMaterialSize(row) {
-    let materialSize = typeof row.tile === 'string' ? row.tile : row.tile.tile;
+    const materialSize = typeof row.tile === 'string' ? row.tile : row.tile.tile;
     return materialSize;
   }
 
   setMaterialType() {
-    let materialType = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
+    const materialType = typeof this.feature.selectedTile === 'string' ? this.feature.selectedTile : this.feature.selectedTile.name;
     return materialType;
   }
 
