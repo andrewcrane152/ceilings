@@ -5,7 +5,7 @@
     <div [ngClass]="(isImbedded)?'sub-header':'modals-header'">
       <span>Tile usage information</span>
     </div>
-    <div class="modals-inputs" *ngIf="!saving">
+    <div class="modals-inputs">
       <div class="input-line" [ngClass]="{'usage-table': !isImbedded}">
         <table *ngIf="this.feature.veloHasFelt()">
           <tr>
