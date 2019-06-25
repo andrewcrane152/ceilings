@@ -51,6 +51,11 @@ namespace :deploy do
       print "building in staging environment"
       execute "cd #{release_path} && ng build --configuration=staging --no-progress"
     end
+
+    on roles(:alpha) do
+      print "building in alpha environment"
+      execute "cd #{release_path} && ng build --configuration=alpha --no-progress"
+    end
   end
 
   # desc "precache files with sw-precache"

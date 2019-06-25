@@ -1,4 +1,48 @@
-<div class="dialog-header text-center">
+<div class="modals-container">
+  <img class="close-btn" (click)="dialogRef.close('cancel')" src="/assets/icons/tools/x-close.svg" alt="Close Modal">
+  <div class="modals-body">
+    <div class="modals-header">
+      <span>My3Form Account</span>
+      <span>Sign In</span>
+    </div>
+    <div class="modals-inputs" *ngIf="!loading">
+      <div class="input-line email">
+        <div class="sub-header">Email</div>
+        <input type="email" placeholder="Email" [(ngModel)]="email">
+      </div>
+      <div class="input-line password">
+        <div class="sub-header">Password</div>
+        <input type="password" placeholder="Password" [(ngModel)]="password">
+      </div>
+      <div class="input-line forgot-password">
+        <span (click)="forgotPassword()">
+          <img class="lock-icon" src="/assets/icons/tools/lock.png" alt="Close Modal">
+          <span class="description-text">Forgot Password?</span>
+        </span>
+      </div>
+    </div>
+    <div class="modals-action-btns" *ngIf="!loading">
+      <div class="sign-in">
+        <span appStyledButton='primary-right-large'>
+          <button (click)="login()" [disabled]="!validateSignIn()">
+            <span>Sign In</span>
+          </button>
+        </span>
+      </div>
+      <div class="create-account">
+        <span appStyledButton='secondary-left'>
+          <button (click)="createAccount()">Create Account</button>
+        </span>
+      </div>
+    </div>
+    <div class="center-div" *ngIf="loading">
+      <mat-progress-spinner *ngIf="loading" color="primary" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div class="dialog-header text-center">
   <p>My3form Account</p>
   <h3 mat-dialog-title>Sign In</h3>
 </div>
@@ -33,4 +77,4 @@
 </div>
 <div class="text-center dialog-footer">
   <a href="http://www.3-form.com/userprofile/reset" target="_user" class="text-uppercase">Forgot Password?</a>
-</div>
+</div> -->

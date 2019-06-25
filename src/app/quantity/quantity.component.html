@@ -1,161 +1,199 @@
-<div class="quantity-header">
-  <div class="row">
-    <a (click)="backToDesign('reset')">
-      <span class="icomoon-chevron-left orange navigation"></span>
-      <span>Design your feature</span>
-    </a>
-    <div class="header-row">
-      <div class="col-sm-4">
-        <p class="md title design-name">{{feature.design_name}}
-          <a id="edit-project-name" class="edit-link" title="Edit Project Name" (click)="goToOptions()" *ngIf="feature.feature_type !== 'clario'">Edit</a>
-        </p>
-      </div>
-      <div class="col-sm-8">
-        <p class="md est-total">Est. Total: {{feature.estimated_amount | currency:'USD'}} USD
-          <span class="sm">
-            <sup>*</sup>Taxes, Shipping and Handling not included.</span>
-        </p>
-      </div>
-      <div class="">
-        <button *ngIf="!feature.quoted" class="button button-orange request-quote pull-right" [disabled]="((order.data.length === 0) || !feature.design_name)"
-          (click)="requestQuote()">Request Quote</button>
-        <button *ngIf="feature.quoted" class="button button-orange request-quote pull-right" (click)="viewDetails()">View Details</button>
-      </div>
-    </div>
+<div class="quantity">
+  <div class="main-header">
+    <span class="feature-title">{{featureTitle | capitalize}}</span>
+    <span appStyledButton='secondary-left' *ngIf="showDesignYourFeatureButton">
+      <button (click)="backToDesign('reset')" class="go-to-quantity">Design your feature</button>
+    </span>
   </div>
-</div>
-<div class="bg-white">
-  <div class="separator"></div>
-</div>
-<div class="quantity-ui">
-  <div class="col-sm-9 no-padding table-and-footer">
-    <div class="table-parent col-sm-12">
-      <div class="table-header col-sm-12">
-        <span class="save-load">
-          <a id="save-btn" title="save design" (click)="saveQuantity()">
-            <span class="icomoon-folder orange"></span>
-            <span *ngIf="user.isLoggedIn()">Save</span>
-            <span *ngIf="!user.isLoggedIn()">Login to save</span>
+  <div class="main">
+    <div class="project-name">
+      <p class="sub-header">Design name</p>
+      <div class="project-name-input">
+        <span class="input-container">
+          <input type="text" placeholder="Name" autofocus [(ngModel)]="feature.design_name">
+        </span>
+        <span class="save-load save-load-btn-fmt">
+          <img src="/assets/icons/tools/load.png" alt="load icon">
+          <a title="save design" (click)="loginDialog()" *ngIf="!user.isLoggedIn()">
+            <span class="sub-header">Login to Save</span>
+          </a>
+          <a title="save design" (click)="saveQuantity()" *ngIf="user.isLoggedIn()"
+            [ngClass]="{'span-disabled': ((order.data.length === 0) || !feature.design_name)}">
+            <span class="sub-header">Save</span>
           </a> |
-          <a id="load-btn" title="load saved designs" (click)="loadQtyDesigns()">Load</a>
+          <a class="sub-header" title="load saved quantity" (click)="loadQuantity()">Load</a>
         </span>
-        <span class="clario-grid-type" *ngIf="qtySrv.feature_type === 'clario'">
-          <span *ngIf="clarioGrids.selectedTileSize">Tile Sizes: {{clarioGrids.selectedTileSize.name}}
-            <a id="edit-project-name" class="edit-link" title="Edit Project Name" (click)="goToOptions()" *ngIf="!feature.quoted">Edit</a>
-          </span>
-        </span>
-        <button class="button add-tiles" (click)="addToOrder()">Add Tiles</button>
-      </div>
-      <div class="table-container">
-        <p *ngIf="(order.data.length === 0)" class="md center-text add-to-order">
-          Select "Add Tiles" to begin.
-        </p>
-        <mat-table #table [dataSource]="order.data" *ngIf="(order.data.length > 0)">
-
-          <ng-container matColumnDef="used">
-            <mat-header-cell *matHeaderCellDef> Used </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.used}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="receiving">
-            <mat-header-cell *matHeaderCellDef> Receiving </mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.purchased}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="hush-receiving">
-            <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.purchased}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="unused">
-            <mat-header-cell *matHeaderCellDef> Unused </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.purchased - element.used}}</mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="material">
-            <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="material-column">
-              <img src="{{element.image}}" [ngClass]="{'rotate-90': element.tile === '24'}" class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}} {{element.material_size}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="hush-material">
-            <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
-            <mat-cell *matCellDef="let element" class="material-column">
-              <img src="{{element.image}}" class="img-responsive table-img rotate-90" alt="{{element.material.name_str | capitalize}}"> {{element.material | capitalize}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="total">
-            <mat-header-cell *matHeaderCellDef> Est. Total </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.total | currency:'USD'}} </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="edit">
-            <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
-            <mat-cell *matCellDef="let row; let i=index;" class="edit-column">
-              <span class='icomoon-pencil orange' (click)="editRow(i, row)"></span>
-              <span class='icomoon-remove2 delete-icon orange' (click)="deleteRow(i, row)"></span>
-            </mat-cell>
-          </ng-container>
-
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
       </div>
     </div>
-    <div class="filler"></div>
-    <div class="left-footer">
-      <div>
-        <div class="logo">
-          <img src="//3form.s3.amazonaws.com/images/navigation/3form_logo.svg" alt="3form">
+    <div class="quantity-data">
+      <div class="left-side">
+        <div class="estimation" *ngIf="showQuantityEstimator">
+          <div class="sub-header">Quantity estimation</div>
+          <div *ngIf="feature.units === 'inches'">
+            <div class="description-text">Enter square footage to calculate how many tiles are needed.</div>
+            <input [(ngModel)]="sqFootage" (keyup)="calcSqFootage()" type="number" placeholder="Sq Footage">
+            <div class="description-text" *ngIf="!!sqFootage">
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
+              <strong>{{sqFootage}}</strong> square feet.
+            </div>
+          </div>
+          <div *ngIf="feature.units === 'centimeters'">
+            <div class="description-text">Enter square meters to calculate how many tiles are needed.</div>
+            <input [(ngModel)]="sqMeters" (keyup)="calcSqMeters()" type="number" placeholder="Sq Meters">
+            <div class="description-text" *ngIf="!!sqMeters">
+              <strong>{{tilesNeeded}}</strong> tiles are required to cover
+              <strong>{{sqMeters}}</strong> square meters.</div>
+          </div>
+          <div class="description-text" *ngIf="!!sqMeters || !!sqFootage">
+            <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</div>
+        </div>
+
+        <div class="used-receiving" *ngIf="!soldInSingleQuantities">
+          <div class="sub-header">Quantity used/receiving</div>
+          <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
+          <div class="description-text">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}
+          </div>
+          <div class="description-text" *ngIf="feature.units === 'inches'">SqFt. Used/Receiving:
+            {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'centimeters'">SqM Used/Receiving:
+            {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</div>
+        </div>
+        <div class="used-receiving" *ngIf="soldInSingleQuantities">
+          <div class="sub-header">Quantity receiving</div>
+          <div class="description-text add-margin-bottom">{{packageQtyInfo}}</div>
+          <div class="description-text">Total Tiles Receiving: {{feature.qtyTilesReceiving}}</div>
+          <div class="description-text" *ngIf="feature.units === 'inches'">
+            SqFt. Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
+          <div class="description-text" *ngIf="feature.units === 'centimeters'">
+            SqM Used/Receiving: {{qtySrv.sqAreaReceiving}}
+          </div>
+        </div>
+
+        <!-- <div class="dimensions">
+          <div class="sub-header">Tile Dimensions</div>
+          <div class="description-text">{{dimensionsText}}</div>
+          <img src={{dimensionsImgUrl}} alt="Dimensions Image Key">
+        </div> -->
+      </div>
+      <div class="right-side">
+        <div class="qty-table">
+          <div class="data-table">
+            <mat-table #table [dataSource]="order.data" *ngIf="(order.data.length > 0)">
+              <ng-container matColumnDef="used">
+                <mat-header-cell *matHeaderCellDef> Used </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.used}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="receiving">
+                <mat-header-cell *matHeaderCellDef> Receiving </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.purchased}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="hush-receiving">
+                <mat-header-cell *matHeaderCellDef> Quantity </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.purchased}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="unused">
+                <mat-header-cell *matHeaderCellDef> Unused </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.purchased - element.used}}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="material">
+                <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="material-column">
+                  <img src="{{element.image}}" [ngClass]="{'height-adjust': element.tile === '00'}"
+                    class="img-responsive table-img" alt="{{element.material.name_str | capitalize}}">
+                  {{element.material | capitalize}}
+                  {{element.material_size}}
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="profile-material">
+                <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="material-column">
+                  <span>
+                    <img *ngIf="element.tile.tile !== 'chroma'" src="{{element.image}}" class="table-img"
+                      alt="{{element.material.name_str | capitalize}}">
+                    <img *ngIf="element.tile.tile === 'chroma'"
+                      src="/assets/images/profile/swoon/swoon-chroma-blank.png" class="table-img"
+                      [style.backgroundColor]="element.image">
+                  </span>
+                  <span>
+                    {{element.material | capitalize}} - {{element.material_type}}
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="hush-material">
+                <mat-header-cell *matHeaderCellDef> Material </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="material-column hush-material-row">
+                  <span>
+                    <img src="{{element.image}}" class="img-responsive table-img rotate-90"
+                      alt="{{element.material.name_str | capitalize}}">
+                  </span>
+                  <span>
+                    {{element.material | capitalize}} - {{element.humanized_size}}
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="total">
+                <mat-header-cell *matHeaderCellDef> Est. Total </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.total | currency:'USD'}} </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="edit">
+                <mat-header-cell *matHeaderCellDef>&nbsp;</mat-header-cell>
+                <mat-cell *matCellDef="let row; let i=index;" class="edit-column">
+                  <span (click)="editRow(i, row)" *ngIf="!feature.quoted">
+                    <img src="/assets/icons/tools/edit.png" alt="Edit Row">
+                  </span>
+                  <span class="delete-icon" (click)="deleteRow(i, row)" *ngIf="!feature.quoted">
+                    <img src="/assets/icons/tools/delete.png" alt="Delete Row">
+                  </span>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+          </div>
+          <div class="add-tiles-btn" *ngIf="!feature.quoted">
+            <button (click)="addToOrder()">Add Tiles</button>
+          </div>
+        </div>
+        <div class="est-total">
+          <span appStyledButton='primary-right' *ngIf="!feature.quoted">
+            <button type="submit" (click)='requestQuote()'
+              [disabled]="((order.data.length === 0) || !feature.design_name)">Request
+              Quote</button>
+          </span>
+          <span appStyledButton='primary-right' *ngIf="feature.quoted">
+            <button (click)="viewDetails()">View Details</button>
+          </span>
+          <span class="est-totals" *ngIf="feature.showPricing">
+            <div class="total-row">
+              <span class="sub-header">List:</span>
+              <span class="total">{{feature.list_price | currency:'USD'}}</span>
+            </div>
+            <div class="total-row">
+              <span class="sub-header">Discount:</span>
+              <span class="total">{{feature.discount_terms_string}}</span>
+            </div>
+            <div class="total-row">
+              <span class="sub-header">Discount amount:</span>
+              <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
+            </div>
+            <hr>
+            <div class="total-row">
+              <span class="sub-header">Net (USD):</span>
+              <span class="total">{{feature.net_price | currency:'USD'}}</span>
+            </div>
+          </span>
         </div>
       </div>
-      <div>
-        <p *ngIf="feature.feature_type !=='clario'" class="tile-package-information">Tiles are sold in quanties of 4.</p>
-        <p *ngIf="(feature.feature_type ==='clario') && !!clarioGrids.selectedTileSize" class="tile-package-information">{{clarioGrids.selectedTileSize['24']}} baffles are sold in qty of 4, and {{clarioGrids.selectedTileSize['48']}} baffles
-          are sold in qty of 2.</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-3 right-column">
-    <div class="col-sm-12 no-padding sq-footage" *ngIf="feature.units === 'inches'">
-      <h3>Estimator</h3>
-      <p class="">Enter square footage to calculate how many tiles are needed.</p>
-      <div class="sqFt-row">
-        <span class="sqFt-label">SqFt:</span>
-        <input [(ngModel)]="sqFootage" (keyup)="calcSqFootage()" placeholder="Sq Footage" type="number">
-      </div>
-      <div *ngIf="!!sqFootage" class="sq-footage-results">
-        <p>
-          <strong>{{tilesNeeded}}</strong> 24x24 tiles are required to cover
-          <strong>{{sqFootage}}</strong> square feet.</p>
-        <p>
-          <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</p>
-      </div>
-    </div>
-    <div class="col-sm-12 no-padding sq-footage" *ngIf="feature.units === 'centimeters'">
-      <h3>Estimator</h3>
-      <p>Enter square meters to calculate how many tiles are needed.</p>
-      <div class="sqFt-row">
-        <span class="sqFt-label">Sq m:</span>
-        <input [(ngModel)]="sqMeters" (keyup)="calcSqMeters()" placeholder="Sq Meters" type="number">
-      </div>
-      <div *ngIf="!!sqMeters" class="sq-footage-results">
-        <p>
-          <strong>{{tilesNeeded}}</strong> {{clarioGrids.selectedTileSize['24']}} tiles are required to cover
-          <strong>{{sqMeters}}</strong> square meters.</p>
-        <p>
-          <strong>{{qtySrv.tilesSelected}} / {{tilesNeeded}}</strong> tiles are selected.</p>
-      </div>
-    </div>
-    <div class="filler"></div>
-    <div class="col-sm-12 no-padding">
-      <hr>
-      <h3>Quantities</h3>
-      <p class="">Tiles Used/Receiving: {{feature.qtyTilesUsed}}/{{feature.qtyTilesReceiving}}</p>
-      <p *ngIf="feature.units === 'inches'">SqFt. Used/Receiving: {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</p>
-      <p *ngIf="feature.units === 'centimeters'">SqM Used/Receiving: {{qtySrv.sqAreaUsed}}/{{qtySrv.sqAreaReceiving}}</p>
     </div>
   </div>
 </div>

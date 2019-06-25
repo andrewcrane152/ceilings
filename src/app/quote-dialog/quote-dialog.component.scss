@@ -1,0 +1,45 @@
+.design-info {
+  border-bottom: 4px solid black;
+
+  .info-section {
+    border-bottom: 1px solid #bbb;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+
+    hr {
+      margin: 0px;
+    }
+
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      align-items: center;
+      min-height: 2em;
+
+      span {
+        width: 50%;
+      }
+    }
+  }
+}
+
+#order-multiples {
+  display: flex;
+  align-items: center;
+
+  span {
+    width: 50%;
+  }
+}
+
+#estimated-totals {
+  border-bottom: none;
+  margin-bottom: 0px;
+}
+
+#tile-usage-container {
+  margin-top: 15px;
+  border-top: 4px solid black;
+  padding-top: 30px;
+}

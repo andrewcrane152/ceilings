@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DebugService } from './../_services/debug.service';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import * as visualization from 'syd-visualization';
 import * as tiling from 'syd-tiling';
 import * as jszip from 'jszip';
@@ -11,7 +11,7 @@ const packageJSON = require('../../../package.json');
 @Component({
   selector: 'app-visualization',
   templateUrl: './visualization.component.html',
-  styleUrls: ['./visualization.component.css']
+  styleUrls: ['./visualization.component.scss']
 })
 export class VisualizationComponent implements OnInit {
   private vis = visualization;
@@ -60,10 +60,19 @@ export class VisualizationComponent implements OnInit {
     front = front.replace(/^data:image\/(png|jpg);base64,/, '');
     back = back.replace(/^data:image\/(png|jpg);base64,/, '');
     left = left.replace(/^data:image\/(png|jpg);base64,/, '');
-    zip.file('right.png', right, { base64: true });
-    zip.file('front.png', front, { base64: true });
-    zip.file('back.png', back, { base64: true });
-    zip.file('left.png', left, { base64: true });
+
+    switch (this.feature.feature_type) {
+      case 'hush':
+      case 'hushSwoon':
+        zip.file('front.png', front, { base64: true });
+        break;
+      default:
+        zip.file('right.png', right, { base64: true });
+        zip.file('front.png', front, { base64: true });
+        zip.file('back.png', back, { base64: true });
+        zip.file('left.png', left, { base64: true });
+        break;
+    }
     zip.generateAsync({ type: 'blob' }).then(function(blob) {
       FileSaver.saveAs(blob, filename);
     });

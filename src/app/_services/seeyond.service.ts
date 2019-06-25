@@ -7,7 +7,7 @@ import { ApiService } from './api.service';
 import { MaterialsService } from './materials.service';
 import { DebugService } from './debug.service';
 import { environment } from './../../environments/environment';
-import { SeeyondFeature } from 'app/seeyond-feature';
+import { SeeyondFeature } from 'app/_features/seeyond-feature';
 import { User } from './../_models/user';
 
 import { Observable } from 'rxjs';
@@ -86,6 +86,11 @@ export class SeeyondService {
       random_seed: this.seeyond.random_seed,
       services_amount: this.seeyond.services_amount,
       estimated_amount: this.seeyond.estimated_amount,
+      list_price: this.seeyond.list_price,
+      discount_terms: JSON.stringify(this.seeyond.discount_terms),
+      discount_amount: this.seeyond.discount_amount,
+      net_price: this.seeyond.net_price,
+      dealer_markup: this.seeyond.dealer_markup,
       quoted: this.seeyond.quoted,
       archived: this.seeyond.archived,
       hardware: this.seeyond.hardware,
@@ -139,6 +144,11 @@ export class SeeyondService {
       random_seed: this.seeyond.random_seed,
       services_amount: this.seeyond.services_amount,
       estimated_amount: this.seeyond.estimated_amount,
+      list_price: this.seeyond.list_price,
+      discount_terms: JSON.stringify(this.seeyond.discount_terms),
+      discount_amount: this.seeyond.discount_amount,
+      net_price: this.seeyond.net_price,
+      dealer_markup: this.seeyond.dealer_markup,
       quoted: this.seeyond.quoted,
       archived: this.seeyond.archived,
       hardware: this.seeyond.hardware,

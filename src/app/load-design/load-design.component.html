@@ -1,4 +1,43 @@
-<div *ngIf="user.uid">
+<div class="modals-container">
+  <img class="close-btn" (click)="dialogRef.close('cancel')" src="/assets/icons/tools/x-close.svg" alt="Close Modal">
+  <div class="modals-body">
+    <div class="modals-header">
+      <span>Load your design</span>
+    </div>
+    <div class="modals-inputs" *ngIf="!saving">
+      <div class="input-line designs-table">
+        <span *ngIf="!designs.length" class="sub-header">Looks like you don't have any saved designs.</span>
+        <table *ngIf="designs.length" class="">
+          <tr>
+            <th class="sub-header">ID</th>
+            <th class="sub-header">Name</th>
+            <th class="sub-header">Delete</th>
+          </tr>
+          <tr *ngFor="let design of designs">
+            <td (click)="load(design.id)" class="link">{{design.id}}</td>
+            <td (click)="load(design.id)" class="link">{{design.design_name}}</td>
+            <td>
+              <span (click)="delete(design.id, $event.target.parentNode.parentNode)">
+                <img class="delete-icon" src="/assets/icons/tools/delete.png" alt="Delete Saved Design">
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- <div class="modals-action-btns" *ngIf="!saving">
+      <div class="load-btn">
+        <span appStyledButton='primary-right-large' *ngIf="designs.length">
+          <button (click)="load()" [disabled]="!feature.design_name && !saving">
+            <span>Load</span>
+          </button>
+        </span>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<!-- <div *ngIf="user.uid">
   <h2 class="text-center" mat-dialog-title>My Designs</h2>
   <div mat-dialog-content>
     <p *ngIf="!designs.length">Looks like you don't have any saved designs.</p>
@@ -17,4 +56,4 @@
       </tr>
     </table>
   </div>
-</div>
+</div> -->

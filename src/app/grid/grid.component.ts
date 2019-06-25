@@ -3,7 +3,7 @@ import { MaterialsService } from './../_services/materials.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DebugService } from './../_services/debug.service';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import { GridSection } from './../_models/grid-section';
 import { AlertService } from '../_services/alert.service';
 import { Subject } from 'rxjs';
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-grid',
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.css']
+  styleUrls: ['./grid.component.scss']
 })
 export class GridComponent implements OnInit, OnDestroy {
   private ngUnsubscribe: Subject<any> = new Subject();
@@ -213,9 +213,6 @@ export class GridComponent implements OnInit, OnDestroy {
             case 'tetria':
               this.updateTetriaTile(row, column);
               break;
-            case 'velo':
-              this.updateVeloTile(row, column);
-              break;
             case 'hush':
               this.updateHushTile(row, column);
               break;
@@ -255,17 +252,6 @@ export class GridComponent implements OnInit, OnDestroy {
     this.feature.gridData[row][column].setgridTileID(this.gridTileNumber);
     this.feature.gridData[row][column].setMaterial(this.feature.material);
     this.feature.gridData[row][column].setTileSize(this.feature.selectedTile.tile_size);
-    this.debug.log('grid-component', this.feature.gridData[row][column]);
-  }
-
-  updateVeloTile(row, column) {
-    this.feature.gridData[row][column].setBackgroundImage(
-      'url(/assets/images/velo/' + this.feature.selectedTile.tile + '/' + this.feature.material + '.png)'
-    );
-    this.feature.gridData[row][column].setTexture('/assets/images/tiles/00/' + this.feature.material + '.png');
-    this.feature.gridData[row][column].setTile(this.feature.selectedTile.tile);
-    this.feature.gridData[row][column].setgridTileID(this.gridTileNumber);
-    this.feature.gridData[row][column].setMaterial(this.feature.material);
     this.debug.log('grid-component', this.feature.gridData[row][column]);
   }
 
