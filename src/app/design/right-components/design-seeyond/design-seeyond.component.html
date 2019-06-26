@@ -34,7 +34,7 @@
     <div class="inputs">
       <div class="input">
         <div class="sub-header">Width</div>
-        <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+        <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="seeyondDimensionsDidChange()"
           required type="number" class="unit-input" placeholder="Width" name="width">
         <div class="max-min">
           <span>Min {{this.seeyond.widthMin}}</span>
@@ -44,7 +44,7 @@
       <div class="input">
         <div class="sub-header" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</div>
         <div class="sub-header" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</div>
-        <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+        <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="seeyondDimensionsDidChange()"
           required type="number" class="unit-input" placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.heightMin}}</span>
@@ -54,7 +54,7 @@
       <div class="input" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
         <div class="sub-header ceiling-length">Ceiling Length</div>
         <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel"
-          (change)="seeyondDimensionsDidChange($event.key)" required type="number" class="unit-input"
+          (change)="seeyondDimensionsDidChange()" required type="number" class="unit-input"
           placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.ceilLengthMin}}</span>
@@ -63,7 +63,7 @@
       </div>
       <div class="input" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
         <div class="sub-header">Radius</div>
-        <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="seeyondDimensionsDidChange($event.key)"
+        <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="seeyondDimensionsDidChange()"
           type="number" class="unit-input" placeholder="Height" name="length">
         <div class="max-min">
           <span>Min {{this.seeyond.radiusMin}}</span>

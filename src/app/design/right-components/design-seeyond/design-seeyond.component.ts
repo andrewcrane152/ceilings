@@ -65,19 +65,18 @@ export class DesignSeeyondComponent extends DesignComponent implements OnInit, A
   }
 
   seeyondDimensionsDidChange() {
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     this.seeyond.setMaxMinDimensions();
     this.seeyond.updateDimensions();
   }
 
   seeyondUpdateSelectedFeature(selectedFeature) {
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     this.seeyond.updateSeeyondFeature(selectedFeature);
   }
 
   updateSelectedTessellation(tessellationName: string) {
-    if (this.seeyond.quoted) {
-      this.alertQuoted();
-      return;
-    }
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     this.seeyond.tessellationStr = tessellationName;
     const tessellation = this.seeyond.getTesslationNumber(tessellationName);
     this.selectedTessellation = this.seeyond.tessellation = tessellation;
@@ -87,6 +86,7 @@ export class DesignSeeyondComponent extends DesignComponent implements OnInit, A
   }
 
   updatePatternStrength() {
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     this.pattern_strength = Number(this.seeyond.pattern_strength);
 
     // update the visualization
@@ -94,6 +94,7 @@ export class DesignSeeyondComponent extends DesignComponent implements OnInit, A
   }
 
   updatePatternRelief() {
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     switch (this.patternRelief) {
       case 'front':
         this.seeyond.front_relief = true;
@@ -119,10 +120,7 @@ export class DesignSeeyondComponent extends DesignComponent implements OnInit, A
   }
 
   updateSelectedMaterial(material) {
-    if (this.seeyond.quoted) {
-      this.alertQuoted();
-      return;
-    }
+    if (this.seeyond.quoted) { this.alertQuoted(); return; }
     this.seeyond.material = material.material;
     this.seeyond.sheet_part_id = material.sheet_part_id;
     this.seeyond.canQuote = true;
