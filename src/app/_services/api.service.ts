@@ -17,7 +17,7 @@ export class ApiService {
   public onUserLoggedIn = new EventEmitter();
   apiUrl = 'https://' + environment.API_URL + '/ceilings/';
   loginUrl = 'https://' + environment.API_URL + '/auth/login';
-  accessUrl = 'https://' + environment.API_URL + '/auth/check_access';
+  pricingAccessUrl = 'https://' + environment.API_URL + '/user_branches';
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
@@ -212,14 +212,16 @@ export class ApiService {
   checkAccessToPricing() {
     const userInfo = JSON.parse(localStorage.getItem('3formUser'));
     const uid = !!userInfo ? userInfo.uid : '';
-    const accessUrl = `${this.accessUrl}?permission=Employee&uid=${userInfo.uid}`;
-    return this.http.post(accessUrl, {}).pipe(
+    const accessUrl = `${this.pricingAccessUrl}?ids[]=${uid}`;
+    return this.http.get(accessUrl, {}).pipe(
       map((res: any) => {
-        if (res && !res.result.error) {
-          userInfo['showPricing'] = res.result.access;
-          this.feature.showPricing = res.result.access;
-          localStorage.setItem('3formUser', JSON.stringify(userInfo));
-          console.log('user:', localStorage.getItem('3formUser'));
+        if (res && !!res.user_branches[0]) {
+          const userBranchInfo = res.user_branches[0]
+          if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer') {
+            userInfo['showPricing'] = true;
+            this.feature.showPricing = true;
+            localStorage.setItem('3formUser', JSON.stringify(userInfo));
+          }
           return res;
         } else {
           this.alert.apiAlert(res.result.error);
