@@ -1220,12 +1220,13 @@ export class Feature {
         veloTiles.push(this.gridData[island[i]]);
       }
     }
-    // Ratio
+
     const ratio = sharedEdges / veloTiles.length;
 
     // loop through the tiles and set the number of actualNeighbors for
     for (const i in veloTiles) {
       if (veloTiles.hasOwnProperty(i)) {
+        // actualNeighbor indicates that there is a tile selected for the neighboring space
         let actualNeighbors = 0;
         for (const j in veloTiles[i].neighbors) {
           if (veloTiles[i].neighbors.hasOwnProperty(j)) {
@@ -1240,6 +1241,12 @@ export class Feature {
       }
     }
 
+
+    // adjust count of tiles to start at 1
+
+    // test for just one edge (if it's an end piece)
+    // test for two adjacent neighbors in the loop or first/last only
+
     console.log('shared edges/tiles ratio:', ratio);
     console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
 
@@ -1249,9 +1256,18 @@ export class Feature {
       edgesArrAdjustedValues.shift();
       cableKit1 = Math.ceil(edgesArrAdjustedValues.reduce((a, b) => a + b) * 0.75);
       cableKit2 = 2;
+    // } else if (ratio > 1.15 && ratio <= 1.5) {
+    //   edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.3);
+    //   edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.6);
+    //   edgesArrAdjustedValues[3] = Math.ceil(edgesArrAdjustedValues[3] * 0.75);
+    //   edgesArrAdjustedValues[2] = Math.ceil(edgesArrAdjustedValues[2] * 0.8);
+    //   edgesArrAdjustedValues.shift();
+    //   cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
+    //   cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
+    // } else if (ratio > 1.5) {
     } else {
-      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.75);
       edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.6);
+      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.75);
       edgesArrAdjustedValues.shift();
       cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
       cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
