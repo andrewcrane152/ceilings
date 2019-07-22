@@ -102,6 +102,9 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   }
 
   multiplesChanged() {
+    if (this.requestedQuantity < 1) {
+      this.requestedQuantity = 1;
+    }
     this.feature.estimated_amount = this.feature.estimated_amount / this.feature.quantity;
     this.feature.quantity = this.requestedQuantity;
     if (this.feature.feature_type === 'seeyond') {
