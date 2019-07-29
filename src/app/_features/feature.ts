@@ -1228,8 +1228,10 @@ export class Feature {
       if (veloTiles.hasOwnProperty(i)) {
         // actualNeighbor indicates that there is a tile selected for the neighboring space
         let actualNeighbors = 0;
+        let neighborCount = 0;
         for (const j in veloTiles[i].neighbors) {
           if (veloTiles[i].neighbors.hasOwnProperty(j)) {
+            neighborCount++;
             const neighbor = this.findVeloTileAt(veloTiles[i].neighbors[j][0], veloTiles[i].neighbors[j][1]);
             if (!!neighbor.material) {
               actualNeighbors++;
@@ -1241,7 +1243,6 @@ export class Feature {
       }
     }
 
-
     // adjust count of tiles to start at 1
 
     // test for just one edge (if it's an end piece)
@@ -1250,29 +1251,61 @@ export class Feature {
     console.log('shared edges/tiles ratio:', ratio);
     console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
 
-    let edgesArrAdjustedValues: number[] = edgesArr.slice();
+    const edgesArrAdjustedValues: number[] = edgesArr.slice();
     if (ratio <= 1.15) {
       edgesArrAdjustedValues[1] = Math.ceil(edgesArrAdjustedValues[1] * 0.75);
-      edgesArrAdjustedValues.shift();
       cableKit1 = Math.ceil(edgesArrAdjustedValues.reduce((a, b) => a + b) * 0.75);
-      cableKit2 = 2;
-    // } else if (ratio > 1.15 && ratio <= 1.5) {
-    //   edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.3);
-    //   edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.6);
-    //   edgesArrAdjustedValues[3] = Math.ceil(edgesArrAdjustedValues[3] * 0.75);
-    //   edgesArrAdjustedValues[2] = Math.ceil(edgesArrAdjustedValues[2] * 0.8);
-    //   edgesArrAdjustedValues.shift();
-    //   cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
-    //   cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
-    // } else if (ratio > 1.5) {
-    } else {
+      cableKit2 = this.findVeloSkinnyFeatureC2s(veloTiles);
+    } else if (ratio > 1.15 && ratio <= 1.5) {
+      edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.3);
+      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.6);
+      edgesArrAdjustedValues[3] = Math.ceil(edgesArrAdjustedValues[3] * 0.75);
+      edgesArrAdjustedValues[2] = Math.ceil(edgesArrAdjustedValues[2] * 0.8);
+      cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
+      cableKit2 = edgesArrAdjustedValues[1] + Math.ceil(edgesArrAdjustedValues[2] * 0.6);
+    } else if (ratio > 1.5) {
       edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.6);
       edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.75);
-      edgesArrAdjustedValues.shift();
       cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
       cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
     }
     return [cableKit1, cableKit2];
+  }
+
+  private findVeloSkinnyFeatureC2s(veloTiles) {
+    let c2cableCount = 0;
+
+    veloTiles.map(tile => {
+      let isNeighborArr = [];
+
+      tile.neighbors.map(neighborCoord => {
+        const neighbor = this.findVeloTileAt(neighborCoord[0], neighborCoord[1]);
+        isNeighborArr.push(!!neighbor.material ? 1 : 0);
+      });
+
+      const isNeighborArrTotal = isNeighborArr.reduce((a, b) => a + b, 0);
+
+      // Add a c2 cable if a feature has only one neighboor add a neighbor
+      if (isNeighborArrTotal === 1) {
+        c2cableCount++;
+      }
+
+      // Add a C2 cable if a feature has any tiles with only two neihbors that are adjacent to each other
+      if (isNeighborArrTotal === 2) {
+        for (let xx = 0; xx < isNeighborArr.length; xx++) {
+          if (isNeighborArr[xx] === 1 && isNeighborArr[xx] === isNeighborArr[xx + 1]) {
+            c2cableCount++;
+          }
+        }
+        if (isNeighborArr[0] === 1 && isNeighborArr[4] === 1) {
+          c2cableCount++;
+        }
+      }
+
+      isNeighborArr = [];
+    });
+
+    return c2cableCount;
   }
 
   public getVeloConnections(island: any): any[] {
