@@ -1213,7 +1213,7 @@ export class Feature {
     let cableKit1 = 0;
     let cableKit2 = 0;
     const veloTiles = [];
-    let edgesArr = [0, 0, 0, 0, 0, 0];
+    const edgesArr = [0, 0, 0, 0, 0, 0];
 
     for (const i in island) {
       if (island.hasOwnProperty(i)) {
