@@ -1251,28 +1251,20 @@ export class Feature {
     console.log('shared edges/tiles ratio:', ratio);
     console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
 
-    const edgesArrAdjustedValues: number[] = edgesArr.slice();
     if (ratio <= 1.15) {
-      edgesArrAdjustedValues[1] = Math.ceil(edgesArrAdjustedValues[1] * 0.75);
-      cableKit1 = Math.ceil(edgesArrAdjustedValues.reduce((a, b) => a + b) * 0.75);
-      cableKit2 = this.findVeloSkinnyFeatureC2s(veloTiles);
+      cableKit1 = Math.ceil(edgesArr.reduce((a, b) => a + b) * 0.75);
+      cableKit2 = this.findVeloFeatureC2s(veloTiles);
     } else if (ratio > 1.15 && ratio <= 1.5) {
-      edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.3);
-      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.6);
-      edgesArrAdjustedValues[3] = Math.ceil(edgesArrAdjustedValues[3] * 0.75);
-      edgesArrAdjustedValues[2] = Math.ceil(edgesArrAdjustedValues[2] * 0.8);
-      cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
-      cableKit2 = edgesArrAdjustedValues[1] + Math.ceil(edgesArrAdjustedValues[2] * 0.6);
+      cableKit1 = Math.ceil(edgesArr[5] * 0.3) + Math.ceil(edgesArr[4] * 0.6) + Math.ceil(edgesArr[3] * 0.75) + Math.ceil(edgesArr[2] * 0.8);
+      cableKit2 = edgesArr[1] + Math.ceil(edgesArr[2] * 0.6);
     } else if (ratio > 1.5) {
-      edgesArrAdjustedValues[5] = Math.ceil(edgesArrAdjustedValues[5] * 0.6);
-      edgesArrAdjustedValues[4] = Math.ceil(edgesArrAdjustedValues[4] * 0.75);
-      cableKit1 = edgesArrAdjustedValues.reduce((a, b) => a + b);
-      cableKit2 = edgesArrAdjustedValues[0] + edgesArrAdjustedValues[1];
+      cableKit1 = Math.ceil(edgesArr[5] * 0.85) + Math.ceil(edgesArr[4] * 0.85) + Math.ceil(edgesArr[3] * 0.85) + Math.ceil(edgesArr[2] * 0.8);
+      cableKit2 = edgesArr[1] + edgesArr[2];
     }
     return [cableKit1, cableKit2];
   }
 
-  private findVeloSkinnyFeatureC2s(veloTiles) {
+  private findVeloFeatureC2s(veloTiles) {
     let c2cableCount = 0;
 
     veloTiles.map(tile => {
