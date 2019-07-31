@@ -56,6 +56,9 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     this.tilesArray = this.feature.getTilesPurchasedObj();
     this.tileType = this.feature.getTileType('plural');
     this.units = this.feature.units === 'inches' ? '"' : 'cm';
+    if (this.feature.is_quantity_order) {
+      this.uiType = 'quantity';
+    }
     this.setTemplateValues();
   }
 
@@ -66,20 +69,8 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     this.isQuantityOrder = this.feature.is_quantity_order;
     this.featureType = this.feature.getFeatureHumanName();
     if (this.featureType === 'Seeyond') {
-      this.estimatedTotal = this.seeyond.estimated_amount * this.feature.quantity;
-      this.formattedWidth = `${this.seeyond.width}${this.units}`;
-      this.formattedLength = `${this.seeyond.height}${this.units}`;
-      this.formattedRadius = this.seeyond.seeyond_feature_type === 'curved-partition' ? `${this.seeyond.radius}${this.units}` : '';
-      this.formattedCeilingLength = this.seeyond.seeyond_feature_type === 'wall-to-ceiling' ? `${this.seeyond.ceiling_length}${this.units}` : '';
-      this.seeyondTessellation = this.seeyond.getTessellationName(this.seeyond.tessellation);
-      this.seeyondPatternStrength = this.seeyond.pattern_strength;
-      this.seeyondMaterial = `${this.seeyond.material}`;
-      this.seeyondCoveLighting =
-        this.seeyond.seeyond_feature_type === 'wall-to-ceiling' || this.seeyond.seeyond_feature_type === 'ceiling'
-          ? this.seeyond.cove_lighting
-            ? 'Yes'
-            : 'No'
-          : '';
+      this.setSeeyondTemplateValues();
+      return;
     } else {
       this.estimatedTotal = this.feature.estimated_amount * this.feature.quantity;
       this.formattedWidth = `${this.feature.width}${this.units}`;
@@ -92,11 +83,30 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     this.feature.applyDealerPricing();
   }
 
+  setSeeyondTemplateValues() {
+    this.estimatedTotal = this.seeyond.estimated_amount * this.feature.quantity;
+    this.formattedWidth = `${this.seeyond.width}${this.units}`;
+    this.formattedLength = `${this.seeyond.height}${this.units}`;
+    this.formattedRadius = this.seeyond.seeyond_feature_type === 'curved-partition' ? `${this.seeyond.radius}${this.units}` : '';
+    this.formattedCeilingLength = this.seeyond.seeyond_feature_type === 'wall-to-ceiling' ? `${this.seeyond.ceiling_length}${this.units}` : '';
+    this.seeyondTessellation = this.seeyond.getTessellationName(this.seeyond.tessellation);
+    this.seeyondPatternStrength = this.seeyond.pattern_strength;
+    this.seeyondMaterial = `${this.seeyond.material}`;
+    this.seeyondCoveLighting =
+      this.seeyond.seeyond_feature_type === 'wall-to-ceiling' || this.seeyond.seeyond_feature_type === 'ceiling'
+        ? this.seeyond.cove_lighting
+          ? 'Yes'
+          : 'No'
+        : '';
+    this.seeyond.updateEstimatedAmount();
+  }
+
   multiplesChanged() {
+    if (this.requestedQuantity < 1) {
+      this.requestedQuantity = 1;
+    }
     this.feature.estimated_amount = this.feature.estimated_amount / this.feature.quantity;
     this.feature.quantity = this.requestedQuantity;
-
-    // TODO: IMPORTANT, FIX THIS FOR SEEYOND
     if (this.feature.feature_type === 'seeyond') {
       this.seeyond.estimated_amount = this.seeyond.estimated_amount / this.feature.quantity;
       this.seeyond.quantity = this.requestedQuantity;
