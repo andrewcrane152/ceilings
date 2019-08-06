@@ -1,0 +1,63 @@
+.main-footer {
+  background-color: black;
+  color: #dddddd;
+  padding: 30px 25px 0px 25px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  .left-half {
+    width: 50%;
+    p {
+      margin: 0px;
+    }
+    .stoked-primary {
+      color: #ffffff;
+      font-size: 1.5em;
+      font-weight: 500;
+    }
+    .stoked-secondary {
+      font-size: 1.5em;
+    }
+    .your-email {
+      margin: 10px
+    }
+  }
+  .right-half {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .right-half div ul li {
+    font-size: 0.8em;
+  }
+  .right-half div ul :first-child {
+    font-weight: 500;
+    font-size: 1em;
+  }
+}
+
+.footers-footer {
+  width: 100%;
+  background-color: black;
+  color: #dddddd;
+  padding: 15px 25px 30px 25px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7em;
+  .legal {
+    display: flex;
+  }
+  .legal>span {
+    margin-left: 20px;
+  }
+  mat-input-container label {
+    color: white;
+  }
+  mat-input-container.md-input-focused label {
+    color: white;
+  }
+}
+
+ul {
+  list-style-type: none;
+}

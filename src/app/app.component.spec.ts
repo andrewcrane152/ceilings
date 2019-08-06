@@ -1,6 +1,6 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 // import { Overlay } from '@angular/cdk/overlay/typings/overlay';
 import { By } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router/src/directives/router_outlet';
@@ -28,7 +28,7 @@ describe('AppComponent', () => {
         User,
         DebugService,
         AlertService,
-        MdSnackBar,
+        MatSnackBar,
         // Overlay
       ]
     }).compileComponents();

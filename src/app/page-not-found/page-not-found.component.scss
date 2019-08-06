@@ -1,0 +1,18 @@
+.feature {
+  height: 300px;
+  margin-bottom: 15px;
+  background-color: #DDD;
+}
+
+.feature>.content {
+  width: 555px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.feature>.content p {
+  padding-bottom: 30px;
+  color: #FFF;
+}

@@ -1,0 +1,35 @@
+.grid-and-guide img {
+  max-height: 200px;
+}
+
+.design-img {
+  .img-title {
+    font-weight: 500;
+    font-size: 0.8em;
+  }
+  img {
+    max-height: 40px;
+  }
+}
+
+.colors {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.colors img {
+  max-width: 30px;
+  max-height: 30px;
+}
+
+img.tile-type {
+  max-width: inherit !important;
+}
+
+.diffusions {
+  display: flex;
+}
+
+.diffusions img {
+  margin-right: 5px;
+}

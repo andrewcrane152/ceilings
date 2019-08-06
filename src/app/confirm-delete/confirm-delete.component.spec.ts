@@ -1,4 +1,3 @@
-// import { MdDialogRef } from '@angular/material';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmDeleteComponent } from './confirm-delete.component';
@@ -10,9 +9,7 @@ describe('ConfirmDeleteComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ConfirmDeleteComponent ],
-      providers: [
-        // MdDialogRef
-      ]
+      providers: []
     })
     .compileComponents();
   }));
@@ -23,9 +20,4 @@ describe('ConfirmDeleteComponent', () => {
     fixture.detectChanges();
   });
 
-
-  // RESTORE
-  // it('should be created', () => {
-  //   expect(component).toBeTruthy();
-  // });
 });

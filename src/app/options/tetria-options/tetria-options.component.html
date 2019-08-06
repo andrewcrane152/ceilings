@@ -3,6 +3,7 @@
     <div class="intro">
       <h2>{{title | capitalize}}</h2>
     </div>
+    <p>Would you rather order by quantity? <a (click)="goToQty()">Click Here</a></p>
   </div>
 </div>
 <div class="row">
@@ -41,10 +42,10 @@
         </div>
         <div class="col-sm-4">
           <div class="toggle-button-form-wrapper">
-            <md-button-toggle-group #units="mdButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
-              <md-button-toggle value="inches">IN</md-button-toggle>
-              <md-button-toggle value="centimeters">CM</md-button-toggle>
-            </md-button-toggle-group>
+            <mat-button-toggle-group #units="matButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
+              <mat-button-toggle value="inches">IN</mat-button-toggle>
+              <mat-button-toggle value="centimeters">CM</mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
       </div>

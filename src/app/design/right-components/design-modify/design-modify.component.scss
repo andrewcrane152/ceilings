@@ -1,0 +1,17 @@
+.modify-selection {
+  display: flex;
+  flex-direction: row;
+  span {
+    .tool {
+      border: 1px solid #bbb;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      img {
+        height: 24px;
+      }
+    }
+  }
+}

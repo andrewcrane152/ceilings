@@ -1,13 +1,6 @@
 <div class="row">
   <div class="col-sm-12">
     <div class="row">
-      <div class="black-bar">
-        <div class="home-tab">
-          <a href="https://www.3-form.com/">
-            <div class="threeform-logo"></div>
-          </a>
-        </div>
-      </div>
       <div class="col-sm-10">
         <h1>Design Tools</h1>
       </div>
@@ -19,7 +12,9 @@
     <div class="feature" id="seeyond">
       <div class="content text-center">
         <p class="lg">Seeyond</p>
-        <button id="seeyond-button" class="button button-transparent orange" (click)="goTo('seeyond')">Design Feature</button>
+        <div class="buttons">
+          <button class="button button-transparent orange" (click)="goTo('seeyond')">Design Your Feature</button>
+        </div>
       </div>
     </div>
   </div>
@@ -27,7 +22,11 @@
     <div class="feature" id="tetria">
       <div class="content text-center">
         <p class="lg">Tetria</p>
-        <button id="seeyond-button" class="button button-transparent orange" (click)="goTo('tetria')">Design Feature</button>
+        <div class="buttons">
+          <button class="button button-transparent orange" (click)="goTo('tetria')">Design Your Feature</button>
+          <button class="button button-transparent orange" (click)="goTo('tetria', 'quantity')">Order By
+            Quantity</button>
+        </div>
       </div>
     </div>
   </div>
@@ -37,7 +36,11 @@
     <div class="feature" id="clario">
       <div class="content text-center">
         <p class="lg">Clario</p>
-        <button id="seeyond-button" class="button button-transparent orange" (click)="goTo('clario')">Design Feature</button>
+        <div class="buttons">
+          <button class="button button-transparent orange" (click)="goTo('clario')">Design Your Feature</button>
+          <button class="button button-transparent orange" (click)="goTo('clario', 'quantity')">Order By
+            Quantity</button>
+        </div>
       </div>
     </div>
   </div>
@@ -45,7 +48,9 @@
     <div class="feature" id="velo">
       <div class="content text-center">
         <p class="lg">Velo</p>
-        <button id="seeyond-button" class="button button-transparent orange" (click)="goTo('velo')">Design Feature</button>
+        <div class="buttons">
+          <button class="button button-transparent orange" (click)="goTo('velo')">Design Your Feature</button>
+        </div>
       </div>
     </div>
   </div>
@@ -55,8 +60,23 @@
     <div class="feature" id="hush-blocks">
       <div class="content text-center">
         <p class="lg">Hush Blocks</p>
-        <button id="seeyond-button" class="button button-transparent orange" (click)="goTo('hush-blocks')">Design Feature</button>
+        <div class="buttons">
+          <!-- <button class="button button-transparent orange" (click)="goTo('hush-blocks')">Design Your Feature</button> -->
+          <button class="button button-transparent orange" (click)="goTo('hush-blocks', 'quantity')">Order By
+            Quantity</button>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="col-sm-6">
+    <!-- <div class="feature" id="hush-swoon">
+      <div class="content text-center">
+        <p class="lg">Hush Swoon</p>
+        <div class="buttons">
+          <button class="button button-transparent orange" (click)="goTo('hush-swoon')">Design Your Feature</button>
+          <button class="button button-transparent orange" (click)="goTo('hush-swoon', 'quantity')">Order By Quantity</button>
+        </div>
+      </div>
+    </div> -->
   </div>
 </div>

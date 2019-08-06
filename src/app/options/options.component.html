@@ -1,7 +1,184 @@
 <div class="options-dialog-container">
-    <app-hush-options *ngIf="feature.feature_type==='hush'"></app-hush-options>
-    <app-velo-options *ngIf="feature.feature_type==='velo'"></app-velo-options>
-    <app-tetria-options *ngIf="feature.feature_type==='tetria'"></app-tetria-options>
-    <app-clario-options *ngIf="feature.feature_type==='clario'"></app-clario-options>
-    <app-seeyond-options *ngIf="feature.feature_type==='seeyond'"></app-seeyond-options>
+  <div class="options-header">
+    <div class="title">
+      {{title | capitalize}}
+    </div>
+    <span appStyledButton='secondary-left' (click)="goToLanding()">
+      <button>Return to design tools</button>
+    </span>
+  </div>
+  <div class="options-columns">
+
+    <!-- BEGIN LEFT COLUMN -->
+    <div class="left-column">
+
+      <div *ngIf="showProjectName" id="project-name" class="left-section">
+        <div class="subtitle">Design name</div>
+        <div class="inputs">
+          <input [(ngModel)]="feature.design_name" type="text" class="name-input square" placeholder="Name" autofocus>
+          <a id="load-btn" class="load-btn-fmt" title="load saved designs" (click)="feature.loadDesigns()">
+            <img src="/assets/icons/tools/load.png" alt="load icon">
+            <span>Load</span>
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="showProfileFeatureSelection" id="swoon-feature-selection" class="left-section">
+        <div class="subtitle">Feature selection</div>
+        <span appStyledSelect [width]="280">
+          <select (change)="updateSelectedProfileFeature($event.target.value)">
+            <option value="swoon">Swoon</option>
+          </select>
+        </span>
+      </div>
+
+      <div *ngIf="showSeeyondFeatureSelection" id="seeyond-feature-selection" class="left-section">
+        <div class="subtitle">Feature selection</div>
+        <span appStyledSelect [width]="280">
+          <select (change)="seeyondUpdateSelectedFeature($event.target.value)">
+            <option *ngFor="let featureOption of seeyond.seeyond_features | keys" [value]="featureOption.name"
+              [selected]="featureOption.name==this.seeyond.seeyond_feature_type">{{featureOption.title}}</option>
+          </select>
+        </span>
+      </div>
+
+      <div *ngIf="showSeeyondDimensions" id="seeyond-dimensions" class="left-section">
+        <div class="subtitle">Dimensions</div>
+        <div class="inputs">
+          <div class="input">
+            <div class="sub-header">Width</div>
+            <input [(ngModel)]="seeyond.width" #widthInput="ngModel" (change)="seeyondDimensionsDidChange()"
+              required type="number" class="unit-input" placeholder="Width" name="width">
+            <div class="max-min">
+              <span>Min {{this.seeyond.widthMin}}</span>
+              <span>Max {{this.seeyond.widthMax}}</span>
+            </div>
+          </div>
+          <div class="input">
+            <div class="sub-header" *ngIf="seeyond.seeyond_feature_type !== 'ceiling'">Height</div>
+            <div class="sub-header" *ngIf="seeyond.seeyond_feature_type === 'ceiling'">Length</div>
+            <input [(ngModel)]="seeyond.height" #lengthInput="ngModel" (change)="seeyondDimensionsDidChange()"
+              required type="number" class="unit-input" placeholder="Height" name="length">
+            <div class="max-min">
+              <span>Min {{this.seeyond.heightMin}}</span>
+              <span>Max {{this.seeyond.heightMax}}</span>
+            </div>
+          </div>
+          <div class="input" *ngIf="seeyond.seeyond_feature_type === 'wall-to-ceiling'">
+            <div class="sub-header">Ceiling Length</div>
+            <input [(ngModel)]="seeyond.ceiling_length" #ceilingLengthInput="ngModel"
+              (change)="seeyondDimensionsDidChange()" required type="number" class="unit-input"
+              placeholder="Height" name="length">
+            <div class="max-min">
+              <span>Min {{this.seeyond.ceilLengthMin}}</span>
+              <span>Max {{this.seeyond.ceilLengthMax}}</span>
+            </div>
+          </div>
+          <div class="input" *ngIf="seeyond.seeyond_feature_type === 'curved-partition'">
+            <div class="sub-header">Radius</div>
+            <input [(ngModel)]="seeyond.radius" #radiusInput="ngModel" (change)="seeyondDimensionsDidChange()"
+              type="number" class="unit-input" placeholder="Height" name="length">
+            <div class="max-min">
+              <span>Min {{this.seeyond.radiusMin}}</span>
+              <span>Max {{this.seeyond.radiusMax}}</span>
+            </div>
+          </div>
+          <div class="input">
+            <!-- <mat-button-toggle-group #units="matButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
+              <mat-button-toggle value="inches">IN</mat-button-toggle>
+              <mat-button-toggle value="centimeters">CM</mat-button-toggle>
+            </mat-button-toggle-group> -->
+            <span class="toggle-btns units-input">
+              <button (click)="updateGridUnits('inches')" [class.selected]="feature.units === 'inches'">IN</button>
+              <button (click)="updateGridUnits('centimeters')"
+                [class.selected]="feature.units === 'centimeters'">CM</button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showDimensions" id="dimensions" class="left-section">
+        <div class="subtitle">Dimensions</div>
+        <div class="description" *ngIf="feature.feature_type==='tetria'">A 15/16 or 9/16 grid system is required for
+          this product.</div>
+        <div class="inputs">
+          <div class="input">
+            <div class="sub-header">Width</div>
+            <input [(ngModel)]="feature.width" class="unit-input" type="text">
+            <div class="max-min"></div>
+          </div>
+          <div class="input">
+            <div class="sub-header">Height</div>
+            <input [(ngModel)]="feature.length" class="unit-input" type="text">
+            <div class="max-min"></div>
+          </div>
+          <div class="input">
+            <div>&nbsp;</div>
+            <!-- <mat-button-toggle-group #units="matButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
+              <mat-button-toggle value="inches">IN</mat-button-toggle>
+              <mat-button-toggle value="centimeters">CM</mat-button-toggle>
+            </mat-button-toggle-group> -->
+            <span class="toggle-btns units-input">
+              <button (click)="updateGridUnits('inches')" [class.selected]="feature.units === 'inches'">IN</button>
+              <button (click)="updateGridUnits('centimeters')"
+                [class.selected]="feature.units === 'centimeters'">CM</button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showClarioTileSizes" id="clario-tile-sizes" class="left-section">
+        <div class="subtitle">Grid and Tile Size</div>
+        <div class="inputs clario-inputs">
+          <div class="input">
+            <div class="sub-header">Ceiling Grid Type</div>
+            <span appStyledSelect [width]="280">
+              <select (change)="clarioGridSizeChanged($event.target.value)" id="gridOptions"
+                [(ngModel)]="feature.grid_type">
+                <option [value]="'15/16'">15/16" (24mm)</option>
+                <option [value]="'9/16'">9/16"</option>
+              </select>
+            </span>
+          </div>
+          <div class="input">
+            <div class="sub-header">Tile Size</div>
+            <span appStyledSelect [width]="280">
+              <select (change)="clarioTileSizeChanged($event.target.value)" id="gridOptions">
+                <option disabled [value]="undefined" [selected]="clarioGrids.selectedTileSize === undefined">-- select
+                  --</option>
+                <option *ngFor="let gridOption of clarioGrids.tileSizeOptions | keys" [value]="gridOption.name"
+                  [selected]="clarioGrids.selectedTileSize?.name === gridOption.name">{{gridOption.name}}</option>
+              </select>
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- END LEFT COLUMN -->
+
+    <div class="vertical-divider"></div>
+
+    <!-- BEGIN RIGHT COLUMN -->
+    <div class="right-column">
+      <app-options-right-clario *ngIf="feature.feature_type==='clario'"></app-options-right-clario>
+      <app-options-right-profile *ngIf="feature.feature_type==='profile'"></app-options-right-profile>
+      <app-options-right-seeyond *ngIf="feature.feature_type==='seeyond'"></app-options-right-seeyond>
+      <app-options-right-tetria *ngIf="feature.feature_type==='tetria'"></app-options-right-tetria>
+      <app-options-right-hush *ngIf="feature.feature_type==='hush'"></app-options-right-hush>
+      <app-options-right-velo *ngIf="feature.feature_type==='velo'"></app-options-right-velo>
+      <app-options-right-hush-swoon *ngIf="feature.feature_type==='hushSwoon'"></app-options-right-hush-swoon>
+    </div>
+    <!-- END RIGHT COLUMN -->
+  </div>
+  <div class="options-footer">
+    <span appStyledButton='primary-right'>
+      <button type="submit" (click)='startDesigning()' class="start-designing" [disabled]="!validateOptions()">Start
+        designing</button>
+    </span>
+    <span appStyledButton='secondary-left' *ngIf="showQuantityBtn">
+      <button (click)="goToQty()" class="go-to-quantity">Order by quantity</button>
+    </span>
+  </div>
 </div>

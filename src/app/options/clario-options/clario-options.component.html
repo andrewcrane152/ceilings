@@ -3,6 +3,9 @@
     <div class="intro">
       <h2>{{title | capitalize}}</h2>
     </div>
+    <p>Would you rather order by quantity?
+      <a (click)="goToQty()">Click Here</a>
+    </p>
   </div>
 </div>
 <div class="row">
@@ -15,72 +18,76 @@
     <div class="row">
       <div class="col-sm-9">
         <div class="form-group">
-          <input [(ngModel)]="feature.design_name" type="text" class="form-control square" placeholder="Name" name="design-name" id="design-name-input" autofocus>
+          <input [(ngModel)]="feature.design_name" type="text" class="form-control square" placeholder="Name" name="design-name" id="design-name-input"
+            autofocus>
         </div>
       </div>
       <div class="col-sm-3 options-load">
-        <a id="load-btn" title="load saved designs" (click)="feature.loadDesigns()"><span class="icomoon-folder orange"></span> Load</a>
+        <a id="load-btn" title="load saved designs" (click)="feature.loadDesigns()">
+          <span class="icomoon-folder orange"></span> Load</a>
       </div>
     </div>
     <hr>
     <div id="grid-dimensions">
-      <h3>Design Dimensions</h3>
-      <p>A 15/16 grid system is required for this product.</p>
+      <h3>Grid and Tile Size</h3>
+      <p>Select the grid type and tile size.</p>
       <div class="row">
-        <div class="col-sm-4">
-          <div class="form-group">
-            <label for="width">Width</label>
-            <input [(ngModel)]="feature.width" type="text" class="form-control number-input square" placeholder="Width" name="width" id="width">
-          </div>
+        <div class="col-sm-10 grid-dimensions">
+          <label for="gridOptions">Ceiling Grid Type</label>
+          <select class="form-control" (change)="gridSizeChanged($event.target.value)" id="gridOptions" [(ngModel)]="feature.grid_type">
+            <option [value]="'15/16'">15/16" (24mm)</option>
+            <option [value]="'9/16'">9/16"</option>
+          </select>
         </div>
-        <div class="col-sm-4">
-          <div class="form-group">
-            <label for="length">Length</label>
-            <input [(ngModel)]="feature.length" type="text" class="form-control number-input square" placeholder="Length" name="length" id="length">
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <div class="toggle-button-form-wrapper">
-            <md-button-toggle-group #units="mdButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
-              <md-button-toggle value="inches">IN</md-button-toggle>
-              <md-button-toggle value="centimeters">CM</md-button-toggle>
-            </md-button-toggle-group>
-          </div>
+        <div class="col-sm-10 grid-dimensions">
+          <label for="gridOptions">Tile Size</label>
+          <select class="form-control" (change)="tileSizeChanged($event.target.value)" id="gridOptions">
+            <option disabled [value]="undefined" [selected]="clarioGrids.selectedTileSize === undefined">-- select --</option>
+            <option *ngFor="let gridOption of clarioGrids.tileSizeOptions | keys" [value]="gridOption.name" [selected]="clarioGrids.selectedTileSize?.name === gridOption.name">{{gridOption.name}}</option>
+          </select>
         </div>
       </div>
     </div>
     <div id="grid-size">
       <hr>
-      <h3>Tile Size</h3>
-      <p>Please specify the size of your grid.</p>
-      <md-radio-group class="grid-size" [(ngModel)]="feature.tile_size" name="grid-size">
-        <div class="row">
-          <div class="col-sm-4">
-            <md-radio-button class="radio-button" [value]="24">
-              24 X 24
-            </md-radio-button>
-            <p>Qty. 4 per package</p>
-          </div>
-          <div class="col-sm-4">
-            <md-radio-button class="radio-button" [value]="48">
-              24 X 48
-            </md-radio-button>
-            <p>Qty. 2 per package</p>
+      <h3>Design Dimensions</h3>
+      <p>Specify your width and length.</p>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="width">Width</label>
+            <input [(ngModel)]="feature.width" type="text" class="form-control number-input square" placeholder="Width" name="width"
+              id="width">
           </div>
         </div>
-      </md-radio-group>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="length">Length</label>
+            <input [(ngModel)]="feature.length" type="text" class="form-control number-input square" placeholder="Length" name="length"
+              id="length">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="toggle-button-form-wrapper">
+            <mat-button-toggle-group #units="matButtonToggleGroup" (change)="updateGridUnits(units.value)" value="{{feature.units}}">
+              <mat-button-toggle value="inches">IN</mat-button-toggle>
+              <mat-button-toggle value="centimeters">CM</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+        </div>
+      </div>
     </div>
-    <button class="button button-orange start-designing" (click)="dialogRef.close('start designing')" [disabled]="validateOptions()">start designing</button>
+    <button class="button button-orange start-designing" (click)="dialogRef.close('start designing')" [disabled]="!validateOptions()">start designing</button>
     <div class="back">
-      <a id="back-to-landing" class="back-to-landing" (click)="goToLanding()">< Choose a New Design Tool</a>
+      <a id="back-to-landing" class="back-to-landing" (click)="goToLanding()">
+        < Choose a New Design Tool</a>
     </div>
   </div>
   <div class="col-xs-12 col-sm-5 col-sm-offset-1 right-pane">
     <div class="grid-guides clearfix">
       <h3>Grid and Guides</h3>
       <p>Design dimensions are shown by a blue guide.</p>
-      <img src="/assets/images/grid-and-guide.png" alt="Grid with Blue Guides"
-          class="pull-left">
+      <img src="/assets/images/grid-and-guide.png" alt="Grid with Blue Guides" class="pull-left">
       <aside class="note">Tiles extending past the blue guide must be flat tiles to allow cutting.</aside>
     </div>
     <div id="design">

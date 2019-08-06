@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MdDialog, MdDialogConfig, MdDialogRef } from '@angular/material';
-import { Feature } from '../feature';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { AlertService } from '../_services/alert.service';
 import { ApiService } from '../_services/api.service';
@@ -11,7 +11,7 @@ import { ConfirmDeleteComponent } from '../confirm-delete/confirm-delete.compone
 @Component({
   selector: 'app-load-design',
   templateUrl: './load-design.component.html',
-  styleUrls: ['./load-design.component.css']
+  styleUrls: ['./load-design.component.scss']
 })
 export class LoadDesignComponent implements OnInit {
   public designs: Array<Feature>;
@@ -21,40 +21,42 @@ export class LoadDesignComponent implements OnInit {
     private alert: AlertService,
     private api: ApiService,
     private debug: DebugService,
-    public dialog: MdDialog,
+    public dialog: MatDialog,
     public feature: Feature,
     public user: User,
-    private dialogRef: MdDialogRef<LoadDesignComponent>
-  ) { }
+    public dialogRef: MatDialogRef<LoadDesignComponent>
+  ) {}
 
   ngOnInit() {}
 
   load(id: number) {
     this.debug.log('load-design', 'loading id: ' + id);
     this.router.navigate([this.feature.feature_type + '/design', id]);
-    this.dialogRef.close()
+    this.feature.onDesignLoaded.emit();
+    this.dialogRef.close();
   }
 
   delete(id: number, target: any) {
-    const dialogRef = this.dialog.open(ConfirmDeleteComponent, new MdDialogConfig);
+    const dialogRef = this.dialog.open(ConfirmDeleteComponent, new MatDialogConfig());
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {
         this.debug.log('load-design', 'User has confirmed delete');
-        this.api.deleteDesign(id).subscribe(response => {
-          if (this.feature.id === id) {
-            this.debug.log('load-design', 'Deleting the design we are currently on');
-            this.router.navigate([this.feature.feature_type, 'design']);
+        this.api.deleteDesign(id).subscribe(
+          response => {
+            if (this.feature.id === id) {
+              this.debug.log('load-design', 'Deleting the design we are currently on');
+              this.router.navigate([this.feature.feature_type, 'design']);
+            }
+            target.remove();
+            this.alert.success('Design ID: ' + id + ' has been deleted');
+          },
+          error => {
+            if (error) {
+              this.alert.apiAlert(error);
+            }
           }
-          target.remove();
-          this.alert.success('Design ID: ' + id + ' has been deleted');
-        },
-        error => {
-          if (error) {
-            this.alert.apiAlert(error);
-          }
-        });
+        );
       }
     });
   }
-
 }

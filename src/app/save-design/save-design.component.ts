@@ -1,23 +1,25 @@
-import { MdDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material';
 import { Location } from '@angular/common';
-import { SeeyondFeature } from './../seeyond-feature';
+import { SeeyondFeature } from './../_features/seeyond-feature';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Feature } from '../feature';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { AlertService } from '../_services/alert.service';
 import { ApiService } from '../_services/api.service';
 import { SeeyondService } from '../_services/seeyond.service';
 
-
 @Component({
   selector: 'app-save-design',
   templateUrl: './save-design.component.html',
-  styleUrls: ['./save-design.component.css']
+  styleUrls: ['./save-design.component.scss']
 })
 export class SaveDesignComponent implements OnInit {
   public newDesign: boolean;
   public newButton = false;
+  private uiType = this.feature.is_quantity_order ? '/quantity' : '/design';
+  saving = false;
+  savingSomeoneElsesDesign = false;
 
   constructor(
     private router: Router,
@@ -28,13 +30,16 @@ export class SaveDesignComponent implements OnInit {
     public seeyond: SeeyondFeature,
     public user: User,
     private location: Location,
-    private dialogRef: MdDialogRef<SaveDesignComponent>
-  ) { }
+    public dialogRef: MatDialogRef<SaveDesignComponent>
+  ) {}
 
   ngOnInit() {
     // if the design already has an ID then it's not new.
-    if (this.feature.feature_type === 'seeyond') { this.feature = this.seeyond; }
+    if (this.feature.feature_type === 'seeyond') {
+      this.feature = this.seeyond;
+    }
     this.newDesign = this.feature.id ? false : true;
+    this.savingSomeoneElsesDesign = this.feature.uid && this.user.uid && this.feature.uid !== this.user.uid;
   }
 
   newButtonClick() {
@@ -47,50 +52,62 @@ export class SaveDesignComponent implements OnInit {
     } else {
       this.saveFeature();
     }
-    this.dialogRef.close()
+    this.dialogRef.close();
+  }
+
+  saveAsOwn() {
+    this.feature.specifier = undefined;
+    this.saveNew();
   }
 
   saveFeature() {
     if (this.newDesign || this.newButton) {
       this.saveNew();
     } else {
+      this.saving = true;
       this.api.updateDesign().subscribe(feature => {
+        this.saving = false;
         // notify the user that we have saved their design
         this.alert.success('Successfully saved your design');
         // set the feature to what was returned from the API.
         this.feature = feature.ceiling;
         // navigate if the current path isn't already right
-        const url = this.router.createUrlTree([this.feature.feature_type + '/design', this.feature.id]).toString();
+        let url = this.router.createUrlTree([`${this.feature.feature_type}${this.uiType}`, this.feature.id]).toString();
+        url = url.includes('hushSwoon') ? url.replace(/hushSwoon/g, 'hush-swoon') : url;
+        url = url.includes('/hush/') ? url.replace(/hush/g, 'hush-blocks') : url;
         if (url !== this.router.url) {
-          this.router.navigate([this.feature.feature_type + '/design', this.feature.id]);
+          this.router.navigate([`${this.feature.feature_type}${this.uiType}`, this.feature.id]);
         }
       });
     }
   }
 
   saveNew() {
+    this.saving = true;
     // reset some values for the new quote
     this.feature.quoted = false;
     this.api.saveDesign().subscribe(feature => {
+      this.saving = false;
       // notify the user that we have saved their design
       this.alert.success('Successfully saved your design');
       // set the feature to what was returned from the API.
       this.feature = feature.ceiling;
       // redirect to the new design
-      this.router.navigate([this.feature.feature_type + '/design', this.feature.id]);
+      this.router.navigate([`${this.feature.feature_type}${this.uiType}`, this.feature.id]);
     });
   }
 
   saveSeeyond() {
     if (this.newDesign || this.newButton) {
       this.saveNewSeeyond();
-    }else {
+    } else {
+      this.saving = true;
       this.seeyondApi.updateFeature().subscribe(feature => {
+        this.saving = false;
         // notify the user that we saved their design
         this.alert.success('Successfully saved your design');
-        // set the feature up according to what is returned from the API after save.
-        this.seeyond = feature.seeyond;
-        this.location.go(`seeyond/design/${this.seeyond.name}/${this.seeyond.id}`);
+        // redirect to the new design
+        this.location.go(`seeyond/design/${feature.seeyond.name}/${feature.seeyond.id}`);
       });
     }
   }
@@ -100,14 +117,13 @@ export class SaveDesignComponent implements OnInit {
     this.seeyond.quoted = false;
     this.seeyond.project_name = null;
     this.seeyond.specifier = null;
+    this.saving = true;
     this.seeyondApi.saveFeature().subscribe(feature => {
+      this.saving = false;
       // notify the user that we saved their design
       this.alert.success('Successfully saved your design');
-      // set the feature up according to what is returned from the API after save.
-      // this.seeyond = feature.seeyond;
       // redirect to the new design
       this.router.navigate(['/seeyond/design', feature.seeyond.id]);
     });
   }
-
 }

@@ -1,126 +1,147 @@
-import { AlertService } from './alert.service';
 import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+
 import { environment } from '../../environments/environment';
-import { Feature } from '../feature';
+import { AlertService } from './alert.service';
+import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { DebugService } from './../_services/debug.service';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
+
+import { map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export class ApiService {
-  onSaved = new EventEmitter();
-  onLoaded = new EventEmitter();
-  onUserLoggedIn = new EventEmitter();
+  public onSaved = new EventEmitter();
+  public onLoaded = new EventEmitter();
+  public onUserLoggedIn = new EventEmitter();
   apiUrl = 'https://' + environment.API_URL + '/ceilings/';
   loginUrl = 'https://' + environment.API_URL + '/auth/login';
+  pricingAccessUrl = 'https://' + environment.API_URL + '/user_branches';
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
-  constructor(
-    private http: Http,
-    private feature: Feature,
-    private user: User,
-    private debug: DebugService,
-    private alert: AlertService
-  ) { }
+  constructor(private http: HttpClient, private feature: Feature, private user: User, private debug: DebugService, private alert: AlertService) {}
 
   getMyDesigns() {
-    return this.http.get(this.apiUrl + 'list/' + this.user.uid)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.http.get(this.apiUrl + 'list/' + this.user.uid).pipe(catchError(this.handleError));
   }
 
   getUserRep(uid: number) {
     this.debug.log('api', 'getting user rep');
-    return this.http.get(this.userUrl + uid + '/rep')
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.http.get(this.userUrl + uid + '/rep').pipe(catchError(this.handleError));
   }
 
   loadDesign(id: number) {
     this.debug.log('api', 'loading design: ' + id);
-    return this.http.get(this.apiUrl + id)
-      .map((res: Response) => {
-        this.onLoaded.emit();
-        return res.json();
-      })
-      .catch(this.handleError);
+    return this.http.get<any>(this.apiUrl + id);
   }
 
   updateDesign() {
     this.debug.log('api', 'updating design');
     // we can't forget about the hardware...
     this.debug.log('api', this.feature.tiles);
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
+    }
+    if (this.feature.is_quantity_order) {
+      this.prepDataForQtyOrder();
+    }
     const patchData = {
-      'id': this.feature.id,
-      'uid': this.user.uid,
-      'feature_type': this.feature.feature_type,
-      'design_name': this.feature.design_name,
-      'project_name': this.feature.project_name,
-      'specifier': this.feature.specifier,
-      'width': this.feature.width,
-      'length': this.feature.length,
-      'units': this.feature.units,
-      'material': this.feature.material,
-      'tile_size': this.feature.tile_size,
-      'tiles': JSON.stringify(this.feature.tiles),
-      'design_data_url': this.feature.design_data_url,
-      'hardware': (!!this.feature.hardware) ? JSON.stringify(this.feature.hardware) : null,
-      'estimated_amount': this.feature.estimated_amount,
-      'services_amount': this.feature.services_amount,
-      'grid_data': JSON.stringify(this.feature.gridData),
-      'quoted': this.feature.quoted,
-      'archived': this.feature.archived,
-      'quantity': this.feature.quantity
+      id: this.feature.id,
+      uid: this.user.uid,
+      feature_type: this.feature.feature_type,
+      design_name: this.feature.design_name,
+      project_name: this.feature.project_name,
+      specifier: this.feature.specifier,
+      width: this.feature.width || 0,
+      length: this.feature.length || 0,
+      units: this.feature.units,
+      material: this.feature.material,
+      tile_size: this.feature.tile_size,
+      grid_type: this.feature.grid_type,
+      tiles: JSON.stringify(this.feature.tiles),
+      design_data_url: this.feature.design_data_url,
+      hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
+      estimated_amount: this.feature.estimated_amount,
+      services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
+      dealer_markup: this.feature.dealer_markup,
+      grid_data: JSON.stringify(this.feature.gridData),
+      quoted: this.feature.quoted,
+      archived: this.feature.archived,
+      quantity: this.feature.quantity,
+      is_quantity_order: this.feature.is_quantity_order,
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
     };
 
-    const headers = new Headers({'Content-Type': 'application/json'});
-    const options = new RequestOptions({headers: headers});
-
-    return this.http.patch(this.apiUrl + this.feature.id, patchData, options)
-      .map((res: Response) => {
+    return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
+      map((res: any) => {
         this.onSaved.emit();
         this.debug.log('api', 'emitting onSaved in updateDesign');
-        return res.json() || {}
-      })
-      .catch(this.handleError);
+        return res || {};
+      }),
+      catchError(this.handleError)
+    );
   }
 
   saveDesign() {
     this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
-    const patchData = {
-      'uid': this.user.uid,
-      'feature_type': featureType,
-      'design_name': this.feature.design_name,
-      'project_name': this.feature.project_name,
-      'specifier': this.feature.specifier,
-      'width': this.feature.width,
-      'length': this.feature.length,
-      'units': this.feature.units,
-      'material': this.feature.material,
-      'tile_size': this.feature.tile_size,
-      'tiles': JSON.stringify(this.feature.tiles),
-      'design_data_url': this.feature.design_data_url,
-      'hardware': (!!this.feature.hardware) ? JSON.stringify(this.feature.hardware) : null,
-      'estimated_amount': this.feature.estimated_amount,
-      'services_amount': this.feature.services_amount,
-      'grid_data': JSON.stringify(this.feature.gridData),
-      'quoted': this.feature.quoted,
-      'archived': this.feature.archived,
-      'quantity': this.feature.quantity
+    let hushShippingInfo;
+    if (this.feature.feature_type === 'hush') {
+      hushShippingInfo = this.feature.hushShippingInfo;
     }
+    if (this.feature.is_quantity_order) {
+      this.prepDataForQtyOrder();
+    }
+    const patchData = {
+      uid: this.user.uid,
+      feature_type: featureType,
+      design_name: this.feature.design_name,
+      project_name: this.feature.project_name,
+      specifier: this.feature.specifier,
+      width: this.feature.width || 0,
+      length: this.feature.length || 0,
+      units: this.feature.units,
+      material: this.feature.material,
+      tile_size: this.feature.tile_size,
+      grid_type: this.feature.grid_type,
+      tiles: JSON.stringify(this.feature.tiles),
+      design_data_url: this.feature.design_data_url,
+      hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
+      estimated_amount: this.feature.estimated_amount,
+      services_amount: this.feature.services_amount,
+      list_price: this.feature.list_price,
+      discount_terms: JSON.stringify(this.feature.discount_terms),
+      discount_amount: this.feature.discount_amount,
+      net_price: this.feature.net_price,
+      dealer_markup: this.feature.dealer_markup,
+      grid_data: JSON.stringify(this.feature.gridData),
+      quoted: this.feature.quoted,
+      archived: this.feature.archived,
+      quantity: this.feature.quantity,
+      is_quantity_order: this.feature.is_quantity_order,
+      hush_shipping_info: JSON.stringify(hushShippingInfo)
+    };
 
-    return this.http.post(this.apiUrl, patchData)
-      .map((res: Response) => {
+    return this.http.post(this.apiUrl, patchData).pipe(
+      map((res: any) => {
         this.onSaved.emit();
         this.debug.log('api', 'emitting onSaved in saveDesign');
-        return res.json() || {}
-      })
-      .catch(this.handleError);
+        return res || {};
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  prepDataForQtyOrder() {
+    this.feature.width = 0;
+    this.feature.length = 0;
   }
 
   deleteDesign(id: number) {
@@ -128,61 +149,108 @@ export class ApiService {
   }
 
   sendEmail() {
-    return this.http.get(this.apiUrl + 'email/' + this.user.uid + '/design/' + this.feature.id)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.http.get(this.apiUrl + 'email/' + this.user.uid + '/design/' + this.feature.id);
   }
 
   getPrices() {
-    return this.http.get(this.apiUrl + 'prices')
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.http.get(this.apiUrl + 'prices').pipe(
+      map((res: Response) => res),
+      catchError(this.handleError)
+    );
   }
 
   getPartsSubstitutes() {
-    return this.http.get(this.partSubsUrl)
-      .map((res: Response) => res.json())
-      .catch(this.handleError);
+    return this.http.get(this.partSubsUrl).pipe(
+      map((res: Response) => res),
+      catchError(this.handleError)
+    );
   }
-
 
   login(email: string, password: string) {
     this.debug.log('api', 'api login');
     const formData = {
-      'email': email,
-      'password': password
-    }
+      email: email,
+      password: password
+    };
 
-    return this.http.post(this.loginUrl, formData)
-      .map((res: Response) => {
-        const api = res.json();
-        if (api && !api.result.error) {
-          localStorage.setItem('3formUser', JSON.stringify(api.result.user));
-          this.user = api.result.user;
+    return this.http.post(this.loginUrl, formData).pipe(
+      map((res: any) => {
+        if (res && !res.result.error) {
+          localStorage.setItem('3formUser', JSON.stringify(res.result.user));
+          this.user = res.result.user;
           this.onUserLoggedIn.emit(this.user);
-          this.debug.log('api', 'user successfully logged in');
-          return 'success';
+          return res;
+        } else {
+          this.alert.apiAlert(res.result.error);
         }
-      })
-      .catch((res) => {
-        const api = res.json();
-        this.alert.error(api.result.message);
+      }),
+      catchError(res => {
+        this.alert.error(res.error.result.message);
         return 'error';
-      });
+      })
+    );
+  }
+
+  checkToShowPricing() {
+    if (!!localStorage.getItem('3formUser')) {
+      this.checkAccessToPricing().subscribe(
+        data => {
+          if (!!data.result) {
+            this.feature.showPricing = data.result.access;
+          }
+        },
+        error => {
+          console.log('denied pricing access');
+          // if (error) {
+          //   this.handleError(error);
+          // }
+        }
+      );
+    }
+  }
+
+  checkAccessToPricing() {
+    const userInfo = JSON.parse(localStorage.getItem('3formUser'));
+    const uid = !!userInfo ? userInfo.uid : '';
+    const accessUrl = `${this.pricingAccessUrl}?ids[]=${uid}`;
+    return this.http.get(accessUrl, {}).pipe(
+      map((res: any) => {
+        if (res && !!res.user_branches[0]) {
+          const userBranchInfo = res.user_branches[0]
+          if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer') {
+            userInfo['showPricing'] = true;
+            this.feature.showPricing = true;
+            localStorage.setItem('3formUser', JSON.stringify(userInfo));
+          }
+          return res;
+        } else {
+          this.alert.apiAlert(res.result.error);
+        }
+      }),
+      catchError(res => {
+        // this.alert.error(res.error.result.message);
+        return 'error';
+      })
+    );
   }
 
   logout() {
     localStorage.removeItem('3formUser');
-    this.user = new User;
+    this.user = new User();
   }
 
-  private handleError(error: any) {
-    const errorJson = error.json();
-    if (errorJson) {
-      return Observable.throw(errorJson.message || 'Server Error');
+  public handleError(error: HttpErrorResponse) {
+    // if (error.status === 500) { this.debug.log('api', error.message); return; }
+    // if (!!error.error.result.message) { this.alert.error(error.error.result.message); }
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.log('api', `An error occurred: ${error.error}`);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to what went wrong,
+      console.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
     }
-
-    return Observable.throw('Unknown Error');
+    // return an ErrorObservable with a user-facing error message
+    return throwError('Something bad happened; please try again later.');
   }
-
 }
