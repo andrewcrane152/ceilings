@@ -284,7 +284,7 @@ export class MaterialsService {
     }
   };
 
-  public toolsArray = ['rotate', 'remove', 'light', 'vent', 'sprinkler'];
+  public toolsArray = ['rotate', 'remove', 'light', 'vent', 'sprinkler', 'pattern-direction'];
 
   public tilesArray = {
     tetria: {

@@ -47,11 +47,11 @@ export class DesignComponent implements OnInit, OnDestroy {
   materials: any;
   tryingRequestQuote = false;
   canQtyOrder = false;
-  canvasGridFeatures = ['velo', 'profile', 'hushSwoon'];
+  canvasGridFeatures = ['velo', 'clario-cloud', 'profile', 'hushSwoon'];
   useCanvasGrid = false;
   useSeeyondGrid = false;
   useRepeatingGrid = false;
-  designFeatures = ['seeyond', 'tetria', 'clario', 'velo', 'hush', 'profile', 'hushSwoon'];
+  designFeatures = ['seeyond', 'tetria', 'clario', 'velo', 'hush', 'profile', 'hushSwoon', 'clario-cloud'];
 
   // right side expansion panels
   showDesign = false;
@@ -166,6 +166,10 @@ export class DesignComponent implements OnInit, OnDestroy {
                   this.feature.materialHex = '#dfdee0';
                   this.feature.materialType = 'felt';
                   this.feature.toolsArray = ['remove'];
+                } else if (this.feature.feature_type === 'clario-cloud') {
+                  this.feature.material = 'milky-white';
+                  this.feature.materialHex = '#dfdee0';
+                  this.feature.toolsArray = ['remove', 'pattern-direction'];
                 } else if (this.feature.feature_type === 'hush') {
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
                   this.feature.toolsArray = ['remove'];
@@ -304,6 +308,12 @@ export class DesignComponent implements OnInit, OnDestroy {
         // this.showCanvasGridControls = true;
         this.showCanvasGridControls = false;
         this.quantitiesString = 'Velo tiles are sold in quantities of 8.';
+        break;
+      case 'velo':
+        this.showDesign = true;
+        this.showModify = true;
+        this.showCanvasGridControls = true;
+        this.quantitiesString = '';
         break;
       case 'hush':
         this.showDimensions = true;

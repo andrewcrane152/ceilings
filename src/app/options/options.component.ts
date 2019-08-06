@@ -81,11 +81,12 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
         this.showQuantityBtn = true;
         break;
       case 'velo':
+      case 'clario-cloud':
         break;
-      case 'profile':
-        this.showProfileFeatureSelection = true;
-        this.showQuantityBtn = true;
-        break;
+      // case 'profile':
+      //   this.showProfileFeatureSelection = true;
+      //   this.showQuantityBtn = true;
+      //   break;
     }
     this.feature.onDesignLoaded.subscribe(result => {
       this.dialogRef.close('cancel');
@@ -131,9 +132,6 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
     let valid = false;
     // name, width, and length are required
     switch (this.feature.feature_type) {
-      case 'seeyond':
-        valid = !!this.feature.design_name;
-        break;
       case 'tetria':
         valid = !!this.feature.design_name && !!this.feature.width && !!this.feature.length;
         break;
@@ -149,12 +147,10 @@ export class OptionsComponent implements OnInit, AfterContentInit, OnDestroy {
         valid = !!this.feature.width && !!this.feature.length && !!this.feature.design_name;
         break;
       case 'velo':
-        valid = !!this.feature.design_name;
-        break;
       case 'profile':
-        valid = !!this.feature.design_name;
-        break;
       case 'hushSwoon':
+      case 'clario-cloud':
+      case 'seeyond':
         valid = !!this.feature.design_name;
         break;
     }

@@ -183,6 +183,9 @@ export class Feature {
       case 'velo':
         this.getVeloEstimate(tilesArray);
         break;
+      case 'clario-cloud':
+        this.getVeloEstimate(tilesArray);
+        break;
       case 'hushSwoon':
         this.getHushSwoonEstimate(tilesArray);
         break;
@@ -1431,6 +1434,9 @@ export class Feature {
         requiredMaterials = this.materials.felt.merino;
         break;
       case 'clario':
+        requiredMaterials = this.materials.felt.sola;
+        break;
+      case 'clario-cloud':
         requiredMaterials = this.materials.felt.sola;
         break;
       case 'velo':
