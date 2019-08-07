@@ -10,9 +10,8 @@ import { environment } from './../../environments/environment';
 import { SeeyondFeature } from 'app/_features/seeyond-feature';
 import { User } from './../_models/user';
 
-import { Observable } from 'rxjs';
+import { Observable ,  throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 @Injectable()
 export class SeeyondService {
