@@ -13,6 +13,7 @@ import { ifError } from 'assert';
 export class Feature {
   onBuildGrid = new EventEmitter();
   onBuildVeloGrid = new EventEmitter();
+  onBuildClarioCloudGrid = new EventEmitter();
   onBuildSwoonGrid = new EventEmitter();
   onApplyAll = new EventEmitter();
   onView3d = new EventEmitter();
@@ -24,6 +25,7 @@ export class Feature {
   onZoomGrid = new EventEmitter();
   onAdjustSwoonGridSize = new EventEmitter();
   onAdjustVeloGridSize = new EventEmitter();
+  onAdjustClarioCloudGridSize = new EventEmitter();
 
   // attributes saved in DB
   public id: number;
@@ -688,6 +690,9 @@ export class Feature {
     if (this.feature_type === 'velo') {
       this.debug.log('feature', 'emitting event buildVeloGrid');
       this.onBuildVeloGrid.emit();
+    } else if (this.feature_type === 'clario-cloud') {
+      this.debug.log('feature', 'emitting event buildClarioCloudGrid');
+      this.onBuildClarioCloudGrid.emit();
     } else if (this.feature_type === 'hushSwoon') {
       this.debug.log('feature', 'emitting event buildSwoonGrid');
       this.onBuildSwoonGrid.emit();
@@ -1198,6 +1203,14 @@ export class Feature {
   }
 
   public findVeloTileAt(x, y) {
+    for (const el in this.gridData) {
+      if (this.gridData[el].x === x && this.gridData[el].y === y) {
+        return this.gridData[el];
+      }
+    }
+  }
+
+  public findClarioCloudTileAt(x, y) {
     for (const el in this.gridData) {
       if (this.gridData[el].x === x && this.gridData[el].y === y) {
         return this.gridData[el];
