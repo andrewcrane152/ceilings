@@ -334,7 +334,7 @@ export class DesignComponent implements OnInit, OnDestroy {
     // load a dialog to edit the options
     const config = new MatDialogConfig();
     config.disableClose = true;
-    // config.height = '90%';
+    config.height = '90%';
     config.width = '80%';
     this.optionsDialogRef = this.dialog.open(OptionsComponent, config);
     this.optionsDialogRef
