@@ -217,7 +217,7 @@ export class ApiService {
       map((res: any) => {
         if (res && !!res.user_branches[0]) {
           const userBranchInfo = res.user_branches[0]
-          if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer') {
+          if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
             userInfo['showPricing'] = true;
             this.feature.showPricing = true;
             localStorage.setItem('3formUser', JSON.stringify(userInfo));
