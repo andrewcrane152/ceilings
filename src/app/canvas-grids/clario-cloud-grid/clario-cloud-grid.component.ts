@@ -8,8 +8,8 @@ import * as pip from 'robust-point-in-polygon';
   styleUrls: ['../canvas-grids.component.scss', './clario-cloud-grid.component.scss']
 })
 export class ClarioCloudGridComponent extends CanvasGridsComponent implements OnInit {
-  rows = 1;
-  columns = 1;
+  rows = 5;
+  columns = 5;
   adjustmentX = 48;
   adjustmentY = 48;
   tilesOutsideBoundary = [];
@@ -55,7 +55,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   renderClarioCloudGrid() {
     this.debug.log('clario-cloud-grid-component', 'rendering the clario-cloud grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = 96 * this.columns * this.feature.canvasGridScale;
+    canvas.width = 52 * this.columns * this.feature.canvasGridScale;
     canvas.height = 52 * this.rows * this.feature.canvasGridScale;
 
     const ctx = canvas.getContext('2d');
@@ -98,7 +98,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     let foundTile = false;
     this.debug.log('clario-cloud-grid', 'you clicked on x: ' + x + ' and y: ' + y);
     for (const el in this.feature.gridData) {
-      if (!foundTile && pip(this.feature.gridData[el].pentagon, [x, y]) === -1) {
+      if (!foundTile && pip(this.feature.gridData[el].square, [x, y]) === -1) {
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           // reset the texture for the 3D view.
@@ -156,12 +156,13 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
   private createSquareSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
     const index = (row * 9 + column) * 4;
-    const xAdjustment = 0;
+    const squareXval = 2 + adjustmentX * this.feature.canvasGridScale;
+    const squareYval = 2 + adjustmentY * this.feature.canvasGridScale;
 
     this.drawSquare(
       ctx,
-      (-30 - xAdjustment) * this.feature.canvasGridScale + adjustmentX,
-      33 * this.feature.canvasGridScale + adjustmentY,
+      squareXval,
+      squareYval,
       -Math.PI / 2,
       row,
       column,
@@ -172,19 +173,19 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   private drawSquare(ctx, x, y, rotateAngle, row, column, index) {
     console.log(`row: ${Math.floor(index / 9)}`);
     console.log(`index: ${index}, column: ${index % 10}`);
-    // pentagon points
-    let xcoords = [0, 24, 24, 0];
-    let ycoords = [0, 0, -24, -24];
+    // square points
+    let xcoords = [0, 0, 48, 48];
+    let ycoords = [0, 48, 48, 0];
 
     xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
     ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
 
     rotateAngle = 0;
     // set the grid section information
-    // add x,y to all the pentagon points
-    const pentagon = [];
+    // add x,y to all the square points
+    const square = [];
     for (let i = 0; i < xcoords.length; ++i) {
-      pentagon[i] = [xcoords[i] + x, ycoords[i] + y];
+      square[i] = [xcoords[i] + x, ycoords[i] + y];
     }
 
     if (this.newDesign || this.doingGridSizeAdjust) {
@@ -194,15 +195,15 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         column: column,
         x: x,
         y: y,
-        pentagon: pentagon,
+        square: square,
         texture: '',
         rotation: this.toDegrees(rotateAngle),
         material: '',
         tile: '',
         diffusion: '',
         neighbors: this.getNeighbors(x, y, index, this.toDegrees(rotateAngle)),
-        width: 24,
-        height: 24
+        width: 48,
+        height: 48
       });
     }
 
@@ -214,7 +215,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.translate(x, y);
     // rotate to fit in the tesselation
     ctx.rotate(rotateAngle);
-    // move to the start of the pentagon and then set the lines
+    // move to the start of the square and then set the lines
     ctx.moveTo(xcoords[0], ycoords[0]);
     ctx.lineTo(xcoords[1], ycoords[1]);
     ctx.lineTo(xcoords[2], ycoords[2]);
@@ -228,14 +229,14 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
       // set the fillstyle
       ctx.fillStyle = this.feature.gridData[index].hex;
-      // fill the pentagon
+      // fill the square
       ctx.fill();
       if (this.feature.showGuide) {
         this.labelTiles(ctx, rotateAngle, index);
       }
     } else {
       ctx.fillStyle = this.fillStyle;
-      // fill the pentagon
+      // fill the square
       ctx.fill();
     }
 
@@ -247,10 +248,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // ctx.font = '8px Arial';
     // ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
 
-    // stroke all the pentagon lines
+    // stroke all the square lines
     ctx.stroke();
 
-    // restore the context so that we can draw the next pentagon.
+    // restore the context so that we can draw the next square.
     ctx.restore();
   }
 

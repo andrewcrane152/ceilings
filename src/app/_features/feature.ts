@@ -1509,6 +1509,8 @@ export class Feature {
       case 'hushSwoon':
       case 'hush-swoon':
         return 'Hush Swoon';
+      case 'clario-cloud':
+        return 'Clario Cloud';
       default:
         return this.feature_type.charAt(0).toUpperCase() + this.feature_type.slice(1);
     }

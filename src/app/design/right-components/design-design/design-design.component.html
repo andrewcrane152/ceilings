@@ -101,7 +101,7 @@
   </ng-container>
 
   <div class="actions">
-    <button class="description-text" *ngIf="feature.feature_type!='velo' && feature.feature_type!='hushSwoon'" (click)="feature.applyAll()">Apply
+    <button class="description-text" *ngIf="showApplyAllButton" (click)="feature.applyAll()">Apply
       All</button>
     <button class="description-text" (click)="feature.clearGridData()">Clear All</button>
   </div>

@@ -309,17 +309,15 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.showCanvasGridControls = false;
         this.quantitiesString = 'Velo tiles are sold in quantities of 8.';
         break;
-      case 'velo':
-        this.showDesign = true;
-        this.showModify = true;
-        this.showCanvasGridControls = true;
-        this.quantitiesString = '';
-        break;
       case 'hush':
         this.showDimensions = true;
         this.showDesign = true;
         this.showModify = true;
-        // this.showGuidesCheckbox = false;
+        break;
+      case 'clario-cloud':
+        this.showDimensions = true;
+        this.showDesign = true;
+        this.showModify = true;
         break;
       case 'hushSwoon':
         this.showDesign = true;

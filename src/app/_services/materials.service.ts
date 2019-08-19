@@ -313,6 +313,14 @@ export class MaterialsService {
         name: '00'
       }
     },
+    'clario-cloud': {
+      0: {
+        image: '/assets/images/tiles/01.png',
+        tile: '01',
+        tile_size: '01',
+        name: '01'
+      },
+    },
     clario: {
       0: {
         image: '/assets/images/baffles/baffle_24_x_48.png',

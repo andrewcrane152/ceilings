@@ -163,6 +163,7 @@
     <!-- BEGIN RIGHT COLUMN -->
     <div class="right-column">
       <app-options-right-clario *ngIf="feature.feature_type==='clario'"></app-options-right-clario>
+      <app-options-right-clario-cloud *ngIf="feature.feature_type==='clario-cloud'"></app-options-right-clario-cloud>
       <app-options-right-profile *ngIf="feature.feature_type==='profile'"></app-options-right-profile>
       <app-options-right-seeyond *ngIf="feature.feature_type==='seeyond'"></app-options-right-seeyond>
       <app-options-right-tetria *ngIf="feature.feature_type==='tetria'"></app-options-right-tetria>
