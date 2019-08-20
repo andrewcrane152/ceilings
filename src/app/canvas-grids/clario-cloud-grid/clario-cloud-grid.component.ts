@@ -9,9 +9,9 @@ import * as pip from 'robust-point-in-polygon';
 })
 export class ClarioCloudGridComponent extends CanvasGridsComponent implements OnInit {
   rows = 5;
-  columns = 5;
-  adjustmentX = 48;
-  adjustmentY = 48;
+  columns = 8;
+  adjustmentX = 96;
+  adjustmentY = 96;
   tilesOutsideBoundary = [];
 
   @ViewChild('clarioCloudCanvas')
@@ -55,8 +55,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   renderClarioCloudGrid() {
     this.debug.log('clario-cloud-grid-component', 'rendering the clario-cloud grid');
     const canvas = this.canvas.nativeElement;
-    canvas.width = 52 * this.columns * this.feature.canvasGridScale;
-    canvas.height = 52 * this.rows * this.feature.canvasGridScale;
+    canvas.width = 96 * this.columns * this.feature.canvasGridScale + 10;
+    canvas.height = 96 * this.rows * this.feature.canvasGridScale + 10;
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
@@ -88,8 +88,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       return;
     }
     this.debug.log('clario-cloud-grid', event);
-
-    return;
 
     let x = event.offsetX;
     let y = event.offsetY;
@@ -174,8 +172,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     console.log(`row: ${Math.floor(index / 9)}`);
     console.log(`index: ${index}, column: ${index % 10}`);
     // square points
-    let xcoords = [0, 0, 48, 48];
-    let ycoords = [0, 48, 48, 0];
+    let xcoords = [0, 0, 96, 96];
+    let ycoords = [0, 96, 96, 0];
 
     xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
     ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
@@ -202,8 +200,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         tile: '',
         diffusion: '',
         neighbors: this.getNeighbors(x, y, index, this.toDegrees(rotateAngle)),
-        width: 48,
-        height: 48
+        width: 96,
+        height: 96
       });
     }
 

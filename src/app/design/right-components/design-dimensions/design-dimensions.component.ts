@@ -7,12 +7,5 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['../../design.component.scss', './design-dimensions.component.scss']
 })
 export class DesignDimensionsComponent extends DesignComponent implements OnInit {
-  showDimensionTotals = true;
-  ngOnInit() {
-    switch (this.feature.feature_type) {
-      case 'clario-cloud':
-        this.showDimensionTotals = false;
-        break;
-    }
-  }
+  ngOnInit() {}
 }

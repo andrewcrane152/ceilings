@@ -7,7 +7,7 @@
     <mat-icon *ngIf="dimensions.expanded" svgIcon="accordian_close"></mat-icon>
   </mat-expansion-panel-header>
   <div class="description" *ngIf="feature.feature_type==='tetria'">A 15/16 or 9/16 grid system is required for this product.</div>
-  <div class="inputs" *ngIf="showDimensionTotals">
+  <div class="inputs">
     <div class="input">
       <div class="sub-header">Width</div>
       <input [(ngModel)]="feature.width" class="unit-input" type="text" (blur)="updateGrid()">

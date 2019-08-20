@@ -86,6 +86,12 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.vRulerSections = 11;
         this.hRulerSections = 17;
         break;
+      case 'clario-cloud':
+        this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
+        this.rulerImgBackgroundWidth = 49;
+        this.vRulerSections = 11;
+        this.hRulerSections = 17;
+        break;
       case 'hushSwoon':
         this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
         this.vRulerSections = 8;
@@ -110,25 +116,24 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
       case 'velo':
         this.canvasWidth = 96 * this.columns;
         this.canvasHeight = 52 * this.rows;
+        this.rulerBackgroundSize = `${rulerSectionWidth}px 15px`;
+        this.rulerHeight = `${rulerSectionWidth * this.vRulerSections - (rulerSectionWidth - 5)}px`;
+        this.rulerWidth = `${rulerSectionWidth * this.hRulerSections - (rulerSectionWidth - 5)}px`;
+        this.labelWidth = `${rulerSectionWidth}px`;
+        break;
+      case 'clario-cloud':
+        this.canvasWidth = 96 * this.columns;
+        this.canvasHeight = 96 * this.rows;
+        this.rulerBackgroundSize = `48px 15px`;
+        this.rulerHeight = `${48 * this.vRulerSections - (48 - 5)}px`;
+        this.rulerWidth = `${48 * this.hRulerSections - (48 - 5)}px`;
+        this.labelWidth = `48px`;
         break;
       case 'hushSwoon':
         this.canvasWidth = 59 * this.columns + 27;
         this.canvasHeight = 50 * this.rows + 27;
         break;
     }
-
-    ////////////////////////////////////////////////////
-    // TODO: FIX THIS TO WORK FOR VELO, NOT JUST SWOON//
-    // this.hRulerSections = Math.ceil(this.canvasWidth / rulerSectionWidth);
-    // this.vRulerSections = Math.ceil(this.canvasHeight / rulerSectionWidth);
-    // console.log(`hRulerSections, ${this.hRulerSections}, vRulerSections, ${this.vRulerSections}`);
-    ////////////////////////////////////////////////////
-
-    // set ruler sizing
-    this.rulerBackgroundSize = `${rulerSectionWidth}px 15px`;
-    this.rulerHeight = `${rulerSectionWidth * this.vRulerSections - (rulerSectionWidth - 5)}px`;
-    this.rulerWidth = `${rulerSectionWidth * this.hRulerSections - (rulerSectionWidth - 5)}px`;
-    this.labelWidth = `${rulerSectionWidth}px`;
 
     // horizontal labels
     this.hRulerLabels = [];
