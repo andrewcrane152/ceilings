@@ -14,7 +14,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   adjustmentY = 96;
   tilesOutsideBoundary = [];
 
-  @ViewChild('clarioCloudCanvas')
+  @ViewChild('clarioCloudCanvas', { static: true })
   canvas;
 
   ngOnInit() {

@@ -559,7 +559,8 @@ export class DesignComponent implements OnInit, OnDestroy {
         if (!!designId) {
           // load requested id
           this.seeyondService.loadFeature(designId).subscribe(design => {
-            this.location.go(`seeyond/design/${design.name}/${design.id}`);
+            const loadedDesign = design as any;
+            this.location.go(`seeyond/design/${loadedDesign.name}/${loadedDesign.id}`);
             this.seeyond.loadSeeyondDesign(design);
           });
         } else {

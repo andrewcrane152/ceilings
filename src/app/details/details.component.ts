@@ -51,16 +51,17 @@ export class DetailsComponent implements OnInit, AfterContentInit {
           this.feature.feature_type = 'seeyond';
           this.isSeeyond = true;
           this.seeyondApi.loadFeature(designId).subscribe(design => {
-            if (!design.quoted) {
+            const loadedDesign = design as any;
+            if (!loadedDesign.quoted) {
               // not quoted
               const pathname = window.location.pathname.replace(/\/details/g, '');
               this.router.navigate([pathname]);
             } else {
               this.design = design;
-              this.tessellationStr = this.seeyond.getTessellationName(design.tessellation);
+              this.tessellationStr = this.seeyond.getTessellationName(loadedDesign.tessellation);
               this.debug.log('seeyond', design);
               // load the quoted design
-              this.api.getUserRep(design.uid).subscribe(rep => {
+              this.api.getUserRep(loadedDesign.uid).subscribe(rep => {
                 this.rep = rep;
                 this.setTemplateValues();
               });
@@ -68,17 +69,18 @@ export class DetailsComponent implements OnInit, AfterContentInit {
           });
         } else {
           this.api.loadDesign(designId).subscribe(design => {
-            if (design.is_quantity_order) {
+            const loadedDesign = design as any;
+            if (loadedDesign.is_quantity_order) {
               const newUrl = window.location.pathname.replace(/design/, 'quantity');
               this.router.navigate([newUrl]);
             }
-            if (!design.quoted) {
+            if (!loadedDesign.quoted) {
               // not quoted
               this.alert.error('Details are not available until a request for a quote is processed.');
-              this.router.navigate([design.feature_type, 'design', design.id]);
+              this.router.navigate([loadedDesign.feature_type, 'design', loadedDesign.id]);
             } else {
               // load the quoted design
-              this.api.getUserRep(design.uid).subscribe(rep => {
+              this.api.getUserRep(loadedDesign.uid).subscribe(rep => {
                 this.rep = rep;
                 this.feature.setDesign(design);
                 this.tilesArray = this.feature.getTilesPurchasedObj();

@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
 
 // material.angular.io
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -165,7 +164,6 @@ import { OptionsRightClarioCloudComponent } from './options/options-right-clario
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    HttpModule,
     Routing,
     BrowserAnimationsModule,
     MatButtonToggleModule,

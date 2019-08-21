@@ -3,7 +3,6 @@ import { DesignComponent } from './../design.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { NavigationEnd } from '@angular/router/src/events';
 
 @Component({
   selector: 'app-seeyond-design',

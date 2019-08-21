@@ -15,7 +15,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   adjustmentY = 48;
   tilesOutsideBoundary = [];
 
-  @ViewChild('veloCanvas')
+  @ViewChild('veloCanvas', { static: true })
   canvas;
 
   ngOnInit() {
