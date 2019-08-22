@@ -2,6 +2,39 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CanvasGridsComponent } from '../canvas-grids.component';
 import * as pip from 'robust-point-in-polygon';
 
+interface ClarioCloudNeighbor {
+  count: number;
+  adjacents: boolean;
+  list: {
+    0: boolean,
+    1: boolean,
+    2: boolean,
+    3: boolean
+  };
+}
+
+enum CloudDirection {
+  right = 0,
+  down,
+  left,
+  up
+}
+
+export interface ClarioCloudTile {
+  index: number;
+  row: number;
+  column: number;
+  x: number;
+  y: number;
+  square: Object;
+  cloud_direction: CloudDirection;
+  material: string;
+  texture: string;
+  neighbors: ClarioCloudNeighbor;
+  width: number;
+  height: number;
+}
+
 @Component({
   selector: 'app-clario-cloud-grid',
   templateUrl: './clario-cloud-grid.component.html',
@@ -18,15 +51,15 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   canvas;
 
   ngOnInit() {
-        // subscribe to the buildClarioCloudGrid event
-        this.debug.log('clario-cloud-grid', 'setting clarioCloudGrid Subscription');
-        this.feature.onBuildClarioCloudGrid.subscribe(result => {
-          this.debug.log('clario-cloud-grid-component', 'building the clario-cloud grid');
-          this.renderClarioCloudGrid();
-        });
-        this.feature.onAdjustClarioCloudGridSize.subscribe(result => {
-          this.adjustClarioCloudGridSize(result);
-        });
+    // subscribe to the buildClarioCloudGrid event
+    this.debug.log('clario-cloud-grid', 'setting clarioCloudGrid Subscription');
+    this.feature.onBuildClarioCloudGrid.subscribe(result => {
+      this.debug.log('clario-cloud-grid-component', 'building the clario-cloud grid');
+      this.renderClarioCloudGrid();
+    });
+    this.feature.onAdjustClarioCloudGridSize.subscribe(result => {
+      this.adjustClarioCloudGridSize(result);
+    });
   }
 
   adjustClarioCloudGridSize(adjustment) {
@@ -67,13 +100,15 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     } else {
       this.newDesign = false;
     }
+    let index = -1;
     for (let r = 0; r < this.rows; ++r) {
       for (let c = 0; c < this.columns; ++c) {
+        index++;
         this.createSquareSection(
           ctx,
           c * this.adjustmentX * this.feature.canvasGridScale,
           r * this.adjustmentY * this.feature.canvasGridScale,
-          this.isOdd(r),
+          index,
           r,
           c
         );
@@ -100,37 +135,24 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           // reset the texture for the 3D view.
-          this.feature.gridData[el].texture = '';
-          // reset the tile
-          this.feature.gridData[el].tile = '';
-          // reset material
-          this.feature.gridData[el].material = '';
-          // reset materialType
-          this.feature.gridData[el].materialType = '';
-          // reset hex color value
-          this.feature.gridData[el].hex = '';
-          // reset the diffusion
-          this.feature.gridData[el].diffusion = '';
+          this.feature.gridData[el] = <ClarioCloudTile>{};
           this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
         } else {
           // set the texture for the 3D view.
-          this.feature.gridData[el].texture = '/assets/images/tiles/00/' + this.feature.material + '.png';
-          // set the tile
-          this.feature.gridData[el].tile = this.feature.selectedTile.tile;
-          // set material
-          this.feature.gridData[el].material = this.feature.material;
-          // set materialType
-          this.feature.gridData[el].materialType = this.feature.materialType;
-          // set hex color value
-          this.feature.gridData[el].hex = this.feature.materialHex;
-          // set the diffusion if one is selected and material type is varia
-          if (this.feature.materialType === 'varia') {
-            this.feature.gridData[el].diffusion = this.feature.diffusion;
-          } else {
-            this.feature.gridData[el].diffusion = '';
-          }
+          this.feature.gridData[el].texture = `/assets/images/clario_cloud/rc_0/${this.feature.material}/.png`;
+
+
+          // material : 'color'
+          // cloud_direction : enum
+          // neighbors : []
+          // tile : "s"
+
+          this.feature.gridData[el].tile = this.getTileType();
+
+
+
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
           for (const neighbor in this.feature.gridData[el].neighbors) {
@@ -152,8 +174,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // this.changeGridDimensions();
   }
 
-  private createSquareSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
-    const index = (row * 9 + column) * 4;
+  private createSquareSection(ctx, adjustmentX, adjustmentY, index, row, column) {
     const squareXval = 2 + adjustmentX * this.feature.canvasGridScale;
     const squareYval = 2 + adjustmentY * this.feature.canvasGridScale;
 
@@ -161,14 +182,13 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       ctx,
       squareXval,
       squareYval,
-      -Math.PI / 2,
+      index,
       row,
-      column,
-      index
+      column
     );
   }
 
-  private drawSquare(ctx, x, y, rotateAngle, row, column, index) {
+  private drawSquare(ctx, x, y, index, row, column) {
     console.log(`row: ${Math.floor(index / 9)}`);
     console.log(`index: ${index}, column: ${index % 10}`);
     // square points
@@ -178,7 +198,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
     ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
 
-    rotateAngle = 0;
     // set the grid section information
     // add x,y to all the square points
     const square = [];
@@ -195,11 +214,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         y: y,
         square: square,
         texture: '',
-        rotation: this.toDegrees(rotateAngle),
         material: '',
         tile: '',
         diffusion: '',
-        neighbors: this.getNeighbors(x, y, index, this.toDegrees(rotateAngle)),
+        neighbors: this.getNeighbors(x, y),
         width: 96,
         height: 96
       });
@@ -211,8 +229,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.beginPath();
     // move to the new x,y coordinates (setting a new 0,0 at x,y)
     ctx.translate(x, y);
-    // rotate to fit in the tesselation
-    ctx.rotate(rotateAngle);
     // move to the start of the square and then set the lines
     ctx.moveTo(xcoords[0], ycoords[0]);
     ctx.lineTo(xcoords[1], ycoords[1]);
@@ -230,7 +246,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       // fill the square
       ctx.fill();
       if (this.feature.showGuide) {
-        this.labelTiles(ctx, rotateAngle, index);
+        this.labelTiles(ctx, index);
       }
     } else {
       ctx.fillStyle = this.fillStyle;
@@ -307,9 +323,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     return abbreviation;
   }
 
-  private labelTiles(ctx, rotateAngle, index) {
-    // rotate back so the text is always top down
-    ctx.rotate(-rotateAngle);
+  private labelTiles(ctx, index) {
     // change fillStyle for the font (cyan)
     ctx.fillStyle = '#00E1E1';
     ctx.font = '10px Arial';
@@ -322,63 +336,29 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     }
   }
 
-  private getNeighbors(x, y, index, rotateAngle) {
+  private getNeighbors(x, y) {
     const neighbors: any = [];
     let neighbor1: any = [];
     let neighbor2: any = [];
     let neighbor3: any = [];
     let neighbor4: any = [];
-    let neighbor5: any = [];
 
-    if (rotateAngle === -90) {
-      neighbor1 = [x + 32, y - 16];
-      neighbors.push(neighbor1);
-      neighbor2 = [x + 32, y + 16];
-      neighbors.push(neighbor2);
-      neighbor3 = [x - 16, y + 32];
-      neighbors.push(neighbor3);
-      neighbor4 = [x - 32, y];
-      neighbors.push(neighbor4);
-      neighbor5 = [x - 16, y - 32];
-      neighbors.push(neighbor5);
-    }
-    if (rotateAngle === 180) {
-      neighbor1 = [x - 16, y - 32];
-      neighbors.push(neighbor1);
-      neighbor2 = [x + 16, y - 32];
-      neighbors.push(neighbor2);
-      neighbor3 = [x + 32, y + 16];
-      neighbors.push(neighbor3);
-      neighbor4 = [x, y + 32];
-      neighbors.push(neighbor4);
-      neighbor5 = [x - 32, y + 16];
-      neighbors.push(neighbor5);
-    }
-    if (rotateAngle === 360) {
-      neighbor1 = [x + 16, y + 32];
-      neighbors.push(neighbor1);
-      neighbor2 = [x - 16, y + 32];
-      neighbors.push(neighbor2);
-      neighbor3 = [x - 32, y - 16];
-      neighbors.push(neighbor3);
-      neighbor4 = [x, y - 32];
-      neighbors.push(neighbor4);
-      neighbor5 = [x + 32, y - 16];
-      neighbors.push(neighbor5);
-    }
-    if (rotateAngle === 90) {
-      neighbor1 = [x - 32, y + 16];
-      neighbors.push(neighbor1);
-      neighbor2 = [x - 32, y - 16];
-      neighbors.push(neighbor2);
-      neighbor3 = [x + 16, y - 32];
-      neighbors.push(neighbor3);
-      neighbor4 = [x + 32, y];
-      neighbors.push(neighbor4);
-      neighbor5 = [x + 16, y + 32];
-      neighbors.push(neighbor5);
-    }
+    neighbor1 = [x + 32, y - 16];
+    neighbors.push(neighbor1);
+    neighbor2 = [x + 32, y + 16];
+    neighbors.push(neighbor2);
+    neighbor3 = [x - 16, y + 32];
+    neighbors.push(neighbor3);
+    neighbor4 = [x - 32, y];
+    neighbors.push(neighbor4);
+
     return neighbors;
+  }
+
+  getTileType() {
+    // TODO
+    const tileType = 'S'
+    return tileType;
   }
 
 }
