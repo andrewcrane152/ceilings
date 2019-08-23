@@ -28,8 +28,9 @@ export interface ClarioCloudTile {
   y: number;
   square: Object;
   cloud_direction: CloudDirection;
+  img_grid_rotation: number;
+  img: string;
   material: string;
-  texture: string;
   neighbors: ClarioCloudNeighbor;
   width: number;
   height: number;
@@ -104,10 +105,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     for (let r = 0; r < this.rows; ++r) {
       for (let c = 0; c < this.columns; ++c) {
         index++;
-        this.createSquareSection(
+        this.drawSquare(
           ctx,
-          c * this.adjustmentX * this.feature.canvasGridScale,
-          r * this.adjustmentY * this.feature.canvasGridScale,
+          c * this.adjustmentX * this.feature.canvasGridScale + 2,
+          r * this.adjustmentY * this.feature.canvasGridScale + 2,
           index,
           r,
           c
@@ -135,7 +136,11 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         // removing a tile
         if (this.feature.selectedTool === 'remove') {
           // reset the texture for the 3D view.
-          this.feature.gridData[el] = <ClarioCloudTile>{};
+          this.feature.gridData[el].cloud_direction = '';
+          this.feature.gridData[el].image_grid_rotation = '';
+          this.feature.gridData[el].texture = '';
+          this.feature.gridData[el].material = '';
+
           this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
@@ -174,23 +179,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // this.changeGridDimensions();
   }
 
-  private createSquareSection(ctx, adjustmentX, adjustmentY, index, row, column) {
-    const squareXval = 2 + adjustmentX * this.feature.canvasGridScale;
-    const squareYval = 2 + adjustmentY * this.feature.canvasGridScale;
-
-    this.drawSquare(
-      ctx,
-      squareXval,
-      squareYval,
-      index,
-      row,
-      column
-    );
-  }
-
   private drawSquare(ctx, x, y, index, row, column) {
-    console.log(`row: ${Math.floor(index / 9)}`);
-    console.log(`index: ${index}, column: ${index % 10}`);
+    console.log('x', x, 'y', y, 'index', index, 'row', row, 'column', column);
     // square points
     let xcoords = [0, 0, 96, 96];
     let ycoords = [0, 96, 96, 0];
@@ -213,10 +203,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         x: x,
         y: y,
         square: square,
+        cloud_direction: '',
+        image_grid_rotation: '',
         texture: '',
         material: '',
-        tile: '',
-        diffusion: '',
         neighbors: this.getNeighbors(x, y),
         width: 96,
         height: 96
@@ -269,71 +259,12 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.restore();
   }
 
-  private tileAbbreviation(tile) {
-    let abbreviation: string;
-    switch (tile) {
-      case 'concave':
-        abbreviation = 'CC';
-        break;
-
-      case 'convex':
-        abbreviation = 'CV';
-        break;
-
-      default:
-        this.alert.error('Unknown tile: ' + tile);
-        break;
-    }
-    return abbreviation;
-  }
-
-  private materialTypeAbbreviation(materialType) {
-    let abbreviation: string;
-    switch (materialType) {
-      case 'felt':
-        abbreviation = 'F';
-        break;
-
-      case 'varia':
-        abbreviation = 'V';
-        break;
-
-      default:
-        this.alert.error('Unknown material type: ' + materialType);
-        break;
-    }
-    return abbreviation;
-  }
-
-  private diffusionAbbreviation(diffusion) {
-    let abbreviation: string;
-    switch (diffusion) {
-      case 'avalanche_d01':
-        abbreviation = 'D01';
-        break;
-
-      case 'vapor_w05':
-        abbreviation = 'W05';
-        break;
-
-      default:
-        this.alert.error('Unknown diffusion type: ' + diffusion);
-        break;
-    }
-    return abbreviation;
-  }
-
   private labelTiles(ctx, index) {
     // change fillStyle for the font (cyan)
     ctx.fillStyle = '#00E1E1';
-    ctx.font = '10px Arial';
-    ctx.fillText(this.materialTypeAbbreviation(this.feature.gridData[index].materialType), -4, -5);
-    ctx.font = '10px Arial';
-    ctx.fillText(this.tileAbbreviation(this.feature.gridData[index].tile), -8, 4);
-    if (this.feature.gridData[index].diffusion) {
-      ctx.font = '10px Arial';
-      ctx.fillText(this.diffusionAbbreviation(this.feature.gridData[index].diffusion), -10, 12);
-    }
+    ctx.font = '16px Arial';
+    ctx.fillText(this.feature.gridData[index].tile, 44, 40);
+    this.drawArrow(ctx, 30, 60, 60, 60);
   }
 
   private getNeighbors(x, y) {
@@ -359,6 +290,59 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // TODO
     const tileType = 'S'
     return tileType;
+  }
+
+  // From: http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+
+
+  // draw arrow
+  drawArrow(ctx, x1, y1, x2, y2, angle?, d?, color?, width?) {
+    angle = typeof(angle) != 'undefined' ? angle : Math.PI / 9;
+    d = typeof(d) != 'undefined' ? d : 10;
+    color = typeof(color) != 'undefined' ? color : 'cyan';
+    width = typeof(width) != 'undefined' ? width : 1;
+    const dist = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    const ratio = (dist - d / 3) / dist;
+    let tox, toy, fromx, fromy;
+
+    tox = Math.round(x1 + (x2 - x1) * ratio);
+    toy = Math.round(y1 + (y2 - y1) * ratio);
+    fromx = x1;
+    fromy = y1;
+
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.moveTo(fromx, fromy);
+    ctx.lineTo(tox, toy);
+    ctx.stroke();
+
+    const lineangle = Math.atan2(y2 - y1, x2 - x1);
+    const h = Math.abs(d / Math.cos(angle));
+
+    const angle1 = lineangle + Math.PI + angle;
+    const topx = x2 + Math.cos(angle1) * h;
+    const topy = y2 + Math.sin(angle1) * h;
+    const angle2 = lineangle + Math.PI - angle;
+    const botx = x2 + Math.cos(angle2) * h;
+    const boty = y2 + Math.sin(angle2) * h;
+    this.drawHead(ctx, topx, topy, x2, y2, botx, boty, color, width);
+
+  }
+
+  // Draw arrow head
+  drawHead (ctx, x0, y0, x1, y1, x2, y2, color, width) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = width;
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x0, y0);
+    ctx.fill();
+    ctx.restore();
   }
 
 }
