@@ -232,7 +232,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // if the design is not new, then we can set fill style from gridData
     if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
       // set the fillstyle
-      ctx.fillStyle = this.feature.gridData[index].hex;
+      // ctx.fillStyle = this.feature.gridData[index].hex;
+      ctx.fillStyle = '#fbfbfb';
       // fill the square
       ctx.fill();
       if (this.feature.showGuide) {
@@ -264,7 +265,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.fillStyle = '#00E1E1';
     ctx.font = '16px Arial';
     ctx.fillText(this.feature.gridData[index].tile, 44, 40);
-    this.drawArrow(ctx, 30, 60, 60, 60);
+    const arrowCoords = this.getArrowDirectionCoords('down');
+    this.drawLineArrow(ctx, arrowCoords);
   }
 
   private getNeighbors(x, y) {
@@ -292,57 +294,84 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     return tileType;
   }
 
-  // From: http://www.dbp-consulting.com/tutorials/canvas/CanvasArrow.html
+  drawFilledPolygon(ctx, shape) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'cyan';
+    ctx.fillStyle = 'cyan';
+    ctx.moveTo(shape[0][0], shape[0][1]);
 
+    shape.forEach(p => {
+      ctx.lineTo(p[0], p[1]);
+    });
 
-  // draw arrow
-  drawArrow(ctx, x1, y1, x2, y2, angle?, d?, color?, width?) {
-    angle = typeof(angle) != 'undefined' ? angle : Math.PI / 9;
-    d = typeof(d) != 'undefined' ? d : 10;
-    color = typeof(color) != 'undefined' ? color : 'cyan';
-    width = typeof(width) != 'undefined' ? width : 1;
-    const dist = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-    const ratio = (dist - d / 3) / dist;
-    let tox, toy, fromx, fromy;
+    ctx.lineTo(shape[0][0], shape[0][1]);
+    ctx.fill();
+  }
 
-    tox = Math.round(x1 + (x2 - x1) * ratio);
-    toy = Math.round(y1 + (y2 - y1) * ratio);
-    fromx = x1;
-    fromy = y1;
+  translateShape(shape, x, y) {
+    const rv = [];
+    // tslint:disable-next-line: forin
+    shape.forEach(p => {
+      rv.push([ p[0] + x, p[1] + y ]);
+    });
+    return rv;
+  };
+
+  rotateShape(shape, ang) {
+    const rv = [];
+    // tslint:disable-next-line: forin
+    shape.forEach(p => {
+      rv.push(this.rotatePoint(ang, p[0], p[1]));
+    });
+    return rv;
+  };
+
+  rotatePoint(ang, x, y) {
+      return [
+          (x * Math.cos(ang)) - (y * Math.sin(ang)),
+          (x * Math.sin(ang)) + (y * Math.cos(ang))
+      ];
+  };
+
+  drawLineArrow(ctx, arrowCoords) {
+    const x1 = arrowCoords[0];
+    const y1 = arrowCoords[1];
+    const x2 = arrowCoords[2];
+    const y2 = arrowCoords[3];
+    const arrow = [
+      [ 2, 0 ],
+      [ -10, -4 ],
+      [ -10, 4]
+    ];
 
     ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.moveTo(fromx, fromy);
-    ctx.lineTo(tox, toy);
+    ctx.strokeStyle = 'cyan';
+    ctx.fillStyle = 'cyan';
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
     ctx.stroke();
 
-    const lineangle = Math.atan2(y2 - y1, x2 - x1);
-    const h = Math.abs(d / Math.cos(angle));
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const rotatedShape = this.rotateShape(arrow, ang);
+    const translatedShape = this.translateShape(rotatedShape, x2, y2);
+    this.drawFilledPolygon(ctx, translatedShape);
+  };
 
-    const angle1 = lineangle + Math.PI + angle;
-    const topx = x2 + Math.cos(angle1) * h;
-    const topy = y2 + Math.sin(angle1) * h;
-    const angle2 = lineangle + Math.PI - angle;
-    const botx = x2 + Math.cos(angle2) * h;
-    const boty = y2 + Math.sin(angle2) * h;
-    this.drawHead(ctx, topx, topy, x2, y2, botx, boty, color, width);
-
+  getArrowDirectionCoords(direction) {
+    switch (direction) {
+      case 'right':
+        return [30, 60, 60, 60];
+      case 'down':
+        return [50, 50, 50, 80];
+      case 'left':
+        return [60, 60, 60, 30];
+      case 'up':
+        return [50, 80, 50, 50];
+    }
   }
 
-  // Draw arrow head
-  drawHead (ctx, x0, y0, x1, y1, x2, y2, color, width) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width;
-    ctx.moveTo(x0, y0);
-    ctx.lineTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.lineTo(x0, y0);
-    ctx.fill();
-    ctx.restore();
-  }
+
+
+
 
 }
