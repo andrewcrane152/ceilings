@@ -55,7 +55,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // subscribe to the buildClarioCloudGrid event
     this.debug.log('clario-cloud-grid', 'setting clarioCloudGrid Subscription');
     this.feature.onBuildClarioCloudGrid.subscribe(result => {
-      this.debug.log('clario-cloud-grid-component', 'building the clario-cloud grid');
+      this.debug.log('clario-cloud-grid', 'building the clario-cloud grid');
       this.renderClarioCloudGrid();
     });
     this.feature.onAdjustClarioCloudGridSize.subscribe(result => {
@@ -87,7 +87,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   }
 
   renderClarioCloudGrid() {
-    this.debug.log('clario-cloud-grid-component', 'rendering the clario-cloud grid');
     const canvas = this.canvas.nativeElement;
     canvas.width = 96 * this.columns * this.feature.canvasGridScale + 10;
     canvas.height = 96 * this.rows * this.feature.canvasGridScale + 10;
@@ -147,8 +146,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         } else {
           // set the texture for the 3D view.
           this.feature.gridData[el].texture = `/assets/images/clario_cloud/rc_0/${this.feature.material}/.png`;
-
-
+          this.feature.gridData[el].neighbors = this.getNeighborsData(this.feature.gridData[el].column, this.feature.gridData[el].row);
+          console.log(this.feature.gridData[el].neighbors);
           // material : 'color'
           // cloud_direction : enum
           // neighbors : []
@@ -160,15 +159,16 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
-          for (const neighbor in this.feature.gridData[el].neighbors) {
-            if (this.feature.gridData[el].neighbors.hasOwnProperty(neighbor)) {
-              const index = this.feature.findClarioCloudTileAt(
-                this.feature.gridData[el].neighbors[neighbor][0],
-                this.feature.gridData[el].neighbors[neighbor][1]
-              );
-            }
-          }
+          // for (const neighbor in this.feature.gridData[el].neighbors) {
+          //   if (this.feature.gridData[el].neighbors.hasOwnProperty(neighbor)) {
+          //     const index = this.feature.findClarioCloudTileAt(
+          //       this.feature.gridData[el].neighbors[neighbor][0],
+          //       this.feature.gridData[el].neighbors[neighbor][1]
+          //     );
+          //   }
+          // }
         }
+        this.debug.log('clario-cloud-grid', 'clicked tile');
         this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
         // render the canvas again
         this.renderClarioCloudGrid();
@@ -176,11 +176,11 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         this.feature.updateEstimatedAmount();
       }
     }
+    this.setGridNeighborData();
     // this.changeGridDimensions();
   }
 
   private drawSquare(ctx, x, y, index, row, column) {
-    console.log('x', x, 'y', y, 'index', index, 'row', row, 'column', column);
     // square points
     let xcoords = [0, 0, 96, 96];
     let ycoords = [0, 96, 96, 0];
@@ -207,9 +207,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         image_grid_rotation: '',
         texture: '',
         material: '',
-        neighbors: this.getNeighbors(x, y),
         width: 96,
-        height: 96
+        height: 96,
+        neighbors: this.getNeighborsData(column, row)
       });
     }
 
@@ -231,14 +231,25 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
     // if the design is not new, then we can set fill style from gridData
     if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
-      // set the fillstyle
-      // ctx.fillStyle = this.feature.gridData[index].hex;
-      ctx.fillStyle = '#fbfbfb';
-      // fill the square
-      ctx.fill();
-      if (this.feature.showGuide) {
-        this.labelTiles(ctx, index);
-      }
+
+      const bgImg = new Image();
+      // TODO
+      // // bgImg.src = this.feature.gridData[index].texture;
+      bgImg.src = `/assets/images/clario_cloud/rc_0/ruby.png`;
+
+
+      // async function drawBgImg() {
+        bgImg.onload = function() {
+          console.log('drawBgImg');
+          // ctx.drawImage(bgImg, 1, 1, 96, 96);
+        }
+      // }
+
+      // drawBgImg().then(res => {
+        if (this.feature.showGuide) {
+          this.labelTiles(ctx, index);
+        }
+      // })
     } else {
       ctx.fillStyle = this.fillStyle;
       // fill the square
@@ -261,6 +272,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   }
 
   private labelTiles(ctx, index) {
+    console.log('labelTiles');
     // change fillStyle for the font (cyan)
     ctx.fillStyle = '#00E1E1';
     ctx.font = '16px Arial';
@@ -269,23 +281,36 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.drawLineArrow(ctx, arrowCoords);
   }
 
-  private getNeighbors(x, y) {
-    const neighbors: any = [];
-    let neighbor1: any = [];
-    let neighbor2: any = [];
-    let neighbor3: any = [];
-    let neighbor4: any = [];
+  setGridNeighborData() {
+    this.feature.gridData.map(tile => {
+      tile.neighbors = this.getNeighborsData(tile.column, tile.row);
+    })
+  }
 
-    neighbor1 = [x + 32, y - 16];
-    neighbors.push(neighbor1);
-    neighbor2 = [x + 32, y + 16];
-    neighbors.push(neighbor2);
-    neighbor3 = [x - 16, y + 32];
-    neighbors.push(neighbor3);
-    neighbor4 = [x - 32, y];
-    neighbors.push(neighbor4);
+  private getNeighborsData(column, row) {
+    let count = 0;
+    let adjacents = false;
 
-    return neighbors;
+    const neighbors = [];
+    neighbors.push(this.findTileByColumnAndRow(column, row - 1)); // TOP neighbor
+    neighbors.push(this.findTileByColumnAndRow(column + 1, row)); // RIGHT neighbor
+    neighbors.push(this.findTileByColumnAndRow(column, row + 1)); // BOTTOM neighbor
+    neighbors.push(this.findTileByColumnAndRow(column - 1, row)); // LEFT neighbor
+
+    for (let i = 0; i < neighbors.length; i++) {
+      if (!!neighbors[i]) { count++; }
+      if (!!neighbors[i] && !!neighbors[i + 1]) {
+        adjacents = true;
+      } else if (!!neighbors[0] && !!neighbors[neighbors.length - 1]) {
+        adjacents = true;
+      }
+    }
+
+    return {
+      count: count,
+      adjacents: adjacents,
+      neighbors: neighbors
+    }
   }
 
   getTileType() {
@@ -293,6 +318,28 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     const tileType = 'S'
     return tileType;
   }
+
+  findTileByColumnAndRow(column, row) {
+    if (column < 0 || row < 0) {
+      return false;
+    }
+    let res = false;
+    this.feature.gridData.map(tile => {
+      if (tile.column === column) {
+        if (tile.row === row) {
+          if (tile.texture !== '') {
+            res = tile;
+          }
+        }
+      }
+    });
+    return res;
+  }
+
+
+  ///////////////////////////////
+  ////// BEGIN DRAW ARROWS //////
+  ///////////////////////////////
 
   drawFilledPolygon(ctx, shape) {
     ctx.beginPath();
@@ -370,7 +417,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     }
   }
 
-
+  /////////////////////////////
+  ////// END DRAW ARROWS //////
+  /////////////////////////////
 
 
 
