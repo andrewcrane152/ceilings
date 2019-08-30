@@ -13,13 +13,6 @@ interface ClarioCloudNeighbor {
   };
 }
 
-enum CloudDirection {
-  right = 0,
-  down,
-  left,
-  up
-}
-
 export interface ClarioCloudTile {
   index: number;
   row: number;
@@ -27,7 +20,7 @@ export interface ClarioCloudTile {
   x: number;
   y: number;
   square: Object;
-  cloud_direction: CloudDirection;
+  cloud_direction: string;
   img_grid_rotation: number;
   img: string;
   material: string;
@@ -47,6 +40,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   adjustmentX = 96;
   adjustmentY = 96;
   tilesOutsideBoundary = [];
+  cloudDirection = 'right';
 
   @ViewChild('clarioCloudCanvas', { static: true })
   canvas;
@@ -146,27 +140,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         } else {
           // set the texture for the 3D view.
           this.feature.gridData[el].texture = `/assets/images/clario_cloud/rc_0/${this.feature.material}/.png`;
-          this.feature.gridData[el].neighbors = this.getNeighborsData(this.feature.gridData[el].column, this.feature.gridData[el].row);
-          console.log(this.feature.gridData[el].neighbors);
-          // material : 'color'
-          // cloud_direction : enum
-          // neighbors : []
-          // tile : "s"
-
-          this.feature.gridData[el].tile = this.getTileType();
-
-
-
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
-          // for (const neighbor in this.feature.gridData[el].neighbors) {
-          //   if (this.feature.gridData[el].neighbors.hasOwnProperty(neighbor)) {
-          //     const index = this.feature.findClarioCloudTileAt(
-          //       this.feature.gridData[el].neighbors[neighbor][0],
-          //       this.feature.gridData[el].neighbors[neighbor][1]
-          //     );
-          //   }
-          // }
         }
         this.debug.log('clario-cloud-grid', 'clicked tile');
         this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
@@ -177,6 +152,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       }
     }
     this.setGridNeighborData();
+    this.setGridTileValues();
     // this.changeGridDimensions();
   }
 
@@ -277,13 +253,65 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.fillStyle = '#00E1E1';
     ctx.font = '16px Arial';
     ctx.fillText(this.feature.gridData[index].tile, 44, 40);
-    const arrowCoords = this.getArrowDirectionCoords('down');
+    const arrowCoords = this.getArrowDirectionCoords();
     this.drawLineArrow(ctx, arrowCoords);
   }
 
-  setGridNeighborData() {
+  private setGridNeighborData() {
     this.feature.gridData.map(tile => {
       tile.neighbors = this.getNeighborsData(tile.column, tile.row);
+    })
+  }
+
+  private setGridTileValues() {
+    this.feature.gridData.map(tile => {
+      if (!!tile.texture) {
+        switch (tile.neighbors.count) {
+          case 0:
+            console.log('0 neighbors');
+            tile.tile = 'S';
+            break;
+          case 1:
+            console.log('1 neighbor');
+            switch (tile.cloud_direction) {
+              case 'right':
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'B'}
+                if (!!tile.neighbors.neighbors[1]) {tile.tile = 'F'}
+                if (!!tile.neighbors.neighbors[2]) {tile.tile = 'H'}
+                if (!!tile.neighbors.neighbors[3]) {tile.tile = 'D'}
+                break;
+              case 'down':
+                // TODO
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'D'}
+                if (!!tile.neighbors.neighbors[1]) {tile.tile = 'F'}
+                if (!!tile.neighbors.neighbors[2]) {tile.tile = 'H'}
+                if (!!tile.neighbors.neighbors[3]) {tile.tile = 'D'}
+                break;
+              case 'left':
+                // TODO
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'B'}
+                if (!!tile.neighbors.neighbors[1]) {tile.tile = 'F'}
+                if (!!tile.neighbors.neighbors[2]) {tile.tile = 'H'}
+                if (!!tile.neighbors.neighbors[3]) {tile.tile = 'D'}
+                break;
+              case 'up':
+                // TODO
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'B'}
+                if (!!tile.neighbors.neighbors[1]) {tile.tile = 'F'}
+                if (!!tile.neighbors.neighbors[2]) {tile.tile = 'H'}
+                if (!!tile.neighbors.neighbors[3]) {tile.tile = 'D'}
+                break;
+            }
+            break;
+          case 2:
+            console.log('2 neighbors');
+            break;
+          case 3: break;
+          case 4:
+              console.log('4 neighbors');
+          break;
+        }
+      }
     })
   }
 
@@ -404,8 +432,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.drawFilledPolygon(ctx, translatedShape);
   };
 
-  getArrowDirectionCoords(direction) {
-    switch (direction) {
+  getArrowDirectionCoords() {
+    switch (this.cloudDirection) {
       case 'right':
         return [30, 60, 60, 60];
       case 'down':
