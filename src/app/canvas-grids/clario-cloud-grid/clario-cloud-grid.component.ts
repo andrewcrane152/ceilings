@@ -54,6 +54,18 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.feature.onAdjustClarioCloudGridSize.subscribe(result => {
       this.adjustClarioCloudGridSize(result);
     });
+    this.feature.onRotateClarioCloudGrid.subscribe(result => {
+      this.rotateClarioGrid();
+    });
+  }
+
+  rotateClarioGrid() {
+    const directionArr = ['right', 'down', 'left', 'up'];
+    const currentDirection = directionArr.findIndex(dir => dir === this.cloudDirection);
+    const nextDirection = currentDirection === 3 ? 0 : currentDirection + 1;
+    this.cloudDirection = directionArr[nextDirection];
+    console.log('cloud-direction', this.cloudDirection);
+    this.updateGridValues();
   }
 
   adjustClarioCloudGridSize(adjustment) {
@@ -146,6 +158,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
       }
     }
+    this.updateGridValues();
+  }
+
+  private updateGridValues() {
     this.setGridNeighborData();
     this.setGridTileValues();
     // render the canvas again
@@ -264,6 +280,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
   private setGridTileValues() {
     this.feature.gridData.map(tile => {
+      tile.cloud_direction = this.cloudDirection;
       if (!!tile.texture) {
         switch (tile.neighbors.count) {
           case 0:
@@ -480,7 +497,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       case 'down':
         return [50, 50, 50, 80];
       case 'left':
-        return [60, 60, 60, 30];
+        return [60, 60, 30, 60];
       case 'up':
         return [50, 80, 50, 50];
     }

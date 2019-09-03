@@ -26,6 +26,7 @@ export class Feature {
   onAdjustSwoonGridSize = new EventEmitter();
   onAdjustVeloGridSize = new EventEmitter();
   onAdjustClarioCloudGridSize = new EventEmitter();
+  onRotateClarioCloudGrid = new EventEmitter();
 
   // attributes saved in DB
   public id: number;
@@ -657,6 +658,10 @@ export class Feature {
   }
 
   updateSelectedTool(tool: string) {
+    if (tool === 'rotate-clario-cloud') {
+      this.onRotateClarioCloudGrid.emit();
+      return;
+    }
     const oldTool = this.selectedTool;
     const newTool = tool;
     // if the tool they clicked on is already selected,
