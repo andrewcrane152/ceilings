@@ -122,12 +122,14 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.labelWidth = `${rulerSectionWidth}px`;
         break;
       case 'clario-cloud':
-        this.canvasWidth = 96 * this.columns;
-        this.canvasHeight = 96 * this.rows;
-        this.rulerBackgroundSize = `48px 15px`;
-        this.rulerHeight = `${48 * this.vRulerSections - (48 - 5)}px`;
-        this.rulerWidth = `${48 * this.hRulerSections - (48 - 5)}px`;
-        this.labelWidth = `48px`;
+        const ninetySix = Math.round(96 * this.feature.canvasGridScale);
+        const fourtyEight = Math.round(48 * this.feature.canvasGridScale);
+        this.canvasWidth = ninetySix * this.columns;
+        this.canvasHeight = ninetySix * this.rows;
+        this.rulerBackgroundSize = `${fourtyEight}px 15px`;
+        this.rulerHeight = `${fourtyEight * this.vRulerSections - (fourtyEight - 5)}px`;
+        this.rulerWidth = `${fourtyEight * this.hRulerSections - (fourtyEight - 5)}px`;
+        this.labelWidth = `${fourtyEight}px`;
         break;
       case 'hushSwoon':
         this.canvasWidth = 59 * this.columns + 27;
