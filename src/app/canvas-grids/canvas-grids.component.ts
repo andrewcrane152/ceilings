@@ -162,12 +162,13 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
 
   applySelectionsToNewGrid(selections) {
     this.debug.log('canvas-grids-selections', selections);
-  }
-
-  changeGridDimensions() {
-    // Loop through current grid data getting r&c coordinates with data
-    // create new array with r&c as id
-    // Create new grid data populating data r&c array
+    selections.map(selection => {
+      for (let i = 0; i < this.feature.gridData.length; i++) {
+        if (this.feature.gridData[i].column === selection.column && this.feature.gridData[i].row === selection.row) {
+          this.feature.gridData[i] = selection;
+        }
+      }
+    })
   }
 
   public moveGuide(event: any) {

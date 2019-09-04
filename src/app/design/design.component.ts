@@ -519,8 +519,8 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   adjustCanvasGridSize(selection) {
     switch (this.feature.feature_type) {
-      case 'hushSwoon':
-        this.feature.onAdjustSwoonGridSize.emit(selection);
+      case 'clario-cloud':
+        this.feature.onAdjustClarioCloudGridSize.emit(selection);
         break;
       case 'velo':
         this.feature.onAdjustVeloGridSize.emit(selection);
@@ -530,8 +530,14 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   zoomCanvasGrid(direction) {
     if (direction === 'in') {
+      if (this.feature.canvasGridScale >= 2.0) {
+        return;
+      }
       this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 2);
     } else if (direction === 'out') {
+      if (this.feature.canvasGridScale <= 0.5) {
+        return;
+      }
       this.feature.canvasGridScale = Math.max(Number((this.feature.canvasGridScale - 0.1).toFixed(1)), 0.4);
     }
     this.feature.onZoomGrid.emit();

@@ -85,9 +85,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         break;
     }
     const currentSelections = this.getDesignDecisions();
-    this.updateGridDisplayValues();
-    this.renderClarioCloudGrid();
+    // this.updateGridDisplayValues();
     this.applySelectionsToNewGrid(currentSelections);
+    this.updateGridValues();
     this.doingGridSizeAdjust = false;
   }
 
@@ -169,6 +169,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // update the estimated amount
     this.feature.updateEstimatedAmount();
     // this.changeGridDimensions();
+    this.debug.log('clario-cloud-grid', 'final grid data:');
+    this.debug.log('clario-cloud-grid', this.feature.gridData);
   }
 
   private drawSquare(ctx, x, y, index, row, column) {
@@ -222,17 +224,13 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
     // if the design is not new, then we can set fill style from gridData
     if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
-
       const bgImg = new Image();
-      // TODO
-      // // bgImg.src = this.feature.gridData[index].texture;
       bgImg.src = `/assets/images/clario_cloud/rc_0/ruby.png`;
-
 
       // async function drawBgImg() {
         bgImg.onload = function() {
           console.log('drawBgImg');
-          // ctx.drawImage(bgImg, 1, 1, 96, 96);
+          ctx.drawImage(bgImg, 1, 1, 96, 96);
         }
       // }
 
@@ -243,7 +241,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       // })
     } else {
       ctx.fillStyle = this.fillStyle;
-      // fill the square
       ctx.fill();
     }
 
@@ -263,11 +260,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   }
 
   private labelTiles(ctx, index) {
-    console.log('labelTiles');
-    // change fillStyle for the font (cyan)
-    ctx.fillStyle = '#00E1E1';
-    ctx.font = '16px Arial';
-    ctx.fillText(this.feature.gridData[index].tile, 44, 40);
+    ctx.fillStyle = 'cyan';
+    ctx.font = '18px Arial';
+    ctx.fillText(this.feature.gridData[index].tile, 44 * this.feature.canvasGridScale, 40 * this.feature.canvasGridScale);
     const arrowCoords = this.getArrowDirectionCoords();
     this.drawLineArrow(ctx, arrowCoords);
   }
@@ -472,9 +467,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     const x2 = arrowCoords[2];
     const y2 = arrowCoords[3];
     const arrow = [
-      [ 2, 0 ],
-      [ -10, -4 ],
-      [ -10, 4]
+      [ 2 * this.feature.canvasGridScale, 0 * this.feature.canvasGridScale ],
+      [ -10 * this.feature.canvasGridScale, -4 * this.feature.canvasGridScale ],
+      [ -10 * this.feature.canvasGridScale, 4 * this.feature.canvasGridScale]
     ];
 
     ctx.beginPath();
@@ -491,16 +486,25 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   };
 
   getArrowDirectionCoords() {
+    let coords;
     switch (this.cloudDirection) {
       case 'right':
-        return [30, 60, 60, 60];
+        coords = [30, 60, 60, 60];
+        break;
       case 'down':
-        return [50, 50, 50, 80];
+        coords = [50, 50, 50, 80];
+        break;
       case 'left':
-        return [60, 60, 30, 60];
+        coords = [60, 60, 30, 60];
+        break;
       case 'up':
-        return [50, 80, 50, 50];
+        coords = [50, 80, 50, 50];
+        break;
     }
+    for (let i = 0; i < coords.length; i++) {
+      coords[i] = coords[i] * this.feature.canvasGridScale;
+    }
+    return coords;
   }
 
   /////////////////////////////

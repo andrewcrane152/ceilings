@@ -726,8 +726,8 @@ export class Feature {
       this.onBuildVeloGrid.emit();
     }
 
-    if (this.feature_type === 'hushSwoon') {
-      this.onBuildSwoonGrid.emit();
+    if (this.feature_type === 'clario-cloud') {
+      this.onBuildClarioCloudGrid.emit();
     }
   }
 
