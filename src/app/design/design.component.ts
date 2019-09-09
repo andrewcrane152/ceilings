@@ -66,6 +66,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   quantitiesString = '';
   gridRequirementsString = '';
   showGuidesCheckbox = true;
+  show3DViewButton = true;
 
   constructor(
     public route: ActivatedRoute,
@@ -283,6 +284,7 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'seeyond':
         this.showSeeyondOptions = true;
         this.showGuidesCheckbox = false;
+        this.show3DViewButton = false;
         break;
       case 'profile':
         this.showProfileFeatureSelection = true;
@@ -320,6 +322,7 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.showDesign = true;
         this.showModify = true;
         this.showCanvasGridControls = true;
+        this.show3DViewButton = false;
         break;
       case 'hushSwoon':
         this.showDesign = true;
