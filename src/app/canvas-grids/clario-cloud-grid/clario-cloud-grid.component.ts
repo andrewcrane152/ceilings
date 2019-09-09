@@ -63,7 +63,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     const currentDirection = directionArr.findIndex(dir => dir === this.cloudDirection);
     const nextDirection = currentDirection === 3 ? 0 : currentDirection + 1;
     this.cloudDirection = directionArr[nextDirection];
-    console.log('cloud-direction', this.cloudDirection);
     this.updateGridValues();
   }
 
@@ -133,25 +132,15 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     x = Math.round(x / this.feature.canvasGridScale);
     y = Math.round(y / this.feature.canvasGridScale);
     let foundTile = false;
-    this.debug.log('clario-cloud-grid', 'you clicked on x: ' + x + ' and y: ' + y);
     for (const el in this.feature.gridData) {
       if (!foundTile && pip(this.feature.gridData[el].square, [x, y]) === -1) {
-        // removing a tile
         if (this.feature.selectedTool === 'remove') {
-          // reset the texture for the 3D view.
-          this.feature.gridData[el].cloud_direction = '';
           this.feature.gridData[el].material = '';
-
-          this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
-          // set the tile found true so we don't "find" another one that's close
           foundTile = true;
         } else {
           this.feature.gridData[el].material = this.feature.material;
-          // set the tile found true so we don't "find" another one that's close
           foundTile = true;
         }
-        this.debug.log('clario-cloud-grid', 'clicked tile');
-        this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
       }
     }
     this.updateGridValues();
@@ -162,9 +151,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.setGridTileValues();
     this.renderClarioCloudGrid();
     this.feature.updateEstimatedAmount();
-    // this.changeGridDimensions();
-    this.debug.log('clario-cloud-grid', 'final grid data:');
-    this.debug.log('clario-cloud-grid', this.feature.gridData);
   }
 
   private drawSquare(ctx, x, y, index, row, column) {
@@ -210,12 +196,12 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     // if the design is not new, then we can set fill style from gridData
     if (!this.newDesign && !!tile && tile.material !== '') {
       const bgImg = new Image();
-      bgImg.src = `/assets/images/clario_cloud/${this.feature.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${this.feature.material}.png`;
+      bgImg.src = `/assets/images/clario_cloud/${tile.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${tile.material}.png`;
 
       bgImg.onload = function() {
         const xStart = Math.round((tile.square[0][0]) * canvasScale);
         const yStart = Math.round((tile.square[0][1]) * canvasScale);
-        ctx.drawImage(bgImg, xStart, yStart, 96 * 1, 96 * 1);
+        ctx.drawImage(bgImg, xStart, yStart, 96 * canvasScale, 96 * canvasScale);
         if (showGuide) {
           labelTiles(ctx, xStart, yStart);
         }
