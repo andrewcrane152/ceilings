@@ -197,7 +197,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     if (!this.newDesign && !!tile && tile.material !== '') {
       const bgImg = new Image();
       bgImg.src = `/assets/images/clario_cloud/${tile.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${tile.material}.png`;
-
       bgImg.onload = function() {
         const xStart = Math.round((tile.square[0][0]) * canvasScale);
         const yStart = Math.round((tile.square[0][1]) * canvasScale);
@@ -208,10 +207,12 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       }
 
       function labelTiles(ctx, xStart, yStart) {
-        ctx.fillStyle = 'cyan';
-        ctx.font = '18px Arial';
+        ctx.font = '20px Arial';
         const textXStart = (xStart + 44 * canvasScale);
         const textYStart = (yStart + 40 * canvasScale);
+        ctx.fillStyle = 'white';
+        ctx.fillRect(textXStart - 4, textYStart - 18, 24, 24);
+        ctx.fillStyle = 'black';
         ctx.fillText(tile.tile, textXStart, textYStart);
         const arrowCoords = getArrowDirectionCoords(xStart, yStart);
         drawLineArrow(ctx, arrowCoords);
@@ -227,10 +228,11 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
           [ -10 * canvasScale, -4 * canvasScale ],
           [ -10 * canvasScale, 4 * canvasScale]
         ];
-
+        const backgroundCoords = getArrowBackgroundCoords(x1, y1, x2, y2)
+        ctx.fillStyle = 'white';
+        ctx.fillRect(backgroundCoords.xStart, backgroundCoords.yStart, backgroundCoords.xLength, backgroundCoords.yLength);
         ctx.beginPath();
-        ctx.strokeStyle = 'cyan';
-        ctx.fillStyle = 'cyan';
+        ctx.strokeStyle = 'black';
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
@@ -241,10 +243,37 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         drawFilledPolygon(ctx, translatedArrow);
       };
 
+      function getArrowBackgroundCoords(x1, y1, x2, y2) {
+        const coords = {
+          xStart: 0,
+          yStart: 0,
+          xLength: 0,
+          yLength: 0,
+        };
+
+        switch (cloudDirection) {
+          case 'right':
+          case 'down':
+            coords.xStart = x1 - 5;
+            coords.yStart = y1 - 5;
+            coords.xLength = x2 - x1 + 10;
+            coords.yLength = y2 - y1 + 10;
+            break;
+          case 'left':
+          case 'up':
+            coords.xStart = x2 - 5;
+            coords.yStart = y2 - 5;
+            coords.xLength = x1 - x2 + 10;
+            coords.yLength = y1 - y2 + 10;
+            break;
+        }
+        return coords;
+      }
+
       function drawFilledPolygon(ctx, shape) {
         ctx.beginPath();
-        ctx.strokeStyle = 'cyan';
-        ctx.fillStyle = 'cyan';
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = 'black';
         ctx.moveTo(shape[0][0], shape[0][1]);
 
         shape.forEach(p => {
