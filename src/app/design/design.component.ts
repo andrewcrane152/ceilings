@@ -167,8 +167,7 @@ export class DesignComponent implements OnInit, OnDestroy {
                   this.feature.materialType = 'felt';
                   this.feature.toolsArray = ['remove'];
                 } else if (this.feature.feature_type === 'clario-cloud') {
-                  this.feature.material = 'milky-white';
-                  this.feature.materialHex = '#dfdee0';
+                  this.feature.material = 'ruby'
                   this.feature.toolsArray = ['remove', 'pattern-direction'];
                 } else if (this.feature.feature_type === 'hush') {
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
@@ -210,6 +209,9 @@ export class DesignComponent implements OnInit, OnDestroy {
             this.feature.material = 'milky-white';
             this.feature.materialHex = '#dfdee0';
             this.feature.materialType = 'felt';
+          } else if (this.feature.feature_type === 'clario-cloud') {
+            this.feature.material = 'ruby'
+            this.feature.toolsArray = ['remove', 'pattern-direction'];
           } else if (this.feature.feature_type === 'hushSwoon') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.hushSwoon[0]);
             this.feature.toolsArray = ['remove'];

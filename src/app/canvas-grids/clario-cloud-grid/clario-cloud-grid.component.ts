@@ -40,15 +40,14 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   adjustmentY = 96;
   tilesOutsideBoundary = [];
   cloudDirection = 'right';
+  ctx: any = '';
 
   @ViewChild('clarioCloudCanvas', { static: true })
   canvas;
 
   ngOnInit() {
     // subscribe to the buildClarioCloudGrid event
-    this.debug.log('clario-cloud-grid', 'setting clarioCloudGrid Subscription');
     this.feature.onBuildClarioCloudGrid.subscribe(result => {
-      this.debug.log('clario-cloud-grid', 'building the clario-cloud grid');
       this.renderClarioCloudGrid();
     });
     this.feature.onAdjustClarioCloudGridSize.subscribe(result => {
@@ -85,7 +84,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         break;
     }
     const currentSelections = this.getDesignDecisions();
-    // this.updateGridDisplayValues();
+    this.updateGridDisplayValues();
     this.applySelectionsToNewGrid(currentSelections);
     this.updateGridValues();
     this.doingGridSizeAdjust = false;
@@ -141,16 +140,13 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         if (this.feature.selectedTool === 'remove') {
           // reset the texture for the 3D view.
           this.feature.gridData[el].cloud_direction = '';
-          this.feature.gridData[el].image_grid_rotation = '';
-          this.feature.gridData[el].texture = '';
           this.feature.gridData[el].material = '';
 
           this.debug.log('clario-cloud-grid', this.feature.gridData[el]);
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
         } else {
-          // set the texture for the 3D view.
-          this.feature.gridData[el].texture = `/assets/images/clario_cloud/rc_0/${this.feature.material}/.png`;
+          this.feature.gridData[el].material = this.feature.material;
           // set the tile found true so we don't "find" another one that's close
           foundTile = true;
         }
@@ -164,9 +160,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   private updateGridValues() {
     this.setGridNeighborData();
     this.setGridTileValues();
-    // render the canvas again
     this.renderClarioCloudGrid();
-    // update the estimated amount
     this.feature.updateEstimatedAmount();
     // this.changeGridDimensions();
     this.debug.log('clario-cloud-grid', 'final grid data:');
@@ -174,16 +168,14 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   }
 
   private drawSquare(ctx, x, y, index, row, column) {
-    // square points
-    let xcoords = [0, 0, 96, 96];
-    let ycoords = [0, 96, 96, 0];
-
-    xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
-    ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
-
-    // set the grid section information
-    // add x,y to all the square points
+    const canvasScale = this.feature.canvasGridScale;
+    const cloudDirection = this.cloudDirection;
+    const showGuide = this.feature.showGuide;
+    const tile = this.feature.gridData[index];
     const square = [];
+    const xcoords = [0 * canvasScale, 0 * canvasScale, 96 * canvasScale, 96 * canvasScale];
+    const ycoords = [0 * canvasScale, 96 * canvasScale, 96 * canvasScale, 0 * canvasScale];
+
     for (let i = 0; i < xcoords.length; ++i) {
       square[i] = [xcoords[i] + x, ycoords[i] + y];
     }
@@ -197,7 +189,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         y: y,
         square: square,
         cloud_direction: this.cloudDirection,
-        image_grid_rotation: '',
         texture: '',
         material: '',
         width: 96,
@@ -206,65 +197,145 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       });
     }
 
-    // save the current canvas state
     ctx.save();
-    // start drawing
     ctx.beginPath();
-    // move to the new x,y coordinates (setting a new 0,0 at x,y)
     ctx.translate(x, y);
-    // move to the start of the square and then set the lines
     ctx.moveTo(xcoords[0], ycoords[0]);
     ctx.lineTo(xcoords[1], ycoords[1]);
     ctx.lineTo(xcoords[2], ycoords[2]);
     ctx.lineTo(xcoords[3], ycoords[3]);
-    // close the path
     ctx.closePath();
-    // set the strokestyle
     ctx.strokeStyle = this.strokeStyle;
 
     // if the design is not new, then we can set fill style from gridData
-    if (!this.newDesign && !!this.feature.gridData[index] && this.feature.gridData[index].texture !== '') {
+    if (!this.newDesign && !!tile && tile.material !== '') {
       const bgImg = new Image();
-      bgImg.src = `/assets/images/clario_cloud/rc_0/ruby.png`;
+      bgImg.src = `/assets/images/clario_cloud/${this.feature.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${this.feature.material}.png`;
 
-      // async function drawBgImg() {
-        bgImg.onload = function() {
-          console.log('drawBgImg');
-          ctx.drawImage(bgImg, 1, 1, 96, 96);
+      bgImg.onload = function() {
+        const xStart = Math.round((tile.square[0][0]) * canvasScale);
+        const yStart = Math.round((tile.square[0][1]) * canvasScale);
+        ctx.drawImage(bgImg, xStart, yStart, 96 * 1, 96 * 1);
+        if (showGuide) {
+          labelTiles(ctx, xStart, yStart);
         }
-      // }
+      }
 
-      // drawBgImg().then(res => {
-        if (this.feature.showGuide) {
-          this.labelTiles(ctx, index);
+      function labelTiles(ctx, xStart, yStart) {
+        ctx.fillStyle = 'cyan';
+        ctx.font = '18px Arial';
+        const textXStart = (xStart + 44 * canvasScale);
+        const textYStart = (yStart + 40 * canvasScale);
+        ctx.fillText(tile.tile, textXStart, textYStart);
+        const arrowCoords = getArrowDirectionCoords(xStart, yStart);
+        drawLineArrow(ctx, arrowCoords);
+      }
+
+      function drawLineArrow(ctx, arrowCoords) {
+        const x1 = arrowCoords[0];
+        const y1 = arrowCoords[1];
+        const x2 = arrowCoords[2];
+        const y2 = arrowCoords[3];
+        const arrow = [
+          [ 2 * canvasScale, 0 * canvasScale ],
+          [ -10 * canvasScale, -4 * canvasScale ],
+          [ -10 * canvasScale, 4 * canvasScale]
+        ];
+
+        ctx.beginPath();
+        ctx.strokeStyle = 'cyan';
+        ctx.fillStyle = 'cyan';
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        const ang = Math.atan2(y2 - y1, x2 - x1);
+        const rotatedArrow = rotateArrow(arrow, ang);
+        const translatedArrow = translateArrow(rotatedArrow, x2, y2);
+        drawFilledPolygon(ctx, translatedArrow);
+      };
+
+      function drawFilledPolygon(ctx, shape) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'cyan';
+        ctx.fillStyle = 'cyan';
+        ctx.moveTo(shape[0][0], shape[0][1]);
+
+        shape.forEach(p => {
+          ctx.lineTo(p[0], p[1]);
+        });
+
+        ctx.lineTo(shape[0][0], shape[0][1]);
+        ctx.fill();
+      }
+
+      function translateArrow(shape, x, y) {
+        const rv = [];
+        shape.forEach(p => {
+          rv.push([ p[0] + x, p[1] + y ]);
+        });
+        return rv;
+      };
+
+      function rotateArrow(shape, ang) {
+        const rv = [];
+        shape.forEach(p => {
+          rv.push(rotatePoint(ang, p[0], p[1]));
+        });
+        return rv;
+      };
+
+      function rotatePoint(ang, x, y) {
+        return [
+            (x * Math.cos(ang)) - (y * Math.sin(ang)),
+            (x * Math.sin(ang)) + (y * Math.cos(ang))
+        ];
+      };
+
+      function getArrowDirectionCoords(xStart, yStart) {
+        let coords;
+        switch (cloudDirection) {
+          case 'right':
+            coords = [30, 60, 60, 60];
+            break;
+          case 'down':
+            coords = [50, 50, 50, 80];
+            break;
+          case 'left':
+            coords = [60, 60, 30, 60];
+            break;
+          case 'up':
+            coords = [50, 80, 50, 50];
+            break;
         }
-      // })
+        for (let i = 0; i < coords.length; i++) {
+          const xOrYStart = (i % 2 === 0) ? xStart : yStart;
+          coords[i] = coords[i] * canvasScale + xOrYStart;
+        }
+        return coords;
+      }
+
+      function adjustedTileLabel () {
+        switch (tile.tile) {
+          case 'B':
+          case 'D':
+          case 'E':
+          case 'F':
+          case 'H':
+          case 'L':
+          case 'P':
+            return 'b';
+          default:
+            return tile.tile.toLowerCase();
+        }
+      }
     } else {
       ctx.fillStyle = this.fillStyle;
       ctx.fill();
     }
 
-    // DEBUGGING
-    // ctx.rotate(-rotateAngle);
-    // ctx.fillStyle = '#00E1E1';
-    // ctx.font = '10px Arial';
-    // ctx.fillText(index, -5, -5);
-    // ctx.font = '8px Arial';
-    // ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
-
-    // stroke all the square lines
     ctx.stroke();
-
-    // restore the context so that we can draw the next square.
     ctx.restore();
-  }
-
-  private labelTiles(ctx, index) {
-    ctx.fillStyle = 'cyan';
-    ctx.font = '18px Arial';
-    ctx.fillText(this.feature.gridData[index].tile, 44 * this.feature.canvasGridScale, 40 * this.feature.canvasGridScale);
-    const arrowCoords = this.getArrowDirectionCoords();
-    this.drawLineArrow(ctx, arrowCoords);
   }
 
   private setGridNeighborData() {
@@ -276,7 +347,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   private setGridTileValues() {
     this.feature.gridData.map(tile => {
       tile.cloud_direction = this.cloudDirection;
-      if (!!tile.texture) {
+      if (!!tile.material) {
         switch (tile.neighbors.count) {
           case 0:
             tile.tile = 'S';
@@ -408,7 +479,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.feature.gridData.map(tile => {
       if (tile.column === column) {
         if (tile.row === row) {
-          if (tile.texture !== '') {
+          if (tile.material !== '') {
             res = tile;
           }
         }
@@ -416,101 +487,5 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     });
     return res;
   }
-
-
-  ///////////////////////////////
-  ////// BEGIN DRAW ARROWS //////
-  ///////////////////////////////
-
-  drawFilledPolygon(ctx, shape) {
-    ctx.beginPath();
-    ctx.strokeStyle = 'cyan';
-    ctx.fillStyle = 'cyan';
-    ctx.moveTo(shape[0][0], shape[0][1]);
-
-    shape.forEach(p => {
-      ctx.lineTo(p[0], p[1]);
-    });
-
-    ctx.lineTo(shape[0][0], shape[0][1]);
-    ctx.fill();
-  }
-
-  translateShape(shape, x, y) {
-    const rv = [];
-    // tslint:disable-next-line: forin
-    shape.forEach(p => {
-      rv.push([ p[0] + x, p[1] + y ]);
-    });
-    return rv;
-  };
-
-  rotateShape(shape, ang) {
-    const rv = [];
-    // tslint:disable-next-line: forin
-    shape.forEach(p => {
-      rv.push(this.rotatePoint(ang, p[0], p[1]));
-    });
-    return rv;
-  };
-
-  rotatePoint(ang, x, y) {
-      return [
-          (x * Math.cos(ang)) - (y * Math.sin(ang)),
-          (x * Math.sin(ang)) + (y * Math.cos(ang))
-      ];
-  };
-
-  drawLineArrow(ctx, arrowCoords) {
-    const x1 = arrowCoords[0];
-    const y1 = arrowCoords[1];
-    const x2 = arrowCoords[2];
-    const y2 = arrowCoords[3];
-    const arrow = [
-      [ 2 * this.feature.canvasGridScale, 0 * this.feature.canvasGridScale ],
-      [ -10 * this.feature.canvasGridScale, -4 * this.feature.canvasGridScale ],
-      [ -10 * this.feature.canvasGridScale, 4 * this.feature.canvasGridScale]
-    ];
-
-    ctx.beginPath();
-    ctx.strokeStyle = 'cyan';
-    ctx.fillStyle = 'cyan';
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-
-    const ang = Math.atan2(y2 - y1, x2 - x1);
-    const rotatedShape = this.rotateShape(arrow, ang);
-    const translatedShape = this.translateShape(rotatedShape, x2, y2);
-    this.drawFilledPolygon(ctx, translatedShape);
-  };
-
-  getArrowDirectionCoords() {
-    let coords;
-    switch (this.cloudDirection) {
-      case 'right':
-        coords = [30, 60, 60, 60];
-        break;
-      case 'down':
-        coords = [50, 50, 50, 80];
-        break;
-      case 'left':
-        coords = [60, 60, 30, 60];
-        break;
-      case 'up':
-        coords = [50, 80, 50, 50];
-        break;
-    }
-    for (let i = 0; i < coords.length; i++) {
-      coords[i] = coords[i] * this.feature.canvasGridScale;
-    }
-    return coords;
-  }
-
-  /////////////////////////////
-  ////// END DRAW ARROWS //////
-  /////////////////////////////
-
-
 
 }
