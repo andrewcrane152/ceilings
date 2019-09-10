@@ -376,10 +376,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
                 else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'R'}
                 break;
               case 'down':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'N'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'K'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'R'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'M'}
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'R'}
+                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'M'}
+                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'N'}
+                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'K'}
                 break;
               case 'left':
                 if (!!tile.neighbors.neighbors[0]) {tile.tile = 'K'}
@@ -388,10 +388,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
                 else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'N'}
                 break;
               case 'up':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'R'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'M'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'N'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'K'}
+                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'N'}
+                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'K'}
+                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'R'}
+                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'M'}
                 break;
             }
             break;
@@ -406,10 +406,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
                 else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'L'}
                 break;
               case 'down':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'G'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'C'}
+                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'A'}
+                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'C'}
+                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'J'}
+                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'G'}
                 else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'L'}
                 else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'P'}
                 break;
@@ -422,10 +422,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
                 else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'L'}
                 break;
               case 'up':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'C'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'G'}
+                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'J'}
+                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'G'}
+                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'A'}
+                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'C'}
                 else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'L'}
                 else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'P'}
                 break;
