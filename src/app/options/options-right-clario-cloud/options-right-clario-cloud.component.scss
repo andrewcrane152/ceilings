@@ -25,5 +25,25 @@ aside {
 
 .colors img {
   max-width: 100%;
-  max-height: 60px;
+  max-height: 35px;
+}
+
+.modify {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.modify img {
+  max-width: 100%;
+  max-height: 80px;
+}
+
+.controls {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.controls img {
+  max-width: 100%;
+  max-height: 70px;
 }

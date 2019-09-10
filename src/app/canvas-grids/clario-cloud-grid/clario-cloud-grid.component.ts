@@ -208,7 +208,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
       function labelTiles(ctx, xStart, yStart) {
         ctx.font = '20px Arial';
-        const textXStart = (xStart + 44 * canvasScale);
+        const textXStart = (xStart + 40 * canvasScale);
         const textYStart = (yStart + 40 * canvasScale);
         ctx.fillStyle = 'white';
         ctx.fillRect(textXStart - 4, textYStart - 18, 24, 24);
@@ -254,17 +254,17 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         switch (cloudDirection) {
           case 'right':
           case 'down':
-            coords.xStart = x1 - 5;
-            coords.yStart = y1 - 5;
-            coords.xLength = x2 - x1 + 10;
-            coords.yLength = y2 - y1 + 10;
+            coords.xStart = x1 - 10;
+            coords.yStart = y1 - 10;
+            coords.xLength = x2 - x1 + 20;
+            coords.yLength = y2 - y1 + 20;
             break;
           case 'left':
           case 'up':
-            coords.xStart = x2 - 5;
-            coords.yStart = y2 - 5;
-            coords.xLength = x1 - x2 + 10;
-            coords.yLength = y1 - y2 + 10;
+            coords.xStart = x2 - 10;
+            coords.yStart = y2 - 10;
+            coords.xLength = x1 - x2 + 20;
+            coords.yLength = y1 - y2 + 20;
             break;
         }
         return coords;
@@ -311,16 +311,16 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         let coords;
         switch (cloudDirection) {
           case 'right':
-            coords = [30, 60, 60, 60];
+            coords = [33, 60, 63, 60];
             break;
           case 'down':
-            coords = [50, 50, 50, 80];
+            coords = [48, 50, 48, 80];
             break;
           case 'left':
-            coords = [60, 60, 30, 60];
+            coords = [63, 60, 33, 60];
             break;
           case 'up':
-            coords = [50, 80, 50, 50];
+            coords = [48, 80, 48, 50];
             break;
         }
         for (let i = 0; i < coords.length; i++) {
