@@ -938,6 +938,35 @@ export class Feature {
         tiles = purchasedTiles;
         break;
 
+      case 'clario-cloud':
+        const clarioCloudTiles = this.clarioCloudTiles();
+        let ccPurchasedTiles: {};
+
+        for (const tile in clarioCloudTiles) {
+          if (clarioCloudTiles.hasOwnProperty(tile)) {
+            const ccTile = clarioCloudTiles[tile];
+            const ccKey = `${ccTile.material}-${ccTile.tile.toLowerCase()}`;
+            if (ccPurchasedTiles === undefined) {
+              ccPurchasedTiles = {};
+            }
+            if (!!ccPurchasedTiles[ccKey]) {
+              ccPurchasedTiles[ccKey].purchased++;
+              ccPurchasedTiles[ccKey].used++;
+            } else {
+              console.log('ccTile:', ccTile);
+              const imageUrl = `/assets/images/clario_cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
+              ccPurchasedTiles[ccKey] = {
+                purchased: 1,
+                image: imageUrl,
+                used: 1,
+                material: ccTile.material,
+                tile: ccTile.tile
+              };
+            }
+          }
+        }
+        tiles = ccPurchasedTiles;
+        break;
       case 'hushSwoon':
         const hsPkgQty: number = this.getPackageQty();
         const hsGridTiles = this.veloTiles();
@@ -1065,6 +1094,21 @@ export class Feature {
         break;
     }
 
+    function adjustedCCTileLabel (tile) {
+      switch (tile) {
+        case 'B':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'H':
+        case 'L':
+        case 'P':
+          return 'b';
+        default:
+          return tile.toLowerCase();
+      }
+    }
+    console.log('purchasedTiles:', tiles);
     this.tiles = tiles;
     return tiles;
   }
@@ -1143,6 +1187,16 @@ export class Feature {
     const veloTiles = [];
     for (const tile in this.gridData) {
       if (this.gridData[tile].texture !== '') {
+        veloTiles.push(this.gridData[tile]);
+      }
+    }
+    return veloTiles;
+  }
+
+  public clarioCloudTiles() {
+    const veloTiles = [];
+    for (const tile in this.gridData) {
+      if (this.gridData[tile].material !== '') {
         veloTiles.push(this.gridData[tile]);
       }
     }
