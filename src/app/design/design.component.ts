@@ -473,9 +473,13 @@ export class DesignComponent implements OnInit, OnDestroy {
     // get the grid with guides
     // make sure the guide is set to true
     this.feature.showGuide = true;
-    if (this.feature.feature_type === 'velo' || this.feature.feature_type === 'hushSwoon') {
+    if (this.feature.feature_type === 'velo') {
       const veloCanvas = document.querySelector('canvas');
       const dataURL = veloCanvas.toDataURL();
+      this.feature.design_data_url = dataURL;
+    } else if (this.feature.feature_type === 'clario-cloud') {
+      const ccCanvas = document.querySelector('canvas');
+      const dataURL = ccCanvas.toDataURL();
       this.feature.design_data_url = dataURL;
     } else if (this.feature.feature_type === 'seeyond') {
       this.seeyond.seeyondProfileImage();

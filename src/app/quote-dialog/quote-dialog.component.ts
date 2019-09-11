@@ -76,7 +76,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.formattedWidth = `${this.feature.width}${this.units}`;
       this.formattedLength = `${this.feature.length}${this.units}`;
     }
-    if (this.isQuantityOrder) {
+    if (this.isQuantityOrder || this.feature.feature_type === 'clario-cloud') {
       this.formattedWidth = '';
       this.formattedLength = '';
     }
