@@ -187,7 +187,7 @@ export class Feature {
         this.getVeloEstimate(tilesArray);
         break;
       case 'clario-cloud':
-        this.getVeloEstimate(tilesArray);
+        this.getClarioCloudEstimate(tilesArray);
         break;
       case 'hushSwoon':
         this.getHushSwoonEstimate(tilesArray);
@@ -604,6 +604,23 @@ export class Feature {
     this.debug.log('feature', '=====feature END HARDWARE =====');
   }
 
+  getClarioCloudEstimate(tilesArray?) {
+    let ccTileCount = 0;
+    const dataArray = !!tilesArray ? tilesArray : this.gridData;
+    for (const ccTile in dataArray) {
+      if (dataArray.hasOwnProperty(ccTile)) {
+        const hushCurrentTile = dataArray[ccTile];
+        if (!!hushCurrentTile.material) {
+          ccTileCount += hushCurrentTile.purchased || 1;
+        }
+      }
+    }
+    this.services_amount = 1.88 * ccTileCount; // TODO this needs to be verified
+    const products_amount = 1.35 * ccTileCount; // TODO this needs to be verified
+    const hardware_amount = 45.60 * ccTileCount;
+    this.estimated_amount = this.services_amount + products_amount + hardware_amount;
+  }
+
   getHushSwoonEstimate(tilesArray) {
     let hushSwoonTileCount = 0;
     const dataArray = !!tilesArray ? tilesArray : this.gridData;
@@ -953,7 +970,6 @@ export class Feature {
               ccPurchasedTiles[ccKey].purchased++;
               ccPurchasedTiles[ccKey].used++;
             } else {
-              console.log('ccTile:', ccTile);
               const imageUrl = `/assets/images/clario_cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
               ccPurchasedTiles[ccKey] = {
                 purchased: 1,
@@ -1108,7 +1124,6 @@ export class Feature {
           return tile.toLowerCase();
       }
     }
-    console.log('purchasedTiles:', tiles);
     this.tiles = tiles;
     return tiles;
   }

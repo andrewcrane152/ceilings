@@ -19,7 +19,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   public tilesArray: any;
   public tileType: string;
   public units: string;
-  private uiType = 'design';
+  uiType = 'design';
 
   isSeeyond = false;
   isQuantityOrder = false;
