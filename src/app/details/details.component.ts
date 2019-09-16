@@ -26,6 +26,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   public totalReceiving: number;
   public totalUnused: number;
   public tilesSoldString: string;
+  public featureUnitDescription: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -105,6 +106,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
     this.featureHumanName = this.feature.getFeatureHumanName();
     this.dimensionStr = this.setDimensionStr();
     this.tilesSoldString = this.feature.packageInformation();
+    this.featureUnitDescription = this.productSizeInfo();
     this.getTotals();
     this.feature.applyDealerPricing();
   }
@@ -135,8 +137,10 @@ export class DetailsComponent implements OnInit, AfterContentInit {
       case 'clario':
       case 'hushSwoon':
         return `${this.feature.width}${unitAbbreviation} W x ${this.feature.length}${unitAbbreviation} L`;
+      case 'clario-cloud':
+        return '';
       default:
-        return `TODO CREATE DEFAULT`;
+        return ``;
     }
   }
 
@@ -172,5 +176,22 @@ export class DetailsComponent implements OnInit, AfterContentInit {
     this.totalUsed = totalUsed;
     this.totalReceiving = totalReceiving;
     this.totalUnused = totalUnused;
+  }
+
+  public productSizeInfo() {
+    switch (this.feature.feature_type) {
+      case 'tetria':
+        return '24" x 24" tiles';
+      case 'clario':
+        return '24"x24" and 24"x48" baffles';
+      case 'velo':
+        return '';
+      case 'hush':
+        return `Various sized tiles`;
+      case 'clario-cloud':
+        return `48" x 48" modules`;
+      default:
+        return ``;
+    }
   }
 }

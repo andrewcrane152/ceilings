@@ -1462,6 +1462,8 @@ export class Feature {
         return `Hush Blocks are sold in quantities of 1.`;
       case 'hushSwoon':
         return `Hush Swoon tiles are sold in quantities of 1.`;
+      case 'clario-cloud':
+        return `Clario Cloud modules are sold in quantities of 1.`;
       default:
         return `${this.feature_type} is sold in quantities of 4.`;
     }
@@ -1589,4 +1591,23 @@ export class Feature {
         return this.feature_type.charAt(0).toUpperCase() + this.feature_type.slice(1);
     }
   }
+
+  getFeatureUnitName(plural = false) {
+    let unitName;
+    switch (this.feature_type) {
+      case 'hush':
+      case 'tetria':
+      case 'velo':
+        unitName = plural ? 'tiles' : 'tile';
+        break;
+      case 'clario':
+        unitName = plural ? 'baffles' : 'baffle';
+        break;
+      case 'clario-cloud':
+        unitName = plural ? 'modules' : 'module';
+        break;
+    }
+    return unitName;
+  }
+
 }

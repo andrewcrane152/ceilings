@@ -83,6 +83,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         break;
     }
     const currentSelections = this.getDesignDecisions();
+    this.renderClarioCloudGrid();
     this.updateGridDisplayValues();
     this.applySelectionsToNewGrid(currentSelections);
     this.updateGridValues();
@@ -131,6 +132,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     let y = event.offsetY;
     x = Math.round(x / this.feature.canvasGridScale);
     y = Math.round(y / this.feature.canvasGridScale);
+    console.log(`you clicked on x: ${x}, y: ${y}`);
     let foundTile = false;
     for (const el in this.feature.gridData) {
       if (!foundTile && pip(this.feature.gridData[el].square, [x, y]) === -1) {
@@ -370,92 +372,92 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
           case 1:
             switch (tile.cloud_direction) {
               case 'right':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'M'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'N'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'K'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'R'}
+                if (!!tile.neighbors.isNeighbor[0]) {tile.tile = 'M'}
+                else if (!!tile.neighbors.isNeighbor[1]) {tile.tile = 'N'}
+                else if (!!tile.neighbors.isNeighbor[2]) {tile.tile = 'K'}
+                else if (!!tile.neighbors.isNeighbor[3]) {tile.tile = 'R'}
                 break;
               case 'down':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'R'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'M'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'N'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'K'}
+                if (!!tile.neighbors.isNeighbor[0]) {tile.tile = 'R'}
+                else if (!!tile.neighbors.isNeighbor[1]) {tile.tile = 'M'}
+                else if (!!tile.neighbors.isNeighbor[2]) {tile.tile = 'N'}
+                else if (!!tile.neighbors.isNeighbor[3]) {tile.tile = 'K'}
                 break;
               case 'left':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'K'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'R'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'M'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'N'}
+                if (!!tile.neighbors.isNeighbor[0]) {tile.tile = 'K'}
+                else if (!!tile.neighbors.isNeighbor[1]) {tile.tile = 'R'}
+                else if (!!tile.neighbors.isNeighbor[2]) {tile.tile = 'M'}
+                else if (!!tile.neighbors.isNeighbor[3]) {tile.tile = 'N'}
                 break;
               case 'up':
-                if (!!tile.neighbors.neighbors[0]) {tile.tile = 'N'}
-                else if (!!tile.neighbors.neighbors[1]) {tile.tile = 'K'}
-                else if (!!tile.neighbors.neighbors[2]) {tile.tile = 'R'}
-                else if (!!tile.neighbors.neighbors[3]) {tile.tile = 'M'}
+                if (!!tile.neighbors.isNeighbor[0]) {tile.tile = 'N'}
+                else if (!!tile.neighbors.isNeighbor[1]) {tile.tile = 'K'}
+                else if (!!tile.neighbors.isNeighbor[2]) {tile.tile = 'R'}
+                else if (!!tile.neighbors.isNeighbor[3]) {tile.tile = 'M'}
                 break;
             }
             break;
           case 2:
             switch (tile.cloud_direction) {
               case 'right':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'C'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'G'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'P'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'L'}
+                if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[1]) {tile.tile = 'C'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'J'}
+                else if (!tile.neighbors.isNeighbor[2] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'G'}
+                else if (!tile.neighbors.isNeighbor[3] && !tile.neighbors.isNeighbor[0]) {tile.tile = 'A'}
+                else if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'P'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'L'}
                 break;
               case 'down':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'C'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'G'}
-                else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'L'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'P'}
+                if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[1]) {tile.tile = 'A'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'C'}
+                else if (!tile.neighbors.isNeighbor[2] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'J'}
+                else if (!tile.neighbors.isNeighbor[3] && !tile.neighbors.isNeighbor[0]) {tile.tile = 'G'}
+                else if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'L'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'P'}
                 break;
               case 'left':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'G'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'C'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'P'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'L'}
+                if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[1]) {tile.tile = 'G'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'A'}
+                else if (!tile.neighbors.isNeighbor[2] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'C'}
+                else if (!tile.neighbors.isNeighbor[3] && !tile.neighbors.isNeighbor[0]) {tile.tile = 'J'}
+                else if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'P'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'L'}
                 break;
               case 'up':
-                if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[1]) {tile.tile = 'J'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[2]) {tile.tile = 'G'}
-                else if (!tile.neighbors.neighbors[2] && !tile.neighbors.neighbors[3]) {tile.tile = 'A'}
-                else if (!tile.neighbors.neighbors[3] && !tile.neighbors.neighbors[0]) {tile.tile = 'C'}
-                else if (!tile.neighbors.neighbors[0] && !tile.neighbors.neighbors[2]) {tile.tile = 'L'}
-                else if (!tile.neighbors.neighbors[1] && !tile.neighbors.neighbors[3]) {tile.tile = 'P'}
+                if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[1]) {tile.tile = 'J'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'G'}
+                else if (!tile.neighbors.isNeighbor[2] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'A'}
+                else if (!tile.neighbors.isNeighbor[3] && !tile.neighbors.isNeighbor[0]) {tile.tile = 'C'}
+                else if (!tile.neighbors.isNeighbor[0] && !tile.neighbors.isNeighbor[2]) {tile.tile = 'L'}
+                else if (!tile.neighbors.isNeighbor[1] && !tile.neighbors.isNeighbor[3]) {tile.tile = 'P'}
                 break;
             }
             break;
           case 3:
             switch (tile.cloud_direction) {
               case 'right':
-                if (!tile.neighbors.neighbors[0]) {tile.tile = 'B'}
-                else if (!tile.neighbors.neighbors[1]) {tile.tile = 'F'}
-                else if (!tile.neighbors.neighbors[2]) {tile.tile = 'H'}
-                else if (!tile.neighbors.neighbors[3]) {tile.tile = 'D'}
+                if (!tile.neighbors.isNeighbor[0]) {tile.tile = 'B'}
+                else if (!tile.neighbors.isNeighbor[1]) {tile.tile = 'F'}
+                else if (!tile.neighbors.isNeighbor[2]) {tile.tile = 'H'}
+                else if (!tile.neighbors.isNeighbor[3]) {tile.tile = 'D'}
                 break;
               case 'down':
-                if (!tile.neighbors.neighbors[0]) {tile.tile = 'F'}
-                else if (!tile.neighbors.neighbors[1]) {tile.tile = 'H'}
-                else if (!tile.neighbors.neighbors[2]) {tile.tile = 'D'}
-                else if (!tile.neighbors.neighbors[3]) {tile.tile = 'B'}
+                if (!tile.neighbors.isNeighbor[0]) {tile.tile = 'F'}
+                else if (!tile.neighbors.isNeighbor[1]) {tile.tile = 'H'}
+                else if (!tile.neighbors.isNeighbor[2]) {tile.tile = 'D'}
+                else if (!tile.neighbors.isNeighbor[3]) {tile.tile = 'B'}
                 break;
               case 'left':
-                if (!tile.neighbors.neighbors[0]) {tile.tile = 'H'}
-                else if (!tile.neighbors.neighbors[1]) {tile.tile = 'D'}
-                else if (!tile.neighbors.neighbors[2]) {tile.tile = 'B'}
-                else if (!tile.neighbors.neighbors[3]) {tile.tile = 'F'}
+                if (!tile.neighbors.isNeighbor[0]) {tile.tile = 'H'}
+                else if (!tile.neighbors.isNeighbor[1]) {tile.tile = 'D'}
+                else if (!tile.neighbors.isNeighbor[2]) {tile.tile = 'B'}
+                else if (!tile.neighbors.isNeighbor[3]) {tile.tile = 'F'}
                 break;
               case 'up':
-                if (!tile.neighbors.neighbors[0]) {tile.tile = 'D'}
-                else if (!tile.neighbors.neighbors[1]) {tile.tile = 'B'}
-                else if (!tile.neighbors.neighbors[2]) {tile.tile = 'F'}
-                else if (!tile.neighbors.neighbors[3]) {tile.tile = 'H'}
+                if (!tile.neighbors.isNeighbor[0]) {tile.tile = 'D'}
+                else if (!tile.neighbors.isNeighbor[1]) {tile.tile = 'B'}
+                else if (!tile.neighbors.isNeighbor[2]) {tile.tile = 'F'}
+                else if (!tile.neighbors.isNeighbor[3]) {tile.tile = 'H'}
                 break;
             }
             break;
@@ -471,10 +473,10 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     let count = 0;
 
     const neighbors = [];
-    neighbors.push(this.findTileByColumnAndRow(column, row - 1)); // TOP neighbor
-    neighbors.push(this.findTileByColumnAndRow(column + 1, row)); // RIGHT neighbor
-    neighbors.push(this.findTileByColumnAndRow(column, row + 1)); // BOTTOM neighbor
-    neighbors.push(this.findTileByColumnAndRow(column - 1, row)); // LEFT neighbor
+    neighbors.push(!!this.findTileByColumnAndRow(column, row - 1)); // TOP neighbor
+    neighbors.push(!!this.findTileByColumnAndRow(column + 1, row)); // RIGHT neighbor
+    neighbors.push(!!this.findTileByColumnAndRow(column, row + 1)); // BOTTOM neighbor
+    neighbors.push(!!this.findTileByColumnAndRow(column - 1, row)); // LEFT neighbor
 
     for (let i = 0; i < neighbors.length; i++) {
       if (!!neighbors[i]) { count++; }
@@ -482,7 +484,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
     return {
       count: count,
-      neighbors: neighbors
+      isNeighbor: neighbors
     }
   }
 
