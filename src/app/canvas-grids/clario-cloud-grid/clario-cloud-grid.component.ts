@@ -195,6 +195,145 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     ctx.closePath();
     ctx.strokeStyle = this.strokeStyle;
 
+    function labelTiles(ctx, xStart, yStart) {
+      ctx.font = '20px Arial';
+      const textXStart = (xStart + 40 * canvasScale);
+      const textYStart = (yStart + 40 * canvasScale);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(textXStart - 4, textYStart - 18, 24, 24);
+      ctx.fillStyle = 'black';
+      ctx.fillText(tile.tile, textXStart, textYStart);
+      const arrowCoords = getArrowDirectionCoords(xStart, yStart);
+      drawLineArrow(ctx, arrowCoords);
+    }
+
+    function drawLineArrow(ctx, arrowCoords) {
+      const x1 = arrowCoords[0];
+      const y1 = arrowCoords[1];
+      const x2 = arrowCoords[2];
+      const y2 = arrowCoords[3];
+      const arrow = [
+        [ 2 * canvasScale, 0 * canvasScale ],
+        [ -10 * canvasScale, -4 * canvasScale ],
+        [ -10 * canvasScale, 4 * canvasScale]
+      ];
+      const backgroundCoords = getArrowBackgroundCoords(x1, y1, x2, y2)
+      ctx.fillStyle = 'white';
+      ctx.fillRect(backgroundCoords.xStart, backgroundCoords.yStart, backgroundCoords.xLength, backgroundCoords.yLength);
+      ctx.beginPath();
+      ctx.strokeStyle = 'black';
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      const ang = Math.atan2(y2 - y1, x2 - x1);
+      const rotatedArrow = rotateArrow(arrow, ang);
+      const translatedArrow = translateArrow(rotatedArrow, x2, y2);
+      drawFilledPolygon(ctx, translatedArrow);
+    };
+
+    function getArrowBackgroundCoords(x1, y1, x2, y2) {
+      const coords = {
+        xStart: 0,
+        yStart: 0,
+        xLength: 0,
+        yLength: 0,
+      };
+
+      switch (cloudDirection) {
+        case 'right':
+        case 'down':
+          coords.xStart = x1 - 10;
+          coords.yStart = y1 - 10;
+          coords.xLength = x2 - x1 + 20;
+          coords.yLength = y2 - y1 + 20;
+          break;
+        case 'left':
+        case 'up':
+          coords.xStart = x2 - 10;
+          coords.yStart = y2 - 10;
+          coords.xLength = x1 - x2 + 20;
+          coords.yLength = y1 - y2 + 20;
+          break;
+      }
+      return coords;
+    }
+
+    function drawFilledPolygon(ctx, shape) {
+      ctx.beginPath();
+      ctx.strokeStyle = 'black';
+      ctx.fillStyle = 'black';
+      ctx.moveTo(shape[0][0], shape[0][1]);
+
+      shape.forEach(p => {
+        ctx.lineTo(p[0], p[1]);
+      });
+
+      ctx.lineTo(shape[0][0], shape[0][1]);
+      ctx.fill();
+    }
+
+    function translateArrow(shape, x, y) {
+      const rv = [];
+      shape.forEach(p => {
+        rv.push([ p[0] + x, p[1] + y ]);
+      });
+      return rv;
+    };
+
+    function rotateArrow(shape, ang) {
+      const rv = [];
+      shape.forEach(p => {
+        rv.push(rotatePoint(ang, p[0], p[1]));
+      });
+      return rv;
+    };
+
+    function rotatePoint(ang, x, y) {
+      return [
+          (x * Math.cos(ang)) - (y * Math.sin(ang)),
+          (x * Math.sin(ang)) + (y * Math.cos(ang))
+      ];
+    };
+
+    function getArrowDirectionCoords(xStart, yStart) {
+      let coords;
+      switch (cloudDirection) {
+        case 'right':
+          coords = [33, 60, 63, 60];
+          break;
+        case 'down':
+          coords = [48, 50, 48, 80];
+          break;
+        case 'left':
+          coords = [63, 60, 33, 60];
+          break;
+        case 'up':
+          coords = [48, 80, 48, 50];
+          break;
+      }
+      for (let i = 0; i < coords.length; i++) {
+        const xOrYStart = (i % 2 === 0) ? xStart : yStart;
+        coords[i] = coords[i] * canvasScale + xOrYStart;
+      }
+      return coords;
+    }
+
+    function adjustedTileLabel () {
+      switch (tile.tile) {
+        case 'B':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'H':
+        case 'L':
+        case 'P':
+          return 'b';
+        default:
+          return tile.tile.toLowerCase();
+      }
+    }
+
     // if the design is not new, then we can set fill style from gridData
     if (!this.newDesign && !!tile && tile.material !== '') {
       const bgImg = new Image();
@@ -208,144 +347,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         }
       }
 
-      function labelTiles(ctx, xStart, yStart) {
-        ctx.font = '20px Arial';
-        const textXStart = (xStart + 40 * canvasScale);
-        const textYStart = (yStart + 40 * canvasScale);
-        ctx.fillStyle = 'white';
-        ctx.fillRect(textXStart - 4, textYStart - 18, 24, 24);
-        ctx.fillStyle = 'black';
-        ctx.fillText(tile.tile, textXStart, textYStart);
-        const arrowCoords = getArrowDirectionCoords(xStart, yStart);
-        drawLineArrow(ctx, arrowCoords);
-      }
 
-      function drawLineArrow(ctx, arrowCoords) {
-        const x1 = arrowCoords[0];
-        const y1 = arrowCoords[1];
-        const x2 = arrowCoords[2];
-        const y2 = arrowCoords[3];
-        const arrow = [
-          [ 2 * canvasScale, 0 * canvasScale ],
-          [ -10 * canvasScale, -4 * canvasScale ],
-          [ -10 * canvasScale, 4 * canvasScale]
-        ];
-        const backgroundCoords = getArrowBackgroundCoords(x1, y1, x2, y2)
-        ctx.fillStyle = 'white';
-        ctx.fillRect(backgroundCoords.xStart, backgroundCoords.yStart, backgroundCoords.xLength, backgroundCoords.yLength);
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
 
-        const ang = Math.atan2(y2 - y1, x2 - x1);
-        const rotatedArrow = rotateArrow(arrow, ang);
-        const translatedArrow = translateArrow(rotatedArrow, x2, y2);
-        drawFilledPolygon(ctx, translatedArrow);
-      };
 
-      function getArrowBackgroundCoords(x1, y1, x2, y2) {
-        const coords = {
-          xStart: 0,
-          yStart: 0,
-          xLength: 0,
-          yLength: 0,
-        };
-
-        switch (cloudDirection) {
-          case 'right':
-          case 'down':
-            coords.xStart = x1 - 10;
-            coords.yStart = y1 - 10;
-            coords.xLength = x2 - x1 + 20;
-            coords.yLength = y2 - y1 + 20;
-            break;
-          case 'left':
-          case 'up':
-            coords.xStart = x2 - 10;
-            coords.yStart = y2 - 10;
-            coords.xLength = x1 - x2 + 20;
-            coords.yLength = y1 - y2 + 20;
-            break;
-        }
-        return coords;
-      }
-
-      function drawFilledPolygon(ctx, shape) {
-        ctx.beginPath();
-        ctx.strokeStyle = 'black';
-        ctx.fillStyle = 'black';
-        ctx.moveTo(shape[0][0], shape[0][1]);
-
-        shape.forEach(p => {
-          ctx.lineTo(p[0], p[1]);
-        });
-
-        ctx.lineTo(shape[0][0], shape[0][1]);
-        ctx.fill();
-      }
-
-      function translateArrow(shape, x, y) {
-        const rv = [];
-        shape.forEach(p => {
-          rv.push([ p[0] + x, p[1] + y ]);
-        });
-        return rv;
-      };
-
-      function rotateArrow(shape, ang) {
-        const rv = [];
-        shape.forEach(p => {
-          rv.push(rotatePoint(ang, p[0], p[1]));
-        });
-        return rv;
-      };
-
-      function rotatePoint(ang, x, y) {
-        return [
-            (x * Math.cos(ang)) - (y * Math.sin(ang)),
-            (x * Math.sin(ang)) + (y * Math.cos(ang))
-        ];
-      };
-
-      function getArrowDirectionCoords(xStart, yStart) {
-        let coords;
-        switch (cloudDirection) {
-          case 'right':
-            coords = [33, 60, 63, 60];
-            break;
-          case 'down':
-            coords = [48, 50, 48, 80];
-            break;
-          case 'left':
-            coords = [63, 60, 33, 60];
-            break;
-          case 'up':
-            coords = [48, 80, 48, 50];
-            break;
-        }
-        for (let i = 0; i < coords.length; i++) {
-          const xOrYStart = (i % 2 === 0) ? xStart : yStart;
-          coords[i] = coords[i] * canvasScale + xOrYStart;
-        }
-        return coords;
-      }
-
-      function adjustedTileLabel () {
-        switch (tile.tile) {
-          case 'B':
-          case 'D':
-          case 'E':
-          case 'F':
-          case 'H':
-          case 'L':
-          case 'P':
-            return 'b';
-          default:
-            return tile.tile.toLowerCase();
-        }
-      }
     } else {
       ctx.fillStyle = this.fillStyle;
       ctx.fill();
