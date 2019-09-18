@@ -605,19 +605,43 @@ export class Feature {
   }
 
   getClarioCloudEstimate(tilesArray?) {
+    // "S" tiles have different hardware and fab pricing because is being treated as a simplespec item
+    // cc indicates all the other clario-cloud tiles that aren't "S"
+
     let ccTileCount = 0;
+    let sTileCount = 0;
+
+    const sTileHardwareCost = 51.36;
+    const sTileServicesCost = 346.21;
+    const sTileProductsCost = 82.43;
+
+    const ccTileHardwareCost = 45.60;
+    const ccTileServicesCost = 351.97;
+    const ccTileProductsCost = 82.43;
+
     const dataArray = !!tilesArray ? tilesArray : this.gridData;
     for (const ccTile in dataArray) {
       if (dataArray.hasOwnProperty(ccTile)) {
-        const hushCurrentTile = dataArray[ccTile];
-        if (!!hushCurrentTile.material) {
-          ccTileCount += hushCurrentTile.purchased || 1;
+        const ccCurrentTile = dataArray[ccTile];
+        if (!!ccCurrentTile.material) {
+          switch (ccCurrentTile.tile) {
+            case 'S':
+              sTileCount += ccCurrentTile.purchased || 1;
+              break;
+            default:
+              ccTileCount += ccCurrentTile.purchased || 1;
+              break;
+          }
         }
       }
     }
-    this.services_amount = 1.88 * ccTileCount; // TODO this needs to be verified
-    const products_amount = 1.35 * ccTileCount; // TODO this needs to be verified
-    const hardware_amount = 45.60 * ccTileCount;
+    this.services_amount = (sTileServicesCost * sTileCount) + (ccTileServicesCost * ccTileCount);
+    const products_amount = (sTileProductsCost * sTileCount) + (ccTileProductsCost * ccTileCount);
+    const hardware_amount = (sTileHardwareCost * sTileCount) + (ccTileHardwareCost * ccTileCount);
+    this.hardware = {
+      '3-15-2411-K': ccTileCount,
+      '3-15-1677-K': sTileCount
+    }
     this.estimated_amount = this.services_amount + products_amount + hardware_amount;
   }
 
