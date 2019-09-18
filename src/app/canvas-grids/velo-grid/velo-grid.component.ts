@@ -47,7 +47,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         break;
     }
     const currentSelections = this.getDesignDecisions();
-    this.updateGridDisplayValues();
+    this.updateGridDisplay();
     this.renderVeloGrid();
     this.applySelectionsToNewGrid(currentSelections);
     this.doingGridSizeAdjust = false;

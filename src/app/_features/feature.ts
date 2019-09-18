@@ -63,6 +63,8 @@ export class Feature {
   public qtyTilesReceiving = 0;
   public grid_type: string = undefined;
   public canvasGridScale = 1.0;
+  public canvasGridColumns = 0;
+  public canvasGridRows = 0;
   public hushShippingInfo = {
     totalWeight: 0,
     boxesRecommended: {

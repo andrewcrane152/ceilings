@@ -22,7 +22,6 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
 
   newDesign = true;
   doingGridSizeAdjust = false;
-  gridType: string;
   rows = 10;
   columns = 13;
   rulerMultiplier = 24;
@@ -53,21 +52,9 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      if (params['type']) {
-        this.gridType = params['type'];
-        if (this.gridType === 'profile') {
-          this.gridType = typeof params['param2'] === 'undefined' || !params['params2'] ? 'swoon' : params['param2'];
-        }
-        if (this.gridType === 'hush-swoon') {
-          this.gridType = 'hushSwoon';
-        }
-      }
-      this.setGridDisplayDefaults();
-    });
-    this.debug.log('canvas-grids', this.gridType);
+    this.setGridDisplayValues();
     this.feature.onZoomGrid.pipe(takeUntil(this.ngUnsubscribe)).subscribe(data => {
-      this.updateGridDisplayValues();
+      this.updateGridDisplay();
     });
   }
 
@@ -76,10 +63,10 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-  public setGridDisplayDefaults() {
-    this.debug.log('canvas-grids', `setting grid display values for ${this.gridType}`);
+  public setGridDisplayValues() {
+    this.debug.log('canvas-grids', `setting grid display values for ${this.feature.feature_type}`);
     // set multiplier
-    switch (this.gridType) {
+    switch (this.feature.feature_type) {
       case 'velo':
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         this.rulerImgBackgroundWidth = 49;
@@ -87,32 +74,21 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.hRulerSections = 17;
         break;
       case 'clario-cloud':
+        // the base grid is 5 rows and 8 columns
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         this.rulerImgBackgroundWidth = 49;
-        this.vRulerSections = 11;
-        this.hRulerSections = 17;
-        break;
-      case 'hushSwoon':
-        this.rulerMultiplier = this.feature.units === 'inches' ? 12 : 31;
-        this.vRulerSections = 8;
-        this.hRulerSections = 11;
-        this.rulerImgBackgroundWidth = 79;
-        break;
-      default:
-        this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
-        this.vRulerSections = 11;
-        this.hRulerSections = 19;
-        this.rulerImgBackgroundWidth = 50;
+        this.vRulerSections = !!this.feature.canvasGridRows ? (this.feature.canvasGridRows * 2 + 1) : 11;
+        this.hRulerSections = !!this.feature.canvasGridColumns ? (this.feature.canvasGridColumns * 2 + 1) : 17;
         break;
     }
-    this.updateGridDisplayValues();
+    this.updateGridDisplay();
   }
 
-  public updateGridDisplayValues() {
+  public updateGridDisplay() {
     // set number of ruler sections
     const rulerSectionWidth = Math.round(this.rulerImgBackgroundWidth * this.feature.canvasGridScale);
 
-    switch (this.gridType) {
+    switch (this.feature.feature_type) {
       case 'velo':
         this.canvasWidth = 96 * this.columns;
         this.canvasHeight = 52 * this.rows;

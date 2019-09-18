@@ -40,7 +40,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
   adjustmentY = 96;
   tilesOutsideBoundary = [];
   cloudDirection = 'right';
-  ctx: any = '';
 
   @ViewChild('clarioCloudCanvas', { static: true })
   canvas;
@@ -56,6 +55,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     this.feature.onRotateClarioCloudGrid.subscribe(result => {
       this.rotateClarioGrid();
     });
+    this.feature.canvasGridColumns = this.columns;
+    this.feature.canvasGridRows = this.rows;
   }
 
   rotateClarioGrid() {
@@ -71,22 +72,26 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     switch (adjustment) {
       case 'addColumn':
         this.columns++;
+        this.feature.canvasGridColumns = this.columns;
         break;
       case 'removeColumn':
-        this.columns = Math.max(this.columns - 1, 5);
+        this.columns = Math.max(this.columns - 1, 8);
+        this.feature.canvasGridColumns = this.columns;
         break;
       case 'addRow':
         this.rows++;
+        this.feature.canvasGridRows = this.rows;
         break;
       case 'removeRow':
         this.rows = Math.max(this.rows - 1, 5);
+        this.feature.canvasGridRows = this.rows;
         break;
     }
     const currentSelections = this.getDesignDecisions();
     this.renderClarioCloudGrid();
-    this.updateGridDisplayValues();
+    this.setGridDisplayValues();
     this.applySelectionsToNewGrid(currentSelections);
-    this.updateGridValues();
+    // this.updateGridValues();
     this.doingGridSizeAdjust = false;
   }
 
