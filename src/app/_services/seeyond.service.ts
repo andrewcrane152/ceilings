@@ -31,7 +31,7 @@ export class SeeyondService {
 
   getMyFeatures() {
     return this.http.get(this.apiUrl + 'list/' + this.user.uid).pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
@@ -40,10 +40,10 @@ export class SeeyondService {
     this.debug.log('seeyond', 'Loading Feature');
     return this.http.get(this.apiUrl + id).pipe(
       map((res: Response) => {
-        this.debug.log('seeyond', res.json());
+        this.debug.log('seeyond', res);
         this.onLoaded.emit();
         this.debug.log('seeyond', 'emitting onLoaded');
-        return res.json();
+        return res;
       }),
       catchError(this.handleError)
     );
@@ -158,7 +158,7 @@ export class SeeyondService {
       map((res: Response) => {
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
-        return res.json() || {};
+        return res || {};
       }),
       catchError(this.handleError)
     );
@@ -170,14 +170,14 @@ export class SeeyondService {
 
   sendEmail() {
     return this.http.get(this.apiUrl + 'email/' + this.user.uid + '/feature/' + this.seeyond.id).pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
 
   getPrices() {
     return this.http.get(this.apiUrl + 'prices').pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
