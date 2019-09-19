@@ -121,7 +121,7 @@ export class Feature {
     this.estimated_amount = design.estimated_amount;
     this.list_price = design.list_price;
     this.discount_terms = design.discount_terms;
-    this.discount_terms_string = design.discount_terms_string;
+    this.discount_terms_string = JSON.stringify(design.discount_terms);
     this.discount_amount = design.discount_amount;
     this.dealer_markup = design.dealer_markup;
     this.net_price = design.net_price;
@@ -134,6 +134,12 @@ export class Feature {
     this.updated_at = design.updated_at;
     this.quantity = design.quantity || 1;
 
+    if (!!this.discount_terms_string) {
+      let str = this.discount_terms_string.replace(/[\[\]']+/g, '');
+      str = str.replace(/"/g, '');
+      str = str.replace(/,/g, '/');
+      this.discount_terms_string = str;
+    }
     // after it's been loaded, recalculate the price if the design
     // hasn't been quoted. In the event that the prices have changed.
     if (!this.quoted) {
