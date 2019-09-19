@@ -149,6 +149,10 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     })
   }
 
+  trackByFn(index, item) {
+    return index;
+  }
+
   public moveGuide(event: any) {
     const x = event.offsetX;
     const y = event.offsetY;

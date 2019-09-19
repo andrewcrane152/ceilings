@@ -1619,7 +1619,8 @@ export class Feature {
     }
   }
 
-  getFeatureUnitName(plural = false) {
+  getFeatureUnitName(quantity = 'singular') {
+    const plural = quantity === 'plural';
     let unitName;
     switch (this.feature_type) {
       case 'hush':

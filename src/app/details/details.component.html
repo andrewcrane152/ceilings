@@ -75,7 +75,7 @@
           </div>
           <div class="right">
             <div class="details-header">Quantity</div>
-            <div>{{feature.getFeatureUnitName()}} - {{totalReceiving}}</div>
+            <div>{{feature.getFeatureUnitName('plural')}} - {{totalReceiving}}</div>
             <div>Designs - {{feature.quantity || 1}}</div>
             <div>Total - {{totalReceiving * (feature.quantity || 1)}}</div>
           </div>
