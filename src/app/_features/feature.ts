@@ -121,7 +121,7 @@ export class Feature {
     this.estimated_amount = design.estimated_amount;
     this.list_price = design.list_price;
     this.discount_terms = design.discount_terms;
-    this.discount_terms_string = JSON.stringify(design.discount_terms);
+    this.discount_terms_string = this.formatDiscountTermsStr(design.discount_terms);
     this.discount_amount = design.discount_amount;
     this.dealer_markup = design.dealer_markup;
     this.net_price = design.net_price;
@@ -134,12 +134,6 @@ export class Feature {
     this.updated_at = design.updated_at;
     this.quantity = design.quantity || 1;
 
-    if (!!this.discount_terms_string) {
-      let str = this.discount_terms_string.replace(/[\[\]']+/g, '');
-      str = str.replace(/"/g, '');
-      str = str.replace(/,/g, '/');
-      this.discount_terms_string = str;
-    }
     // after it's been loaded, recalculate the price if the design
     // hasn't been quoted. In the event that the prices have changed.
     if (!this.quoted) {
@@ -210,7 +204,8 @@ export class Feature {
     const basePrice = this.estimated_amount * this.quantity;
     this.estimated_amount = basePrice;
     let discountedListPrice = (this.list_price = basePrice * this.dealer_markup);
-    this.discount_terms.map(discount => {
+    const termsArr = this.formatDiscountTermsStr(this.discount_terms_string).split('/');
+    termsArr.map(discount => {
       discountTermsString = discountTermsString.concat(`${discount}/`);
       discountedListPrice = discountedListPrice * (1 - discount * 0.01);
     });
@@ -1642,4 +1637,11 @@ export class Feature {
     return unitName;
   }
 
+  formatDiscountTermsStr(terms_str) {
+    let str = terms_str.replace(/[\[\]']+/g, '');
+    str = str.replace(/"/g, '');
+    str = str.replace(/,/g, '/');
+    this.discount_terms_string = str;
+    return str;
+  }
 }
