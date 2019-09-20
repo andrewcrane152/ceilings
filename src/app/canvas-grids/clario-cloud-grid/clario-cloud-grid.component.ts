@@ -340,21 +340,19 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     }
 
     // if the design is not new, then we can set fill style from gridData
-    if (!this.newDesign && !!tile && tile.material !== '') {
+    if (!this.newDesign && !!tile && !!tile.material) {
       const bgImg = new Image();
-      bgImg.src = `/assets/images/clario_cloud/${tile.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${tile.material}.png`;
+      bgImg.src = `/assets/images/clario-cloud/${tile.material}/${adjustedTileLabel()}-${tile.cloud_direction}-${tile.material}.png`.replace(/_/g, '-');
+
       bgImg.onload = function() {
         const xStart = Math.round((tile.square[0][0]) * canvasScale);
         const yStart = Math.round((tile.square[0][1]) * canvasScale);
+        console.log(`xStart: ${xStart}, yStart: ${yStart}`);
         ctx.drawImage(bgImg, xStart, yStart, 96 * canvasScale, 96 * canvasScale);
         if (showGuide) {
           labelTiles(ctx, xStart, yStart);
         }
       }
-
-
-
-
     } else {
       ctx.fillStyle = this.fillStyle;
       ctx.fill();
