@@ -21,6 +21,7 @@ export class TileUsageComponent implements OnInit {
   showReceivingColumn = true;
   showUnusedColumn = true;
   showQuantityColumn = false;
+  showTileName = false;
 
   constructor(private debug: DebugService, public feature: Feature, public dialogRef: MatDialogRef<TileUsageComponent>) {}
 
@@ -34,6 +35,13 @@ export class TileUsageComponent implements OnInit {
     switch (this.feature.feature_type) {
       case 'hush':
       case 'hushSwoon':
+        this.showUsedColumn = false;
+        this.showReceivingColumn = false;
+        this.showUnusedColumn = false;
+        this.showQuantityColumn = true;
+        break;
+      case 'clario-cloud':
+        this.showTileName = true;
         this.showUsedColumn = false;
         this.showReceivingColumn = false;
         this.showUnusedColumn = false;

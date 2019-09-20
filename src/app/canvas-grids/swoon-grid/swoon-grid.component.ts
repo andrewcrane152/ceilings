@@ -13,7 +13,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
   adjustmentX = 57;
   adjustmentY = 49;
 
-  @ViewChild('swoonCanvas')
+  @ViewChild('swoonCanvas', { static: true })
   canvas;
 
   ngOnInit() {
@@ -44,7 +44,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
         break;
     }
     const currentSelections = this.getDesignDecisions();
-    this.updateGridDisplayValues();
+    this.updateGridDisplay();
     this.renderSwoonGrid();
     this.applySelectionsToNewGrid(currentSelections);
     this.doingGridSizeAdjust = false;

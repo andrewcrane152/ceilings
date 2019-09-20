@@ -284,7 +284,7 @@ export class MaterialsService {
     }
   };
 
-  public toolsArray = ['rotate', 'remove', 'light', 'vent', 'sprinkler'];
+  public toolsArray = ['rotate', 'remove', 'light', 'vent', 'sprinkler', 'pattern-direction'];
 
   public tilesArray = {
     tetria: {
@@ -312,6 +312,14 @@ export class MaterialsService {
         tile_size: '00',
         name: '00'
       }
+    },
+    'clario-cloud': {
+      0: {
+        image: '/assets/images/tiles/01.png',
+        tile: '01',
+        tile_size: '01',
+        name: '01'
+      },
     },
     clario: {
       0: {

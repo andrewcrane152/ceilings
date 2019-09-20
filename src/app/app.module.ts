@@ -2,7 +2,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 
 // material.angular.io
@@ -99,6 +98,8 @@ import { DesignSeeyondComponent } from './design/right-components/design-seeyond
 import { DesignDimensionsComponent } from './design/right-components/design-dimensions/design-dimensions.component';
 import { DesignClarioDimensionsComponent } from './design/right-components/design-clario-dimensions/design-clario-dimensions.component';
 import { DesignCanvasGridControlsComponent } from './design/right-components/design-canvas-grid-controls/design-canvas-grid-controls.component';
+import { ClarioCloudGridComponent } from './canvas-grids/clario-cloud-grid/clario-cloud-grid.component';
+import { OptionsRightClarioCloudComponent } from './options/options-right-clario-cloud/options-right-clario-cloud.component';
 
 @NgModule({
   declarations: [
@@ -154,13 +155,14 @@ import { DesignCanvasGridControlsComponent } from './design/right-components/des
     DesignSeeyondComponent,
     DesignDimensionsComponent,
     DesignClarioDimensionsComponent,
-    DesignCanvasGridControlsComponent
+    DesignCanvasGridControlsComponent,
+    ClarioCloudGridComponent,
+    OptionsRightClarioCloudComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     HttpClientModule,
     Routing,
     BrowserAnimationsModule,

@@ -53,7 +53,6 @@ export class SeeyondFeature extends Feature {
 
   updateSeeyondFeature(seeyond_feature_type?: string) {
     if (seeyond_feature_type) {
-      this.debug.log('seeyond', `updateFeature: ${this.seeyond_feature_type}`);
       // default relief to false
       this.front_relief = this.back_relief = false;
       switch (seeyond_feature_type) {
@@ -78,11 +77,9 @@ export class SeeyondFeature extends Feature {
           this.front_relief = true;
           break;
         default:
-          {
-            this.seeyond_feature_index = 2;
-            this.seeyond_feature_type = 'wall';
-            this.front_relief = true;
-          }
+          this.seeyond_feature_index = 2;
+          this.seeyond_feature_type = 'wall';
+          this.front_relief = true;
           break;
       }
       this.seeyond_feature_type = seeyond_feature_type;

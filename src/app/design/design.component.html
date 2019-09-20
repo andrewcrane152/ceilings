@@ -18,7 +18,7 @@
             </span>
             <span class="guides-text sub-header">Guides</span>
           </span>
-          <span *ngIf="feature.feature_type !== 'seeyond'" class="three-d" appStyledButton='secondary-left'>
+          <span *ngIf="show3DViewButton" class="three-d" appStyledButton='secondary-left'>
             <button (click)="feature.view3d()" [disabled]="(!feature.tiles)">3D View</button>
           </span>
           <span *ngIf="feature.feature_type === 'seeyond'" class="download-img"

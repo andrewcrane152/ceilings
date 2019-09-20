@@ -8,11 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DesignMaterialsComponent extends DesignComponent implements OnInit {
   showTileSelection = true;
+  showApplyAllButton = true;
   ngOnInit() {
     this.materials = this.feature.getFeatureMaterials();
     this.featureTiles = this.feature.tilesArray[this.feature.feature_type];
-    if (this.feature.feature_type === 'hush' || this.feature.feature_type === 'hushSwoon') {
-      this.showTileSelection = false;
+    switch (this.feature.feature_type) {
+      case 'hush':
+        this.showTileSelection = false;
+        break;
+      case 'velo':
+        this.showApplyAllButton = false;
+        break;
+      case 'clario-cloud':
+        this.showTileSelection = false;
+        this.showApplyAllButton = false;
+        break;
+
     }
   }
 }
