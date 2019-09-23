@@ -40,11 +40,11 @@
         <div class="bottom-row" *ngIf="feature.showPricing">
           <div class="details-header">Est. Total</div>
           <div id="estimated-totals" class="info-section">
-            <div class="total-row">
+            <div class="info-line" *ngIf="feature.quantity > 1">
               <span>Design List:</span>
               <span class="total">{{feature.list_price / feature.quantity | currency:'USD'}}</span>
             </div>
-            <div class="total-row">
+            <div class="info-line" *ngIf="feature.quantity > 1">
               <span>Quantity:</span>
               <span class="total">{{feature.quantity}}</span>
             </div>
