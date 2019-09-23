@@ -7,13 +7,30 @@
     <mat-icon *ngIf="modify.expanded" svgIcon="accordian_close"></mat-icon>
   </mat-expansion-panel-header>
 
-  <div class="modify-selection">
+  <div class="modify-selection" *ngIf="useToolsArray">
     <span *ngFor="let tool of feature.toolsArray last as isLast; index as i" (click)="feature.updateSelectedTool(tool)" class="tool-container"
       [class.add-margin-left]="i === 2">
       <span class="expansion-panel-section-header">{{tool | capitalize}}</span>
       <span class="tool" [class.selected]="feature.selectedTool==tool" [class.add-border-right]="isLast || i === 1">
         <img src="/assets/icons/tools/{{tool}}.png" alt="{{tool | capitalize}}">
       </span>
+    </span>
+  </div>
+
+  <div class="modify-selection" *ngIf="!useToolsArray">
+    <span (click)="feature.updateSelectedTool('remove')" class="tool-container">
+      <span class="expansion-panel-section-header">Tile</span>
+      <span class="tool" [class.selected]="feature.selectedTool=='remove'">
+        <img src="/assets/icons/tools/remove.png" alt="Remove Tile From Cloud">
+      </span>
+      <span class="description-text">Remove</span>
+    </span>
+    <span (click)="feature.updateSelectedTool('rotate-clario-cloud')" class="tool-container spacer-left" *ngIf="feature.feature_type === 'clario-cloud'">
+      <span class="expansion-panel-section-header">Field</span>
+      <span class="tool">
+        <img src="/assets/icons/tools/rotate.png" alt="Rotate Cloud Pattern Direction">
+      </span>
+      <span class="description-text wrap-text rotate-text">Rotate Pattern Direction</span>
     </span>
   </div>
 </mat-expansion-panel>

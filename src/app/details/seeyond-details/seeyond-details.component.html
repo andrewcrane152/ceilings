@@ -42,8 +42,16 @@
           <div class="bottom-row">
             <div class="details-header">Est. Total</div>
             <div id="estimated-totals" class="info-section" *ngIf="feature.showPricing">
+              <div class="info-line" *ngIf="seeyond.quantity > 1">
+                <span>Design List:</span>
+                <span class="total">{{seeyond.list_price / seeyond.quantity | currency:'USD'}}</span>
+              </div>
+              <div class="info-line" *ngIf="seeyond.quantity > 1">
+                <span>Quantity:</span>
+                <span class="total">{{seeyond.quantity}}</span>
+              </div>
               <div class="info-line">
-                <span>List:</span>
+                <span>Total List:</span>
                 <span class="total">{{seeyond.list_price | currency:'USD'}}</span>
               </div>
               <div class="info-line">

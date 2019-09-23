@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { AlertService } from './alert.service';
@@ -20,7 +20,7 @@ export class SeeyondService {
   apiUrl = 'https://' + environment.API_URL + '/seeyonds/';
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private seeyond: SeeyondFeature,
     private user: User,
     public debug: DebugService,
@@ -31,7 +31,7 @@ export class SeeyondService {
 
   getMyFeatures() {
     return this.http.get(this.apiUrl + 'list/' + this.user.uid).pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
@@ -40,10 +40,10 @@ export class SeeyondService {
     this.debug.log('seeyond', 'Loading Feature');
     return this.http.get(this.apiUrl + id).pipe(
       map((res: Response) => {
-        this.debug.log('seeyond', res.json());
+        this.debug.log('seeyond', res);
         this.onLoaded.emit();
         this.debug.log('seeyond', 'emitting onLoaded');
-        return res.json();
+        return res;
       }),
       catchError(this.handleError)
     );
@@ -98,14 +98,12 @@ export class SeeyondService {
       quantity: this.seeyond.quantity
     };
     this.debug.log('seeyond', patchData);
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    const options = new RequestOptions({ headers: headers });
 
-    return this.http.patch(this.apiUrl + this.seeyond.id, patchData, options).pipe(
-      map((res: Response) => {
+    return this.http.patch(this.apiUrl + this.seeyond.id, patchData).pipe(
+      map((res: any) => {
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
-        return res.json() || {};
+        return res || {};
       }),
       catchError(this.handleError)
     );
@@ -160,7 +158,7 @@ export class SeeyondService {
       map((res: Response) => {
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
-        return res.json() || {};
+        return res || {};
       }),
       catchError(this.handleError)
     );
@@ -172,14 +170,14 @@ export class SeeyondService {
 
   sendEmail() {
     return this.http.get(this.apiUrl + 'email/' + this.user.uid + '/feature/' + this.seeyond.id).pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
 
   getPrices() {
     return this.http.get(this.apiUrl + 'prices').pipe(
-      map((res: Response) => res.json()),
+      map((res: Response) => res),
       catchError(this.handleError)
     );
   }
@@ -216,20 +214,20 @@ export class SeeyondService {
   }
 
   public handleError(error: HttpErrorResponse) {
-    // console.log(error);
-    if (error.status === 500) {
-      this.debug.log('api', error.message);
-      return;
-    }
-    // if (!!error.error.result.message) { this.alert.error(error.error.result.message); }
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      this.debug.log('api', `An error occurred: ${error.statusText}`);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      this.debug.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
-    }
+    console.log(error);
+    // if (error.status === 500) {
+    //   this.debug.log('api', error.message);
+    //   return;
+    // }
+    // // if (!!error.error.result.message) { this.alert.error(error.error.result.message); }
+    // if (error.error instanceof ErrorEvent) {
+    //   // A client-side or network error occurred. Handle it accordingly.
+    //   this.debug.log('api', `An error occurred: ${error.statusText}`);
+    // } else {
+    //   // The backend returned an unsuccessful response code.
+    //   // The response body may contain clues as to what went wrong,
+    //   this.debug.log('api', `Backend returned code ${error.status}, body was: ${error.message}`);
+    // }
     // return an ErrorObservable with a user-facing error message
     return throwError('Something bad happened; please try again later.');
   }

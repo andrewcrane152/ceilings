@@ -1,0 +1,49 @@
+.grid-and-guide img {
+  max-height: 200px;
+  max-width: 100%;
+}
+
+.design-img {
+  .img-title {
+    font-weight: 500;
+    font-size: 0.8em;
+  }
+  img {
+    max-height: 40px;
+  }
+}
+
+aside {
+  font-size: 0.9em;
+  max-width: 200px;
+}
+
+.colors {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.colors img {
+  max-width: 100%;
+  max-height: 35px;
+}
+
+.modify {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.modify img {
+  max-width: 100%;
+  max-height: 80px;
+}
+
+.controls {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.controls img {
+  max-width: 100%;
+  max-height: 70px;
+}

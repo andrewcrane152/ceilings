@@ -13,6 +13,7 @@ import { ifError } from 'assert';
 export class Feature {
   onBuildGrid = new EventEmitter();
   onBuildVeloGrid = new EventEmitter();
+  onBuildClarioCloudGrid = new EventEmitter();
   onBuildSwoonGrid = new EventEmitter();
   onApplyAll = new EventEmitter();
   onView3d = new EventEmitter();
@@ -24,6 +25,8 @@ export class Feature {
   onZoomGrid = new EventEmitter();
   onAdjustSwoonGridSize = new EventEmitter();
   onAdjustVeloGridSize = new EventEmitter();
+  onAdjustClarioCloudGridSize = new EventEmitter();
+  onRotateClarioCloudGrid = new EventEmitter();
 
   // attributes saved in DB
   public id: number;
@@ -60,6 +63,8 @@ export class Feature {
   public qtyTilesReceiving = 0;
   public grid_type: string = undefined;
   public canvasGridScale = 1.0;
+  public canvasGridColumns = 0;
+  public canvasGridRows = 0;
   public hushShippingInfo = {
     totalWeight: 0,
     boxesRecommended: {
@@ -116,7 +121,7 @@ export class Feature {
     this.estimated_amount = design.estimated_amount;
     this.list_price = design.list_price;
     this.discount_terms = design.discount_terms;
-    this.discount_terms_string = design.discount_terms_string;
+    this.discount_terms_string = this.formatDiscountTermsStr(design.discount_terms);
     this.discount_amount = design.discount_amount;
     this.dealer_markup = design.dealer_markup;
     this.net_price = design.net_price;
@@ -183,6 +188,9 @@ export class Feature {
       case 'velo':
         this.getVeloEstimate(tilesArray);
         break;
+      case 'clario-cloud':
+        this.getClarioCloudEstimate(tilesArray);
+        break;
       case 'hushSwoon':
         this.getHushSwoonEstimate(tilesArray);
         break;
@@ -196,7 +204,8 @@ export class Feature {
     const basePrice = this.estimated_amount * this.quantity;
     this.estimated_amount = basePrice;
     let discountedListPrice = (this.list_price = basePrice * this.dealer_markup);
-    this.discount_terms.map(discount => {
+    const termsArr = this.formatDiscountTermsStr(this.discount_terms_string).split('/');
+    termsArr.map(discount => {
       discountTermsString = discountTermsString.concat(`${discount}/`);
       discountedListPrice = discountedListPrice * (1 - discount * 0.01);
     });
@@ -605,6 +614,47 @@ export class Feature {
     this.debug.log('feature', '=====feature END HARDWARE =====');
   }
 
+  getClarioCloudEstimate(tilesArray?) {
+    // "S" tiles have different hardware and fab pricing because is being treated as a simplespec item
+    // cc indicates all the other clario-cloud tiles that aren't "S"
+
+    let ccTileCount = 0;
+    let sTileCount = 0;
+
+    const sTileHardwareCost = 51.36;
+    const sTileServicesCost = 346.21;
+    const sTileProductsCost = 82.43;
+
+    const ccTileHardwareCost = 45.60;
+    const ccTileServicesCost = 351.97;
+    const ccTileProductsCost = 82.43;
+
+    const dataArray = !!tilesArray ? tilesArray : this.gridData;
+    for (const ccTile in dataArray) {
+      if (dataArray.hasOwnProperty(ccTile)) {
+        const ccCurrentTile = dataArray[ccTile];
+        if (!!ccCurrentTile.material) {
+          switch (ccCurrentTile.tile) {
+            case 'S':
+              sTileCount += ccCurrentTile.purchased || 1;
+              break;
+            default:
+              ccTileCount += ccCurrentTile.purchased || 1;
+              break;
+          }
+        }
+      }
+    }
+    this.services_amount = (sTileServicesCost * sTileCount) + (ccTileServicesCost * ccTileCount);
+    const products_amount = (sTileProductsCost * sTileCount) + (ccTileProductsCost * ccTileCount);
+    const hardware_amount = (sTileHardwareCost * sTileCount) + (ccTileHardwareCost * ccTileCount);
+    this.hardware = {
+      '3-15-2411-K': ccTileCount,
+      '3-15-1677-K': sTileCount
+    }
+    this.estimated_amount = this.services_amount + products_amount + hardware_amount;
+  }
+
   getHushSwoonEstimate(tilesArray) {
     let hushSwoonTileCount = 0;
     const dataArray = !!tilesArray ? tilesArray : this.gridData;
@@ -659,6 +709,10 @@ export class Feature {
   }
 
   updateSelectedTool(tool: string) {
+    if (tool === 'rotate-clario-cloud') {
+      this.onRotateClarioCloudGrid.emit();
+      return;
+    }
     const oldTool = this.selectedTool;
     const newTool = tool;
     // if the tool they clicked on is already selected,
@@ -692,6 +746,9 @@ export class Feature {
     if (this.feature_type === 'velo') {
       this.debug.log('feature', 'emitting event buildVeloGrid');
       this.onBuildVeloGrid.emit();
+    } else if (this.feature_type === 'clario-cloud') {
+      this.debug.log('feature', 'emitting event buildClarioCloudGrid');
+      this.onBuildClarioCloudGrid.emit();
     } else if (this.feature_type === 'hushSwoon') {
       this.debug.log('feature', 'emitting event buildSwoonGrid');
       this.onBuildSwoonGrid.emit();
@@ -720,8 +777,8 @@ export class Feature {
       this.onBuildVeloGrid.emit();
     }
 
-    if (this.feature_type === 'hushSwoon') {
-      this.onBuildSwoonGrid.emit();
+    if (this.feature_type === 'clario-cloud') {
+      this.onBuildClarioCloudGrid.emit();
     }
   }
 
@@ -932,6 +989,34 @@ export class Feature {
         tiles = purchasedTiles;
         break;
 
+      case 'clario-cloud':
+        const clarioCloudTiles = this.clarioCloudTiles();
+        let ccPurchasedTiles: {};
+
+        for (const tile in clarioCloudTiles) {
+          if (clarioCloudTiles.hasOwnProperty(tile)) {
+            const ccTile = clarioCloudTiles[tile];
+            const ccKey = `${ccTile.material}-${ccTile.tile.toLowerCase()}`;
+            if (ccPurchasedTiles === undefined) {
+              ccPurchasedTiles = {};
+            }
+            if (!!ccPurchasedTiles[ccKey]) {
+              ccPurchasedTiles[ccKey].purchased++;
+              ccPurchasedTiles[ccKey].used++;
+            } else {
+              const imageUrl = `/assets/images/clario-cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
+              ccPurchasedTiles[ccKey] = {
+                purchased: 1,
+                image: imageUrl,
+                used: 1,
+                material: ccTile.material,
+                tile: ccTile.tile
+              };
+            }
+          }
+        }
+        tiles = ccPurchasedTiles;
+        break;
       case 'hushSwoon':
         const hsPkgQty: number = this.getPackageQty();
         const hsGridTiles = this.veloTiles();
@@ -1059,6 +1144,20 @@ export class Feature {
         break;
     }
 
+    function adjustedCCTileLabel (tile) {
+      switch (tile) {
+        case 'B':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'H':
+        case 'L':
+        case 'P':
+          return 'b';
+        default:
+          return tile.toLowerCase();
+      }
+    }
     this.tiles = tiles;
     return tiles;
   }
@@ -1137,6 +1236,16 @@ export class Feature {
     const veloTiles = [];
     for (const tile in this.gridData) {
       if (this.gridData[tile].texture !== '') {
+        veloTiles.push(this.gridData[tile]);
+      }
+    }
+    return veloTiles;
+  }
+
+  public clarioCloudTiles() {
+    const veloTiles = [];
+    for (const tile in this.gridData) {
+      if (this.gridData[tile].material !== '') {
         veloTiles.push(this.gridData[tile]);
       }
     }
@@ -1298,6 +1407,14 @@ export class Feature {
     });
 
     return c2cableCount;
+  }
+
+  public findClarioCloudTileAt(x, y) {
+    for (const el in this.gridData) {
+      if (this.gridData[el].x === x && this.gridData[el].y === y) {
+        return this.gridData[el];
+      }
+    }
   }
 
   public getVeloConnections(island: any): any[] {
@@ -1470,6 +1587,8 @@ export class Feature {
         return `Hush Blocks are sold in quantities of 1.`;
       case 'hushSwoon':
         return `Hush Swoon tiles are sold in quantities of 1.`;
+      case 'clario-cloud':
+        return `Clario Cloud modules are sold in quantities of 1.`;
       default:
         return `${this.feature_type} is sold in quantities of 4.`;
     }
@@ -1531,6 +1650,9 @@ export class Feature {
       case 'clario':
         requiredMaterials = this.materials.felt.sola;
         break;
+      case 'clario-cloud':
+        requiredMaterials = this.materials.felt.sola;
+        break;
       case 'velo':
         requiredMaterials = { felt: undefined, varia: undefined };
         requiredMaterials.felt = this.materials.felt.merino;
@@ -1588,8 +1710,37 @@ export class Feature {
       case 'hushSwoon':
       case 'hush-swoon':
         return 'Hush Swoon';
+      case 'clario-cloud':
+        return 'Clario Cloud';
       default:
         return this.feature_type.charAt(0).toUpperCase() + this.feature_type.slice(1);
     }
+  }
+
+  getFeatureUnitName(quantity = 'singular') {
+    const plural = quantity === 'plural';
+    let unitName;
+    switch (this.feature_type) {
+      case 'hush':
+      case 'tetria':
+      case 'velo':
+        unitName = plural ? 'tiles' : 'tile';
+        break;
+      case 'clario':
+        unitName = plural ? 'baffles' : 'baffle';
+        break;
+      case 'clario-cloud':
+        unitName = plural ? 'modules' : 'module';
+        break;
+    }
+    return unitName;
+  }
+
+  formatDiscountTermsStr(terms_str) {
+    let str = terms_str.replace(/[\[\]']+/g, '');
+    str = str.replace(/"/g, '');
+    str = str.replace(/,/g, '/');
+    this.discount_terms_string = str;
+    return str;
   }
 }

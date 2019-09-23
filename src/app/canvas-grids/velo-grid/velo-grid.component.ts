@@ -15,7 +15,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   adjustmentY = 48;
   tilesOutsideBoundary = [];
 
-  @ViewChild('veloCanvas')
+  @ViewChild('veloCanvas', { static: true })
   canvas;
 
   ngOnInit() {
@@ -47,7 +47,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         break;
     }
     const currentSelections = this.getDesignDecisions();
-    this.updateGridDisplayValues();
+    this.updateGridDisplay();
     this.renderVeloGrid();
     this.applySelectionsToNewGrid(currentSelections);
     this.doingGridSizeAdjust = false;

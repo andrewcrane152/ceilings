@@ -41,24 +41,32 @@
         <div class="bottom-row" *ngIf="feature.showPricing">
           <div class="details-header">Est. Total</div>
           <div id="estimated-totals" class="info-section">
-            <div class="info-line">
-              <span>List:</span>
-              <span  class="total">{{feature.list_price | currency:'USD'}}</span>
-            </div>
-            <div class="info-line">
-              <span>Discount:</span>
-              <span class="total">{{feature.discount_terms_string}}</span>
-            </div>
-            <div class="info-line">
-              <span>Discount amount:</span>
-              <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
-            </div>
-            <hr>
-            <div class="info-line net">
-              <span class="details-header">Net (USD):</span>
-              <span class="total details-header">{{feature.net_price | currency:'USD'}}</span>
-            </div>
-            <div class="description-text">Taxes, shipping & handling not included</div>
+          <div class="info-line" *ngIf="feature.quantity > 1">
+            <span>Design List:</span>
+            <span class="total">{{feature.list_price / feature.quantity | currency:'USD'}}</span>
+          </div>
+          <div class="info-line" *ngIf="feature.quantity > 1">
+            <span>Quantity:</span>
+            <span class="total">{{feature.quantity}}</span>
+          </div>
+          <div class="info-line">
+            <span>List Total:</span>
+            <span  class="total">{{feature.list_price | currency:'USD'}}</span>
+          </div>
+          <div class="info-line">
+            <span>Discount:</span>
+            <span class="total">{{feature.discount_terms_string}}</span>
+          </div>
+          <div class="info-line">
+            <span>Discount amount:</span>
+            <span class="total">{{feature.discount_amount | currency:'USD'}}</span>
+          </div>
+          <hr>
+          <div class="info-line net">
+            <span class="details-header">Net (USD):</span>
+            <span class="total details-header">{{feature.net_price | currency:'USD'}}</span>
+          </div>
+          <div class="description-text">Taxes, shipping & handling not included</div>
           </div>
         </div>
       </div>
@@ -70,18 +78,18 @@
           <div class="left">
             <div class="details-header">Feature</div>
             <div>{{featureHumanName}}</div>
-            <div>24" x 24" tiles</div> <!-- TODO make this dynamic -->
+            <div>{{featureUnitDescription}}</div>
             <div class="description-text">{{tilesSoldString}}</div>
           </div>
           <div class="right">
             <div class="details-header">Quantity</div>
-            <div>Tiles - {{totalReceiving}}</div> <!-- TODO baffles included -->
+            <div>{{feature.getFeatureUnitName('plural')}} - {{totalReceiving}}</div>
             <div>Designs - {{feature.quantity || 1}}</div>
             <div>Total - {{totalReceiving * (feature.quantity || 1)}}</div>
           </div>
         </div>
         <div class="bottom-row">
-          <div class="left">
+          <div class="left" *ngIf="!!dimensionStr">
             <div class="details-header">Dimensions</div>
             <div>{{dimensionStr}}</div>
           </div>

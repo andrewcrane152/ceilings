@@ -19,6 +19,7 @@
             <td class="sub-header" *ngIf="tile.image">
               <img src="{{tile.image}}" alt="{{tile.material}} - {{tile.tile}}" matTooltip="{{tooltip(tile)}}"
                 [matTooltipPosition]="position">
+              <span class="tile-name" *ngIf="showTileName">{{tile.material.toUpperCase()}} {{tile.tile}}</span>
             </td>
             <td class="sub-header" *ngIf="showUsedColumn">{{tile.used}}</td>
             <td class="sub-header" *ngIf="showReceivingColumn">{{tile.purchased}}</td>

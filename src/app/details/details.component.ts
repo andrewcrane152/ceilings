@@ -26,6 +26,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   public totalReceiving: number;
   public totalUnused: number;
   public tilesSoldString: string;
+  public featureUnitDescription: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,16 +52,17 @@ export class DetailsComponent implements OnInit, AfterContentInit {
           this.feature.feature_type = 'seeyond';
           this.isSeeyond = true;
           this.seeyondApi.loadFeature(designId).subscribe(design => {
-            if (!design.quoted) {
+            const loadedDesign = design as any;
+            if (!loadedDesign.quoted) {
               // not quoted
               const pathname = window.location.pathname.replace(/\/details/g, '');
               this.router.navigate([pathname]);
             } else {
               this.design = design;
-              this.tessellationStr = this.seeyond.getTessellationName(design.tessellation);
+              this.tessellationStr = this.seeyond.getTessellationName(loadedDesign.tessellation);
               this.debug.log('seeyond', design);
               // load the quoted design
-              this.api.getUserRep(design.uid).subscribe(rep => {
+              this.api.getUserRep(loadedDesign.uid).subscribe(rep => {
                 this.rep = rep;
                 this.setTemplateValues();
               });
@@ -68,17 +70,18 @@ export class DetailsComponent implements OnInit, AfterContentInit {
           });
         } else {
           this.api.loadDesign(designId).subscribe(design => {
-            if (design.is_quantity_order) {
+            const loadedDesign = design as any;
+            if (loadedDesign.is_quantity_order) {
               const newUrl = window.location.pathname.replace(/design/, 'quantity');
               this.router.navigate([newUrl]);
             }
-            if (!design.quoted) {
+            if (!loadedDesign.quoted) {
               // not quoted
               this.alert.error('Details are not available until a request for a quote is processed.');
-              this.router.navigate([design.feature_type, 'design', design.id]);
+              this.router.navigate([loadedDesign.feature_type, 'design', loadedDesign.id]);
             } else {
               // load the quoted design
-              this.api.getUserRep(design.uid).subscribe(rep => {
+              this.api.getUserRep(loadedDesign.uid).subscribe(rep => {
                 this.rep = rep;
                 this.feature.setDesign(design);
                 this.tilesArray = this.feature.getTilesPurchasedObj();
@@ -103,6 +106,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
     this.featureHumanName = this.feature.getFeatureHumanName();
     this.dimensionStr = this.setDimensionStr();
     this.tilesSoldString = this.feature.packageInformation();
+    this.featureUnitDescription = this.productSizeInfo();
     this.getTotals();
     this.feature.applyDealerPricing();
   }
@@ -133,8 +137,10 @@ export class DetailsComponent implements OnInit, AfterContentInit {
       case 'clario':
       case 'hushSwoon':
         return `${this.feature.width}${unitAbbreviation} W x ${this.feature.length}${unitAbbreviation} L`;
+      case 'clario-cloud':
+        return '';
       default:
-        return `TODO CREATE DEFAULT`;
+        return ``;
     }
   }
 
@@ -170,5 +176,22 @@ export class DetailsComponent implements OnInit, AfterContentInit {
     this.totalUsed = totalUsed;
     this.totalReceiving = totalReceiving;
     this.totalUnused = totalUnused;
+  }
+
+  public productSizeInfo() {
+    switch (this.feature.feature_type) {
+      case 'tetria':
+        return '24" x 24" tiles';
+      case 'clario':
+        return '24"x24" and 24"x48" baffles';
+      case 'velo':
+        return '';
+      case 'hush':
+        return `Various sized tiles`;
+      case 'clario-cloud':
+        return `48" x 48" modules`;
+      default:
+        return ``;
+    }
   }
 }

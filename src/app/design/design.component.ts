@@ -47,11 +47,11 @@ export class DesignComponent implements OnInit, OnDestroy {
   materials: any;
   tryingRequestQuote = false;
   canQtyOrder = false;
-  canvasGridFeatures = ['velo', 'profile', 'hushSwoon'];
+  canvasGridFeatures = ['velo', 'clario-cloud', 'profile', 'hushSwoon'];
   useCanvasGrid = false;
   useSeeyondGrid = false;
   useRepeatingGrid = false;
-  designFeatures = ['seeyond', 'tetria', 'clario', 'velo', 'hush', 'profile', 'hushSwoon'];
+  designFeatures = ['seeyond', 'tetria', 'clario', 'velo', 'hush', 'profile', 'hushSwoon', 'clario-cloud'];
 
   // right side expansion panels
   showDesign = false;
@@ -66,6 +66,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   quantitiesString = '';
   gridRequirementsString = '';
   showGuidesCheckbox = true;
+  show3DViewButton = true;
 
   constructor(
     public route: ActivatedRoute,
@@ -166,6 +167,9 @@ export class DesignComponent implements OnInit, OnDestroy {
                   this.feature.materialHex = '#dfdee0';
                   this.feature.materialType = 'felt';
                   this.feature.toolsArray = ['remove'];
+                } else if (this.feature.feature_type === 'clario-cloud') {
+                  this.feature.material = 'ruby'
+                  this.feature.toolsArray = ['remove', 'pattern-direction'];
                 } else if (this.feature.feature_type === 'hush') {
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
                   this.feature.toolsArray = ['remove'];
@@ -206,6 +210,9 @@ export class DesignComponent implements OnInit, OnDestroy {
             this.feature.material = 'milky-white';
             this.feature.materialHex = '#dfdee0';
             this.feature.materialType = 'felt';
+          } else if (this.feature.feature_type === 'clario-cloud') {
+            this.feature.material = 'ruby'
+            this.feature.toolsArray = ['remove', 'pattern-direction'];
           } else if (this.feature.feature_type === 'hushSwoon') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.hushSwoon[0]);
             this.feature.toolsArray = ['remove'];
@@ -277,6 +284,7 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'seeyond':
         this.showSeeyondOptions = true;
         this.showGuidesCheckbox = false;
+        this.show3DViewButton = false;
         break;
       case 'profile':
         this.showProfileFeatureSelection = true;
@@ -309,7 +317,13 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.showDimensions = true;
         this.showDesign = true;
         this.showModify = true;
-        // this.showGuidesCheckbox = false;
+        break;
+      case 'clario-cloud':
+        this.showDesign = true;
+        this.showModify = true;
+        // this.showCanvasGridControls = true;
+        this.showCanvasGridControls = false;
+        this.show3DViewButton = false;
         break;
       case 'hushSwoon':
         this.showDesign = true;
@@ -334,7 +348,7 @@ export class DesignComponent implements OnInit, OnDestroy {
     // load a dialog to edit the options
     const config = new MatDialogConfig();
     config.disableClose = true;
-    // config.height = '90%';
+    config.height = '90%';
     config.width = '80%';
     this.optionsDialogRef = this.dialog.open(OptionsComponent, config);
     this.optionsDialogRef
@@ -460,9 +474,13 @@ export class DesignComponent implements OnInit, OnDestroy {
     // get the grid with guides
     // make sure the guide is set to true
     this.feature.showGuide = true;
-    if (this.feature.feature_type === 'velo' || this.feature.feature_type === 'hushSwoon') {
+    if (this.feature.feature_type === 'velo') {
       const veloCanvas = document.querySelector('canvas');
       const dataURL = veloCanvas.toDataURL();
+      this.feature.design_data_url = dataURL;
+    } else if (this.feature.feature_type === 'clario-cloud') {
+      const ccCanvas = document.querySelector('canvas');
+      const dataURL = ccCanvas.toDataURL();
       this.feature.design_data_url = dataURL;
     } else if (this.feature.feature_type === 'seeyond') {
       this.seeyond.seeyondProfileImage();
@@ -511,8 +529,8 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   adjustCanvasGridSize(selection) {
     switch (this.feature.feature_type) {
-      case 'hushSwoon':
-        this.feature.onAdjustSwoonGridSize.emit(selection);
+      case 'clario-cloud':
+        this.feature.onAdjustClarioCloudGridSize.emit(selection);
         break;
       case 'velo':
         this.feature.onAdjustVeloGridSize.emit(selection);
@@ -522,8 +540,14 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   zoomCanvasGrid(direction) {
     if (direction === 'in') {
+      if (this.feature.canvasGridScale >= 2.0) {
+        return;
+      }
       this.feature.canvasGridScale = Math.min(Number((this.feature.canvasGridScale + 0.1).toFixed(1)), 2);
     } else if (direction === 'out') {
+      if (this.feature.canvasGridScale <= 0.5) {
+        return;
+      }
       this.feature.canvasGridScale = Math.max(Number((this.feature.canvasGridScale - 0.1).toFixed(1)), 0.4);
     }
     this.feature.onZoomGrid.emit();
@@ -551,7 +575,8 @@ export class DesignComponent implements OnInit, OnDestroy {
         if (!!designId) {
           // load requested id
           this.seeyondService.loadFeature(designId).subscribe(design => {
-            this.location.go(`seeyond/design/${design.name}/${design.id}`);
+            const loadedDesign = design as any;
+            this.location.go(`seeyond/design/${loadedDesign.name}/${loadedDesign.id}`);
             this.seeyond.loadSeeyondDesign(design);
           });
         } else {
