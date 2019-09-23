@@ -17,7 +17,7 @@
     </span>
   </div>
 
-  <div class="modify-selection" *ngIf="feature.feature_type === 'clario-cloud'">
+  <div class="modify-selection" *ngIf="!useToolsArray">
     <span (click)="feature.updateSelectedTool('remove')" class="tool-container">
       <span class="expansion-panel-section-header">Tile</span>
       <span class="tool" [class.selected]="feature.selectedTool=='remove'">
@@ -25,7 +25,7 @@
       </span>
       <span class="description-text">Remove</span>
     </span>
-    <span (click)="feature.updateSelectedTool('rotate-clario-cloud')" class="tool-container spacer-left">
+    <span (click)="feature.updateSelectedTool('rotate-clario-cloud')" class="tool-container spacer-left" *ngIf="feature.feature_type === 'clario-cloud'">
       <span class="expansion-panel-section-header">Field</span>
       <span class="tool">
         <img src="/assets/icons/tools/rotate.png" alt="Rotate Cloud Pattern Direction">

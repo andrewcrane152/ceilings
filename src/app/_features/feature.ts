@@ -997,7 +997,7 @@ export class Feature {
               ccPurchasedTiles[ccKey].purchased++;
               ccPurchasedTiles[ccKey].used++;
             } else {
-              const imageUrl = `/assets/images/clario_cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
+              const imageUrl = `/assets/images/clario-cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
               ccPurchasedTiles[ccKey] = {
                 purchased: 1,
                 image: imageUrl,
