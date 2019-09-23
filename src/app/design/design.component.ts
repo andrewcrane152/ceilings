@@ -321,7 +321,8 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'clario-cloud':
         this.showDesign = true;
         this.showModify = true;
-        this.showCanvasGridControls = true;
+        // this.showCanvasGridControls = true;
+        this.showCanvasGridControls = false;
         this.show3DViewButton = false;
         break;
       case 'hushSwoon':
