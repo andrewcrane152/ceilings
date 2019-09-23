@@ -154,6 +154,15 @@
         </div>
       </div>
 
+      <div class="options-footer" class="left-section">
+        <span appStyledButton='primary-right'>
+          <button type="submit" (click)='startDesigning()' class="start-designing" [disabled]="!validateOptions()">Start
+            designing</button>
+        </span>
+        <span appStyledButton='secondary-left' *ngIf="showQuantityBtn">
+          <button (click)="goToQty()" class="go-to-quantity">Order by quantity</button>
+        </span>
+      </div>
 
     </div>
     <!-- END LEFT COLUMN -->
@@ -163,6 +172,7 @@
     <!-- BEGIN RIGHT COLUMN -->
     <div class="right-column">
       <app-options-right-clario *ngIf="feature.feature_type==='clario'"></app-options-right-clario>
+      <app-options-right-clario-cloud *ngIf="feature.feature_type==='clario-cloud'"></app-options-right-clario-cloud>
       <app-options-right-profile *ngIf="feature.feature_type==='profile'"></app-options-right-profile>
       <app-options-right-seeyond *ngIf="feature.feature_type==='seeyond'"></app-options-right-seeyond>
       <app-options-right-tetria *ngIf="feature.feature_type==='tetria'"></app-options-right-tetria>
@@ -172,7 +182,7 @@
     </div>
     <!-- END RIGHT COLUMN -->
   </div>
-  <div class="options-footer">
+  <!-- <div class="options-footer">
     <span appStyledButton='primary-right'>
       <button type="submit" (click)='startDesigning()' class="start-designing" [disabled]="!validateOptions()">Start
         designing</button>
@@ -180,5 +190,5 @@
     <span appStyledButton='secondary-left' *ngIf="showQuantityBtn">
       <button (click)="goToQty()" class="go-to-quantity">Order by quantity</button>
     </span>
-  </div>
+  </div> -->
 </div>

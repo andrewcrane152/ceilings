@@ -19,7 +19,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   public tilesArray: any;
   public tileType: string;
   public units: string;
-  private uiType = 'design';
+  uiType = 'design';
 
   isSeeyond = false;
   isQuantityOrder = false;
@@ -76,7 +76,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.formattedWidth = `${this.feature.width}${this.units}`;
       this.formattedLength = `${this.feature.length}${this.units}`;
     }
-    if (this.isQuantityOrder) {
+    if (this.isQuantityOrder || this.feature.feature_type === 'clario-cloud') {
       this.formattedWidth = '';
       this.formattedLength = '';
     }
@@ -174,7 +174,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     this.seeyond.project_name = this.feature.project_name;
     this.seeyond.specifier = this.feature.specifier;
     if (this.seeyond.id) {
-      this.seeyondApi.updateFeature().subscribe(feature => {
+      this.seeyondApi.updateFeature().subscribe((feature: any) => {
         // send seeyond design email after we have saved.
         this.seeyondApi.sendEmail().subscribe(response => {
           this.debug.log('quote-dialog', response);
@@ -189,7 +189,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     } else {
       // set the design name to something simple
       this.seeyond.design_name = this.seeyond.seeyond_feature_type + ' - ' + this.getToday();
-      this.seeyondApi.saveFeature().subscribe(feature => {
+      this.seeyondApi.saveFeature().subscribe((feature: any) => {
         // send seeyond design email after we have saved.
         // set the feature to what was returned.
         this.seeyond.id = feature.seeyond.id;
