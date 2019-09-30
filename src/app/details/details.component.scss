@@ -92,18 +92,19 @@
   }
 
   .bottom-section {
-    display: flex;
-    justify-content: space-between;
+    .design-img {
+      display: block;
+      width: 100%;
+      max-height: 800px;
 
-    .left-side {
-      width: 49%;
-    }
-
-    .right-side {
-      width: 49%;
 
       div {
         margin-bottom: 10px;
+      }
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
       }
     }
   }
