@@ -34,10 +34,10 @@ export interface ClarioCloudTile {
   styleUrls: ['../canvas-grids.component.scss', './clario-cloud-grid.component.scss']
 })
 export class ClarioCloudGridComponent extends CanvasGridsComponent implements OnInit {
-  rows = 5;
-  columns = 8;
-  adjustmentX = 96;
-  adjustmentY = 96;
+  rows = 20;
+  columns = 30;
+  adjustmentX = 64;
+  adjustmentY = 64;
   tilesOutsideBoundary = [];
   cloudDirection = 'right';
 
@@ -97,8 +97,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
   renderClarioCloudGrid() {
     const canvas = this.canvas.nativeElement;
-    canvas.width = 96 * this.columns * this.feature.canvasGridScale + 10;
-    canvas.height = 96 * this.rows * this.feature.canvasGridScale + 10;
+    canvas.width = 64 * this.columns * this.feature.canvasGridScale + 10;
+    canvas.height = 64 * this.rows * this.feature.canvasGridScale + 10;
 
     const ctx = canvas.getContext('2d');
     ctx.lineWidth = 1;
@@ -123,6 +123,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         );
       }
     }
+    const ccCanvas = document.querySelector('canvas');
+    const dataURL = ccCanvas.toDataURL();
+    this.feature.design_data_url = dataURL;
   }
 
 
@@ -166,8 +169,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     const showGuide = this.feature.showGuide;
     const tile = this.feature.gridData[index];
     const square = [];
-    const xcoords = [0 * canvasScale, 0 * canvasScale, 96 * canvasScale, 96 * canvasScale];
-    const ycoords = [0 * canvasScale, 96 * canvasScale, 96 * canvasScale, 0 * canvasScale];
+    const xcoords = [0 * canvasScale, 0 * canvasScale, 64 * canvasScale, 64 * canvasScale];
+    const ycoords = [0 * canvasScale, 64 * canvasScale, 64 * canvasScale, 0 * canvasScale];
 
     for (let i = 0; i < xcoords.length; ++i) {
       square[i] = [xcoords[i] + x, ycoords[i] + y];
@@ -184,8 +187,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         cloud_direction: this.cloudDirection,
         texture: '',
         material: '',
-        width: 96,
-        height: 96,
+        width: 64,
+        height: 64,
         neighbors: this.getNeighborsData(column, row)
       });
     }
@@ -202,8 +205,8 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
     function labelTiles(ctx, xStart, yStart) {
       ctx.font = '20px Arial';
-      const textXStart = (xStart + 40 * canvasScale);
-      const textYStart = (yStart + 40 * canvasScale);
+      const textXStart = (xStart + 24 * canvasScale);
+      const textYStart = (yStart + 24 * canvasScale);
       ctx.fillStyle = 'white';
       ctx.fillRect(textXStart - 4, textYStart - 18, 24, 24);
       ctx.fillStyle = 'black';
@@ -248,17 +251,17 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       switch (cloudDirection) {
         case 'right':
         case 'down':
-          coords.xStart = x1 - 10;
-          coords.yStart = y1 - 10;
-          coords.xLength = x2 - x1 + 20;
-          coords.yLength = y2 - y1 + 20;
+          coords.xStart = x1 - 5;
+          coords.yStart = y1 - 5;
+          coords.xLength = x2 - x1 + 10;
+          coords.yLength = y2 - y1 + 10;
           break;
         case 'left':
         case 'up':
-          coords.xStart = x2 - 10;
-          coords.yStart = y2 - 10;
-          coords.xLength = x1 - x2 + 20;
-          coords.yLength = y1 - y2 + 20;
+          coords.xStart = x2 - 5;
+          coords.yStart = y2 - 5;
+          coords.xLength = x1 - x2 + 10;
+          coords.yLength = y1 - y2 + 10;
           break;
       }
       return coords;
@@ -305,16 +308,16 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       let coords;
       switch (cloudDirection) {
         case 'right':
-          coords = [33, 60, 63, 60];
+          coords = [20, 42, 42, 42];
           break;
         case 'down':
-          coords = [48, 50, 48, 80];
+          coords = [32, 32, 32, 56];
           break;
         case 'left':
-          coords = [63, 60, 33, 60];
+          coords = [42, 42, 20, 42];
           break;
         case 'up':
-          coords = [48, 80, 48, 50];
+          coords = [32, 56, 32, 32];
           break;
       }
       for (let i = 0; i < coords.length; i++) {
@@ -348,7 +351,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         const xStart = Math.round((tile.square[0][0]) * canvasScale);
         const yStart = Math.round((tile.square[0][1]) * canvasScale);
         console.log(`xStart: ${xStart}, yStart: ${yStart}`);
-        ctx.drawImage(bgImg, xStart, yStart, 96 * canvasScale, 96 * canvasScale);
+        ctx.drawImage(bgImg, xStart, yStart, 64 * canvasScale, 64 * canvasScale);
         if (showGuide) {
           labelTiles(ctx, xStart, yStart);
         }
