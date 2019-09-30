@@ -123,6 +123,9 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
         );
       }
     }
+    const ccCanvas = document.querySelector('canvas');
+    const dataURL = ccCanvas.toDataURL();
+    this.feature.design_data_url = dataURL;
   }
 
 
