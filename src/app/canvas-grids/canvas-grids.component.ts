@@ -74,11 +74,10 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.hRulerSections = 17;
         break;
       case 'clario-cloud':
-        // the base grid is 5 rows and 8 columns
-        this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
-        this.rulerImgBackgroundWidth = 49;
-        this.vRulerSections = !!this.feature.canvasGridRows ? (this.feature.canvasGridRows * 2 + 1) : 11;
-        this.hRulerSections = !!this.feature.canvasGridColumns ? (this.feature.canvasGridColumns * 2 + 1) : 17;
+        this.rulerMultiplier = 48;
+        this.rulerImgBackgroundWidth = 100;
+        this.vRulerSections = 21;
+        this.hRulerSections = 31;
         break;
     }
     this.updateGridDisplay();
@@ -98,14 +97,13 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.labelWidth = `${rulerSectionWidth}px`;
         break;
       case 'clario-cloud':
-        const ninetySix = Math.round(96 * this.feature.canvasGridScale);
-        const fourtyEight = Math.round(48 * this.feature.canvasGridScale);
-        this.canvasWidth = ninetySix * this.columns;
-        this.canvasHeight = ninetySix * this.rows;
-        this.rulerBackgroundSize = `${fourtyEight}px 15px`;
-        this.rulerHeight = `${fourtyEight * this.vRulerSections - (fourtyEight - 5)}px`;
-        this.rulerWidth = `${fourtyEight * this.hRulerSections - (fourtyEight - 5)}px`;
-        this.labelWidth = `${fourtyEight}px`;
+        const sixtyFour = Math.round(64 * this.feature.canvasGridScale);
+        this.canvasWidth = sixtyFour * this.columns;
+        this.canvasHeight = sixtyFour * this.rows;
+        this.rulerBackgroundSize = `${sixtyFour}px 15px`;
+        this.rulerHeight = `${sixtyFour * this.vRulerSections - (sixtyFour - 5)}px`;
+        this.rulerWidth = `${sixtyFour * this.hRulerSections - (sixtyFour - 5)}px`;
+        this.labelWidth = `${sixtyFour}px`;
         break;
       case 'hushSwoon':
         this.canvasWidth = 59 * this.columns + 27;

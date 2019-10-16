@@ -1004,7 +1004,8 @@ export class Feature {
               ccPurchasedTiles[ccKey].purchased++;
               ccPurchasedTiles[ccKey].used++;
             } else {
-              const imageUrl = `/assets/images/clario-cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
+              let imageUrl = `/assets/images/clario-cloud/${ccTile.material}/${adjustedCCTileLabel(ccTile.tile)}-${ccTile.cloud_direction}-${ccTile.material}.png`;
+              imageUrl = imageUrl.replace(/_/g, '-');
               ccPurchasedTiles[ccKey] = {
                 purchased: 1,
                 image: imageUrl,
