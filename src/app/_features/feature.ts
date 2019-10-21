@@ -503,8 +503,6 @@ export class Feature {
     // HARDWARE AMOUNT
     let hardware_amount: number;
     let hardwareCost = 0.0;
-    let cableCount: number;
-    let cableCost = 0.0;
     const cableKitCost = 12.84;
     const variaConnectionKitCost = 7.06;
     const feltConnectionKitCost = 0.48;
@@ -512,10 +510,12 @@ export class Feature {
     const variaPunchToolCost = 18.02;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
-    let cablesNeeded = 0;
+    // let cablesNeeded = 0;
     let variaPunchToolNeeded = false;
     let C1cableKit = 0;
+    const C1cableKitCost = 12.84;
     let C2cableKit = 0;
+    const C2cableKitCost = 14.54;
 
     // CABLE COST CALCULATION
     // we need to calculate the cable hardware for each individual island
@@ -533,40 +533,7 @@ export class Feature {
         C2cableKit += cableTypesNeeded[1];
         console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
 
-        // ratio = (number_of_shared_edges / number_of_tiles)
-        // if ratio < 1 then cableCount = Math.ceil(cables * .75)
-        // if ratio > 1 then cableCount = Math.ceil(cables * .5)
-        // this is the total number of purchased tiles
-        // this is the number of tiles in the design
 
-        //     __          __  _____
-        //    / /_  ____  / /_/ __(_)  __
-        //   / __ \/ __ \/ __/ /_/ / |/_/
-        //  / / / / /_/ / /_/ __/ />  <
-        // /_/ /_/\____/\__/_/ /_/_/|_|
-
-        // August 27th 2018
-        // We are setting the cables to be 1:1 with the number of tiles
-        // in order to address an issue with cantilevered features
-        // until such time as we are able to create a more permanent fix.
-
-        // const ratio = sharedEdges / tilesInIsland;
-        // const factor = 1;
-        // cableCount = Math.ceil(tilesInIsland * factor);
-
-        // // If shared edges is 1 less than total tiles, set cableCount to sharedEdges
-        // if (sharedEdges + 1 === tilesInIsland) {
-        //   cableCount = sharedEdges;
-        // }
-        // // Minimum of 2 cables.
-        // cableCount = cableCount < 2 ? 2 : cableCount;
-        // cableCost += cableCount * cableKitCost;
-
-        cableCount = tilesInIsland;
-        cableCost += cableCount * cableKitCost;
-
-        // Add the cables for this island to the total cables needed
-        cablesNeeded += cableCount;
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
@@ -576,23 +543,10 @@ export class Feature {
         // Add the connections to the running total
         variaConnectionKitsNeeded += islandConnections['variaToVaria'];
         feltConnectionKitsNeeded += islandConnections['variaToFelt'] + islandConnections['feltToFelt'];
-
-        this.debug.log('feature', `shared edges: ${sharedEdges}`);
-        this.debug.log('feature', `total tiles: ${tilesInIsland}`);
-        this.debug.log('feature', `connections ${islandConnections}`);
-        // this.debug.log('feature', `ratio: ${ratio}`);
-        // this.debug.log('feature', `factor: ${factor}`);
-        this.debug.log('feature', `cables: ${cableCount}`);
       }
     }
     // END CABLE COST CALCULATION
-
-    this.debug.log('feature', `Total Cable cost: ${cableCost}`);
-    this.debug.log('feature', `Total hardware cost: ${hardwareCost}`);
-    this.debug.log('feature', `Varia Kits needed: ${variaConnectionKitsNeeded}`);
-    this.debug.log('feature', `Felt Kits needed: ${feltConnectionKitsNeeded}`);
-    this.debug.log('feature', `Total cables needed: ${cablesNeeded}`);
-    hardware_amount = cableCost + hardwareCost + drillBitCost;
+    hardware_amount = (C1cableKit * C1cableKitCost) + (C2cableKit * C2cableKitCost) + hardwareCost + drillBitCost;
     if (this.veloHasVaria()) {
       hardware_amount += variaPunchToolCost;
       variaPunchToolNeeded = true;
@@ -603,7 +557,8 @@ export class Feature {
     // save the hardware amounts
     this.hardware = {
       '3-15-8812': 1, // drillBit
-      '3-15-1677-K': cablesNeeded,
+      '3-15-1677-K': C1cableKit,
+      '3-85-120-K': C2cableKit,
       '3-15-8899-K': variaConnectionKitsNeeded,
       '3-85-105-K': feltConnectionKitsNeeded,
       '3-15-8813': variaPunchToolNeeded ? 1 : 0

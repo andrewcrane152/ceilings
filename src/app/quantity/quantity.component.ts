@@ -183,7 +183,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
     if (this.feature.feature_type === 'hush') {
       const tilesObj = JSON.parse(qtyOrder.tiles);
       if (!!tilesObj) {
-        console.warn(tilesObj);
         for (const tileType in tilesObj) {
           // if (tilesObj.hasOwnProperty(tileType)) {
             // console.log('tilesObj:', tilesObj);
@@ -197,7 +196,6 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
         }
       }
       qtyOrder.tiles = JSON.stringify(tilesObj);
-      console.warn('tiles:', qtyOrder.tiles)
     }
     // this.feature.showMainNavbar.emit(true);
     this.qtySrv.order.data = [];
