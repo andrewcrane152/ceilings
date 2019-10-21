@@ -503,8 +503,6 @@ export class Feature {
     // HARDWARE AMOUNT
     let hardware_amount: number;
     let hardwareCost = 0.0;
-    let cableCount: number;
-    let cableCost = 0.0;
     const cableKitCost = 12.84;
     const variaConnectionKitCost = 7.06;
     const feltConnectionKitCost = 0.48;
@@ -512,8 +510,12 @@ export class Feature {
     const variaPunchToolCost = 18.02;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
-    let cablesNeeded = 0;
+    // let cablesNeeded = 0;
     let variaPunchToolNeeded = false;
+    let C1cableKit = 0;
+    const C1cableKitCost = 12.84;
+    let C2cableKit = 0;
+    const C2cableKitCost = 14.54;
 
     // CABLE COST CALCULATION
     // we need to calculate the cable hardware for each individual island
@@ -526,40 +528,12 @@ export class Feature {
         const tilesInIsland = island.length;
         const islandConnections = this.getVeloConnections(island);
         const sharedEdges = islandConnections['totalConnections'];
+        const cableTypesNeeded = this.getVeloCables(island, sharedEdges);
+        C1cableKit += cableTypesNeeded[0];
+        C2cableKit += cableTypesNeeded[1];
+        console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
 
-        // ratio = (number_of_shared_edges / number_of_tiles)
-        // if ratio < 1 then cableCount = Math.ceil(cables * .75)
-        // if ratio > 1 then cableCount = Math.ceil(cables * .5)
-        // this is the total number of purchased tiles
-        // this is the number of tiles in the design
 
-        //     __          __  _____
-        //    / /_  ____  / /_/ __(_)  __
-        //   / __ \/ __ \/ __/ /_/ / |/_/
-        //  / / / / /_/ / /_/ __/ />  <
-        // /_/ /_/\____/\__/_/ /_/_/|_|
-
-        // August 27th 2018
-        // We are setting the cables to be 1:1 with the number of tiles
-        // in order to address an issue with cantilevered features
-        // until such time as we are able to create a more permanent fix.
-
-        // const ratio = sharedEdges / tilesInIsland;
-        // const factor = 1;
-        // cableCount = Math.ceil(tilesInIsland * factor);
-
-        // // If shared edges is 1 less than total tiles, set cableCount to sharedEdges
-        // if (sharedEdges + 1 === tilesInIsland) {
-        //   cableCount = sharedEdges;
-        // }
-        // // Minimum of 2 cables.
-        // cableCount = cableCount < 2 ? 2 : cableCount;
-        // cableCost += cableCount * cableKitCost;
-
-        cableCount = tilesInIsland;
-        cableCost += cableCount * cableKitCost;
-        // Add the cables for this island to the total cables needed
-        cablesNeeded += cableCount;
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
@@ -569,23 +543,10 @@ export class Feature {
         // Add the connections to the running total
         variaConnectionKitsNeeded += islandConnections['variaToVaria'];
         feltConnectionKitsNeeded += islandConnections['variaToFelt'] + islandConnections['feltToFelt'];
-
-        this.debug.log('feature', `shared edges: ${sharedEdges}`);
-        this.debug.log('feature', `total tiles: ${tilesInIsland}`);
-        this.debug.log('feature', `connections ${islandConnections}`);
-        // this.debug.log('feature', `ratio: ${ratio}`);
-        // this.debug.log('feature', `factor: ${factor}`);
-        this.debug.log('feature', `cables: ${cableCount}`);
       }
     }
     // END CABLE COST CALCULATION
-
-    this.debug.log('feature', `Total Cable cost: ${cableCost}`);
-    this.debug.log('feature', `Total hardware cost: ${hardwareCost}`);
-    this.debug.log('feature', `Varia Kits needed: ${variaConnectionKitsNeeded}`);
-    this.debug.log('feature', `Felt Kits needed: ${feltConnectionKitsNeeded}`);
-    this.debug.log('feature', `Total cables needed: ${cablesNeeded}`);
-    hardware_amount = cableCost + hardwareCost + drillBitCost;
+    hardware_amount = (C1cableKit * C1cableKitCost) + (C2cableKit * C2cableKitCost) + hardwareCost + drillBitCost;
     if (this.veloHasVaria()) {
       hardware_amount += variaPunchToolCost;
       variaPunchToolNeeded = true;
@@ -596,7 +557,8 @@ export class Feature {
     // save the hardware amounts
     this.hardware = {
       '3-15-8812': 1, // drillBit
-      '3-15-1677-K': cablesNeeded,
+      '3-15-1677-K': C1cableKit,
+      '3-85-120-K': C2cableKit,
       '3-15-8899-K': variaConnectionKitsNeeded,
       '3-85-105-K': feltConnectionKitsNeeded,
       '3-15-8813': variaPunchToolNeeded ? 1 : 0
@@ -1310,6 +1272,97 @@ export class Feature {
         return this.gridData[el];
       }
     }
+  }
+
+  getVeloCables(island: any, sharedEdges): any[] {
+    let cableKit1 = 0;
+    let cableKit2 = 0;
+    const veloTiles = [];
+    const edgesArr = [0, 0, 0, 0, 0, 0];
+
+    for (const i in island) {
+      if (island.hasOwnProperty(i)) {
+        veloTiles.push(this.gridData[island[i]]);
+      }
+    }
+
+    const ratio = sharedEdges / veloTiles.length;
+
+    // loop through the tiles and set the number of actualNeighbors for
+    for (const i in veloTiles) {
+      if (veloTiles.hasOwnProperty(i)) {
+        // actualNeighbor indicates that there is a tile selected for the neighboring space
+        let actualNeighbors = 0;
+        let neighborCount = 0;
+        for (const j in veloTiles[i].neighbors) {
+          if (veloTiles[i].neighbors.hasOwnProperty(j)) {
+            neighborCount++;
+            const neighbor = this.findVeloTileAt(veloTiles[i].neighbors[j][0], veloTiles[i].neighbors[j][1]);
+            if (!!neighbor.material) {
+              actualNeighbors++;
+            }
+          }
+        }
+        veloTiles[i].actualNeighbors = actualNeighbors;
+        edgesArr[actualNeighbors]++;
+      }
+    }
+
+    // adjust count of tiles to start at 1
+
+    // test for just one edge (if it's an end piece)
+    // test for two adjacent neighbors in the loop or first/last only
+
+    console.log('shared edges/tiles ratio:', ratio);
+    console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
+
+    if (ratio <= 1.15) {
+      cableKit1 = Math.ceil(edgesArr.reduce((a, b) => a + b) * 0.75);
+      cableKit2 = this.findVeloFeatureC2s(veloTiles);
+    } else if (ratio > 1.15 && ratio <= 1.5) {
+      cableKit1 = Math.ceil(edgesArr[5] * 0.3) + Math.ceil(edgesArr[4] * 0.6) + Math.ceil(edgesArr[3] * 0.75) + Math.ceil(edgesArr[2] * 0.8);
+      cableKit2 = edgesArr[1] + Math.ceil(edgesArr[2] * 0.6);
+    } else if (ratio > 1.5) {
+      cableKit1 = Math.ceil(edgesArr[5] * 0.85) + Math.ceil(edgesArr[4] * 0.85) + Math.ceil(edgesArr[3] * 0.85) + Math.ceil(edgesArr[2] * 0.8);
+      cableKit2 = edgesArr[1] + edgesArr[2];
+    }
+    return [cableKit1, cableKit2];
+  }
+
+  private findVeloFeatureC2s(veloTiles) {
+    let c2cableCount = 0;
+
+    veloTiles.map(tile => {
+      let isNeighborArr = [];
+
+      tile.neighbors.map(neighborCoord => {
+        const neighbor = this.findVeloTileAt(neighborCoord[0], neighborCoord[1]);
+        isNeighborArr.push(!!neighbor.material ? 1 : 0);
+      });
+
+      const isNeighborArrTotal = isNeighborArr.reduce((a, b) => a + b, 0);
+
+      // Add a c2 cable if a feature has only one neighboor add a neighbor
+      if (isNeighborArrTotal === 1) {
+        c2cableCount++;
+      }
+
+      // Add a C2 cable if a feature has any tiles with only two neihbors that are adjacent to each other
+      if (isNeighborArrTotal === 2) {
+        for (let xx = 0; xx < isNeighborArr.length; xx++) {
+          if (isNeighborArr[xx] === 1 && isNeighborArr[xx] === isNeighborArr[xx + 1]) {
+            c2cableCount++;
+          }
+        }
+        if (isNeighborArr[0] === 1 && isNeighborArr[4] === 1) {
+          c2cableCount++;
+        }
+      }
+
+      isNeighborArr = [];
+    });
+
+    return c2cableCount;
   }
 
   public findClarioCloudTileAt(x, y) {
