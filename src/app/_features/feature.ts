@@ -1290,8 +1290,10 @@ export class Feature {
           if (veloTiles[i].neighbors.hasOwnProperty(j)) {
             neighborCount++;
             const neighbor = this.findVeloTileAt(veloTiles[i].neighbors[j][0], veloTiles[i].neighbors[j][1]);
-            if (!!neighbor.material) {
-              actualNeighbors++;
+            if (!!neighbor) {
+              if (!!neighbor.material) {
+                actualNeighbors++;
+              }
             }
           }
         }
@@ -1331,7 +1333,11 @@ export class Feature {
 
       tile.neighbors.map(neighborCoord => {
         const neighbor = this.findVeloTileAt(neighborCoord[0], neighborCoord[1]);
-        isNeighborArr.push(!!neighbor.material ? 1 : 0);
+        if (!neighbor) {
+          isNeighborArr.push(0);
+        } else {
+          isNeighborArr.push(!!neighbor.material ? 1 : 0);
+        }
       });
 
       const isNeighborArrTotal = isNeighborArr.reduce((a, b) => a + b, 0);
