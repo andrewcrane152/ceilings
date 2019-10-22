@@ -489,28 +489,22 @@ export class Feature {
 
     variaSheetsNeeded = Math.ceil(veloVariaTiles / 8);
     variaDiffusionSheetsNeeded = Math.ceil(veloVariaDiffusionTiles / 8);
-    this.debug.log('feature', `varia sheets needed, ${variaSheetsNeeded}`);
-    this.debug.log('feature', `varia diffusion sheets needed ${variaDiffusionSheetsNeeded}`);
     products_amount = variaSheetsNeeded * variaSheetCost + variaDiffusionSheetsNeeded * variaDiffusionSheetCost;
 
     // SERVICES AMOUNT
     const veloFeltServiceCost = 79.57;
     const veloVariaServiceCost = 81.11;
     this.services_amount = veloFeltTiles * veloFeltServiceCost + (veloVariaTiles + veloVariaDiffusionTiles) * veloVariaServiceCost;
-    // this.debug.logfeature', ('=== SERVICES AMOUNT ===');
-    // this.debug.logfeature', (this.services_amount);
 
     // HARDWARE AMOUNT
     let hardware_amount: number;
     let hardwareCost = 0.0;
-    const cableKitCost = 12.84;
     const variaConnectionKitCost = 7.06;
     const feltConnectionKitCost = 0.48;
     const drillBitCost = 11.08;
     const variaPunchToolCost = 18.02;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
-    // let cablesNeeded = 0;
     let variaPunchToolNeeded = false;
     let C1cableKit = 0;
     const C1cableKitCost = 12.84;
@@ -532,8 +526,6 @@ export class Feature {
         C1cableKit += cableTypesNeeded[0];
         C2cableKit += cableTypesNeeded[1];
         console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
-
-
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
@@ -1326,6 +1318,8 @@ export class Feature {
       cableKit1 = Math.ceil(edgesArr[5] * 0.85) + Math.ceil(edgesArr[4] * 0.85) + Math.ceil(edgesArr[3] * 0.85) + Math.ceil(edgesArr[2] * 0.8);
       cableKit2 = edgesArr[1] + edgesArr[2];
     }
+    // any stand alone tiles need to have a second cableKit2 added
+    cableKit1 += edgesArr[0];
     return [cableKit1, cableKit2];
   }
 
