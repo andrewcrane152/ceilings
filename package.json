@@ -3,6 +3,7 @@
   "version": "0.0.78",
   "license": "MIT",
   "scripts": {
+    "build:production": "ng build --configuration=production",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
