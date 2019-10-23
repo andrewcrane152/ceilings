@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  app:
+    image: "3form/design:${TAG:-latest}"
+    ports:
+      - "8080:80"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+      restart_policy:
+        condition: any # This is already the default
+    healthcheck:
+      test: wget --quiet --tries=1 --spider http://localhost/ || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    environment:
+      TZ: America/Denver
