@@ -1,0 +1,49 @@
+pipeline {
+  agent any
+
+  options {
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    RAILS_ENV = 'production'
+    REGISTRY = '3form/design'
+    REGISTRY_CREDENTIAL = 'dockerhub'
+    TAG = sh (
+      script: 'git rev-parse --short HEAD',
+      returnStdout: true
+    ).trim()
+    DOCKER_IMAGE = ''
+  }
+
+  stages {
+    stage('Build Image') {
+      steps {
+        echo 'Creating Production Image....'
+        script {
+          DOCKER_IMAGE = docker.build(REGISTRY + ":$TAG", "--build-arg environment=production .")
+        }
+      }
+    }
+
+    stage('Push Image') {
+      steps {
+        script {
+          docker.withRegistry('', REGISTRY_CREDENTIAL) {
+            DOCKER_IMAGE.push()
+            DOCKER_IMAGE.push('latest')
+          }
+        }
+        sh "docker rmi $REGISTRY:$TAG"
+      }
+    }
+
+    stage("Deploy") {
+      steps {
+        sh "scp ./docker-compose.production.yml webmaster@192.168.31.38:/home/webmaster/design-production/docker-compose.yml"
+        sh "ssh webmaster@192.168.31.38 '/home/webmaster/design-production/deploy.sh'"
+        cleanWs()
+      }
+    }
+  }
+}
