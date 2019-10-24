@@ -27,6 +27,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
   public totalUnused: number;
   public tilesSoldString: string;
   public featureUnitDescription: string;
+  public imgHeaderTitle = 'Design';
 
   constructor(
     private route: ActivatedRoute,
@@ -109,6 +110,7 @@ export class DetailsComponent implements OnInit, AfterContentInit {
     this.featureUnitDescription = this.productSizeInfo();
     this.getTotals();
     this.feature.applyDealerPricing();
+    this.imgHeaderTitle = this.feature.getViewType();
   }
 
   setSeeyondValues() {
