@@ -1,0 +1,53 @@
+pipeline {
+  agent any
+
+  options {
+    disableConcurrentBuilds()
+  }
+
+  environment {
+    REGISTRY = '3form/design'
+    REGISTRY_CREDENTIAL = 'dockerhub'
+    TAG = sh (
+      script: 'git rev-parse --short HEAD',
+      returnStdout: true
+    ).trim()
+    DOCKER_IMAGE = ''
+  }
+
+  stages {
+    stage('Prepare') {
+      steps {
+        echo sh(script: 'env|sort', returnStdout: true)
+      }
+    }
+
+    stage('Build Image') {
+      steps {
+        echo "Creating $BRANCH_NAME Image...."
+        script {
+          DOCKER_IMAGE = docker.build(REGISTRY + ":$TAG", "--build-arg environment=${BRANCH_NAME} .")
+        }
+      }
+    }
+
+    stage('Push Image') {
+      steps {
+        script {
+          docker.withRegistry('', REGISTRY_CREDENTIAL) {
+            DOCKER_IMAGE.push()
+            DOCKER_IMAGE.push("$BRANCH_NAME")
+          }
+        }
+        sh "docker rmi $REGISTRY:$TAG"
+      }
+    }
+
+    stage("Deploy") {
+      steps {
+        sh "ssh webmaster@192.168.31.47 '/home/webmaster/${BRANCH_NAME}/environment-deploy.sh design'"
+        cleanWs()
+      }
+    }
+  }
+}
