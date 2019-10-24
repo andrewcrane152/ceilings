@@ -67,6 +67,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   gridRequirementsString = '';
   showGuidesCheckbox = true;
   show3DViewButton = true;
+  designViewType = '';
 
   constructor(
     public route: ActivatedRoute,
@@ -280,6 +281,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
   setVisualProperties(feature) {
     this.api.checkToShowPricing();
+    this.designViewType = this.feature.getViewType();
     switch (feature) {
       case 'seeyond':
         this.showSeeyondOptions = true;
