@@ -1710,7 +1710,7 @@ export class Feature {
         imageHeader = 'Design Plan View';
         break;
       case 'hush':
-        imageHeader = 'Design Wall View';
+        imageHeader = 'Design Elevation View';
         break;
       default:
         imageHeader = 'Design';
