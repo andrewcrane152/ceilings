@@ -494,7 +494,7 @@ export class Feature {
     // SERVICES AMOUNT
     const veloFeltServiceCost = 79.57;
     const veloVariaServiceCost = 81.11;
-    this.services_amount = veloFeltTiles * veloFeltServiceCost + (veloVariaTiles + veloVariaDiffusionTiles) * veloVariaServiceCost;
+    this.services_amount = (veloFeltTiles * veloFeltServiceCost) + ((veloVariaTiles + veloVariaDiffusionTiles) * veloVariaServiceCost);
 
     // HARDWARE AMOUNT
     let hardware_amount: number;
@@ -1698,5 +1698,23 @@ export class Feature {
     str = str.replace(/,/g, '/');
     this.discount_terms_string = str;
     return str;
+  }
+
+  getViewType() {
+    let imageHeader;
+    switch (this.feature_type) {
+      case 'tetria':
+      case 'clario':
+      case 'clario-cloud':
+      case 'velo':
+        imageHeader = 'Design Plan View';
+        break;
+      case 'hush':
+        imageHeader = 'Design Wall View';
+        break;
+      default:
+        imageHeader = 'Design';
+    }
+    return imageHeader;
   }
 }
