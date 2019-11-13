@@ -86,19 +86,23 @@ export class SaveDesignComponent implements OnInit {
     this.saving = true;
     // reset some values for the new quote
     this.feature.quoted = false;
-    this.api.saveDesign().subscribe(feature => {
-      this.saving = false;
-      // notify the user that we have saved their design
-      this.alert.success('Successfully saved your design');
-      // set the feature to what was returned from the API.
-      this.feature = feature.ceiling;
-      // redirect to the new design
-      this.router.navigate([`${this.feature.feature_type}${this.uiType}`, this.feature.id]);
-    });
+    if (this.feature.feature_type !== 'seeyond') {
+      this.api.saveDesign().subscribe(feature => {
+        this.saving = false;
+        // notify the user that we have saved their design
+        this.alert.success('Successfully saved your design');
+        // set the feature to what was returned from the API.
+        this.feature = feature.ceiling;
+        // redirect to the new design
+        this.router.navigate([`${this.feature.feature_type}${this.uiType}`, this.feature.id]);
+      });
+    } else if (this.feature.feature_type === 'seeyond') {
+      this.saveSeeyond();
+    }
   }
 
   saveSeeyond() {
-    if (this.newDesign || this.newButton) {
+    if (this.newDesign || this.newButton || this.seeyond.duplicateOrder) {
       this.saveNewSeeyond();
     } else {
       this.saving = true;

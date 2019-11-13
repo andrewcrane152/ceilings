@@ -1,3 +1,4 @@
+import { ConfirmDuplicateComponent } from './../confirm-duplicate/confirm-duplicate.component';
 import { MaterialsService } from './../_services/materials.service';
 import { SeeyondService } from './../_services/seeyond.service';
 import { SeeyondFeature } from '../_features/seeyond-feature';
@@ -184,6 +185,7 @@ export class DesignComponent implements OnInit, OnDestroy {
                 this.router.navigate([design.feature_type, 'design', design.id]);
               }
             }
+            this.feature.checkUrlForDuplicate();
           },
           err => this.api.handleError(err)
         );
@@ -434,6 +436,17 @@ export class DesignComponent implements OnInit, OnDestroy {
     this.router.navigate([path]);
   }
 
+  duplicateDesign() {
+    const config = new MatDialogConfig()
+    config.width = '600px';
+    const dialogRef = this.dialog.open(ConfirmDuplicateComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.feature.duplicateOrder();
+      }
+    })
+  }
+
   public logout() {
     this.api.logout();
     this.user = new User();
@@ -585,6 +598,7 @@ export class DesignComponent implements OnInit, OnDestroy {
             const loadedDesign = design as any;
             this.location.go(`seeyond/design/${loadedDesign.name}/${loadedDesign.id}`);
             this.seeyond.loadSeeyondDesign(design);
+            this.seeyond.checkUrlForDuplicate();
           });
         } else {
           // Set default param to wall if not specified
