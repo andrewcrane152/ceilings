@@ -175,8 +175,9 @@
               <button (click)="viewDetails()">View Details</button>
             </span>
             <span appStyledButton='secondary-left' *ngIf="feature.quoted">
-              <button (click)="duplicate()">Duplicate Order</button>
+              <button (click)="duplicate()">Duplicate</button>
             </span>
+            <span class="sub-header" *ngIf="feature.isDuplicating">Duplicating from ID {{feature.id}}</span>
           </div>
           <span class="est-totals" *ngIf="feature.showPricing">
             <div class="total-row" *ngIf="feature.quantity > 1">

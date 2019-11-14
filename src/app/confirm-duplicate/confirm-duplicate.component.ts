@@ -9,6 +9,7 @@ import { SeeyondFeature } from 'app/_features/seeyond-feature';
   styleUrls: ['./confirm-duplicate.component.scss']
 })
 export class ConfirmDuplicateComponent implements OnInit {
+  orderType = 'design';
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDuplicateComponent>,
@@ -17,6 +18,7 @@ export class ConfirmDuplicateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.orderType = this.feature.is_quantity_order ? 'order' : 'design';
   }
 
   confirmDuplicate() {

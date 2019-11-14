@@ -69,7 +69,7 @@ export class SeeyondDesignComponent extends DesignComponent implements OnInit, O
   }
 
   alertQuoted() {
-    this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+    this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
   }
 
   public updateSelectedTessellation(tessellationName: string) {

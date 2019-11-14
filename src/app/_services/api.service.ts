@@ -104,7 +104,7 @@ export class ApiService {
     let duplicatedFromId;
     const currentPath = this.location.path();
     if (currentPath.includes('duplicate')) {
-      duplicatedFromId = this.feature.uid;
+      duplicatedFromId = this.feature.id;
     }
     if (this.feature.feature_type === 'hush') {
       hushShippingInfo = this.feature.hushShippingInfo;
@@ -145,6 +145,7 @@ export class ApiService {
 
     return this.http.post(this.apiUrl, patchData).pipe(
       map((res: any) => {
+        this.feature.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('api', 'emitting onSaved in saveDesign');
         return res || {};

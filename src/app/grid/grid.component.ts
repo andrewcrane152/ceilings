@@ -139,7 +139,7 @@ export class GridComponent implements OnInit, OnDestroy {
   updateTile(row, column) {
     if (this.mouseIsDown) {
       if (this.feature.quoted) {
-        this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+        this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
         return;
       }
       this.debug.log('grid-component', 'updating tile: ' + row + ' | ' + column);

@@ -110,6 +110,7 @@ export class SeeyondService {
 
     return this.http.patch(this.apiUrl + this.seeyond.id, patchData).pipe(
       map((res: any) => {
+        this.seeyond.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
         return res || {};
@@ -172,6 +173,7 @@ export class SeeyondService {
 
     return this.http.post(this.apiUrl, patchData).pipe(
       map((res: Response) => {
+        this.seeyond.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
         return res || {};

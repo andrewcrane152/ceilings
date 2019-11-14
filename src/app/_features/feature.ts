@@ -1733,7 +1733,9 @@ export class Feature {
     if (this.location.path().includes('duplicate')) {
       this.duplicateOrder();
       return true;
+    } else {
+      this.isDuplicating = false;
+      return false;
     }
-    return false;
   }
 }

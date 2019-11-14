@@ -85,7 +85,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
   veloGridClick(event: any) {
     if (this.feature.quoted) {
-      this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+      this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
       return;
     }
     this.debug.log('velo-grid', event);

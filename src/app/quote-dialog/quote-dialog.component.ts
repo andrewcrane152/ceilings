@@ -126,9 +126,6 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
   }
 
   public quoteConfirmed() {
-    if (this.feature.isDuplicating) {
-      this.feature.id = null;
-    }
     if (this.feature.feature_type === 'seeyond') {
       this.seeyondQuoteConfirmed();
       return;
@@ -137,7 +134,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.uiType = 'quantity';
     }
     // mark the design as quoted and save
-    if (this.feature.id) {
+    if (this.feature.id && !this.feature.isDuplicating) {
       this.feature.quoted = true;
       this.api.updateDesign().subscribe(feature => {
         // send ceilings design email after we have saved.

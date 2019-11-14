@@ -234,6 +234,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
     // subscribe to the saved event to close the save dialog
     this.api.onSaved.pipe(takeUntil(this.ngUnsubscribe)).subscribe(success => {
+      this.feature.isDuplicating = false;
       if (this.saveDesignDialogRef) {
         this.saveDesignDialogRef.close();
       }
@@ -701,7 +702,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   }
 
   alertQuoted() {
-    this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+    this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
   }
 
   updateGrid() {
