@@ -311,8 +311,7 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'velo':
         this.showDesign = true;
         this.showModify = true;
-        // this.showCanvasGridControls = true;
-        this.showCanvasGridControls = false;
+        this.showCanvasGridControls = true;
         this.quantitiesString = 'Velo tiles are sold in quantities of 8.';
         break;
       case 'hush':
@@ -473,6 +472,9 @@ export class DesignComponent implements OnInit, OnDestroy {
       this.loginDialog();
       return;
     }
+    if (this.feature.canvasGridScale !== 1) {
+      this.zoomCanvasGrid('default');
+    }
     // get the grid with guides
     // make sure the guide is set to true
     this.feature.showGuide = true;
@@ -481,9 +483,6 @@ export class DesignComponent implements OnInit, OnDestroy {
       const dataURL = veloCanvas.toDataURL();
       this.feature.design_data_url = dataURL;
     } else if (this.feature.feature_type === 'clario-cloud') {
-      if (this.feature.canvasGridScale !== 1) {
-        this.zoomCanvasGrid('default');
-      }
       const ccCanvas = document.querySelector('canvas');
       const dataURL = ccCanvas.toDataURL();
       this.feature.design_data_url = dataURL;

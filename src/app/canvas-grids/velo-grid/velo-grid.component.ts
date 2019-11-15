@@ -9,11 +9,13 @@ import * as pip from 'robust-point-in-polygon';
   styleUrls: ['../canvas-grids.component.scss', './velo-grid.component.scss']
 })
 export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
-  rows = 10;
-  columns = 9;
+  rows = 23;
+  columns = 18;
   adjustmentX = 96;
   adjustmentY = 48;
   tilesOutsideBoundary = [];
+  tileIndex = 0;
+  useOldGrid = false;
 
   @ViewChild('veloCanvas', { static: true })
   canvas;
@@ -81,6 +83,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         );
       }
     }
+    // reset index counter after completion
+    this.tileIndex = 0;
   }
 
   veloGridClick(event: any) {
@@ -149,13 +153,10 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         this.feature.updateEstimatedAmount();
       }
     }
-    // this.changeGridDimensions();
   }
 
   private createPentagonSection(ctx, adjustmentX, adjustmentY, isOdd, row, column) {
-    const index = (row * 9 + column) * 4;
     const xAdjustment = 16;
-    // const xAdjustment = -36;
 
     if (isOdd) {
       // start off 48px off canvas
@@ -165,8 +166,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         33 * this.feature.canvasGridScale + adjustmentY,
         -Math.PI / 2,
         row,
-        column,
-        index
+        column
       );
       this.drawPentagon(
         ctx,
@@ -174,8 +174,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         17 * this.feature.canvasGridScale + adjustmentY,
         Math.PI,
         row,
-        column,
-        index + 1
+        column
       );
       this.drawPentagon(
         ctx,
@@ -183,8 +182,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         49 * this.feature.canvasGridScale + adjustmentY,
         2 * Math.PI,
         row,
-        column,
-        index + 2
+        column
       );
       this.drawPentagon(
         ctx,
@@ -192,8 +190,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         33 * this.feature.canvasGridScale + adjustmentY,
         Math.PI / 2,
         row,
-        column,
-        index + 3
+        column
       );
     } else {
       this.drawPentagon(
@@ -202,8 +199,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         33 * this.feature.canvasGridScale + adjustmentY,
         -Math.PI / 2,
         row,
-        column,
-        index
+        column
       );
       this.drawPentagon(
         ctx,
@@ -211,8 +207,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         17 * this.feature.canvasGridScale + adjustmentY,
         Math.PI,
         row,
-        column,
-        index + 1
+        column
       );
       this.drawPentagon(
         ctx,
@@ -220,8 +215,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         49 * this.feature.canvasGridScale + adjustmentY,
         2 * Math.PI,
         row,
-        column,
-        index + 2
+        column
       );
       this.drawPentagon(
         ctx,
@@ -229,18 +223,18 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
         33 * this.feature.canvasGridScale + adjustmentY,
         Math.PI / 2,
         row,
-        column,
-        index + 3
+        column
       );
     }
   }
 
-  private drawPentagon(ctx, x, y, rotateAngle, row, column, index) {
+  private drawPentagon(ctx, x, y, rotateAngle, row, column) {
     // console.log(`row: ${Math.floor(index / 9)}`);
     // console.log(`index: ${index}, column: ${index % 10}`);
     // pentagon points
     let xcoords = [0, -23.9, -15.95, 15.95, 23.9];
     let ycoords = [15.94, 7.96, -15.94, -15.94, 7.96];
+    const index = this.tileIndex++;
 
     xcoords = xcoords.map(xpoint => xpoint * this.feature.canvasGridScale);
     ycoords = ycoords.map(ypoint => ypoint * this.feature.canvasGridScale);
@@ -309,10 +303,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
       // DEBUGGING
       // ctx.rotate(-rotateAngle);
       // ctx.fillStyle = '#00E1E1';
-      // ctx.font = '10px Arial';
-      // ctx.fillText(index, -5, -5);
-      // ctx.font = '8px Arial';
-      // ctx.fillText(Math.round(x) + ', ' + Math.round(y), -15, 5);
+      // ctx.font = '14px Blue';
+      // ctx.fillText(index, -8, -0);
 
       // stroke all the pentagon lines
       ctx.stroke();
@@ -323,123 +315,8 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
   setTilesOutsideBoundary() {
     if (this.feature.feature_type === 'velo') {
-      // this is temporary
-      this.tilesOutsideBoundary = [
-        0,
-        1,
-        2,
-        35,
-        36,
-        69,
-        70,
-        71,
-        72,
-        73,
-        74,
-        107,
-        108,
-        141,
-        142,
-        143,
-        144,
-        145,
-        146,
-        179,
-        180,
-        213,
-        214,
-        215,
-        216,
-        217,
-        218,
-        251,
-        252,
-        285,
-        286,
-        287,
-        288,
-        289,
-        290,
-        323,
-        324,
-        357,
-        358,
-        359
-      ];
-      return;
+      this.tilesOutsideBoundary = this.useOldGrid ? this.oldBoundaryArr() : this.outsideBoundaryArr();
     }
-    this.tilesOutsideBoundary = [];
-
-    const newIndexesByRows = [];
-    // let currentRow = 0;
-
-    // const totalTiles = this.columns * this.rows * 4;
-    let row = [];
-    let currentIndex = 0;
-    for (let rrr = 0; rrr < this.rows; rrr++) {
-      for (let cc = 0; cc < this.columns; cc++) {
-        const newIndex = rrr * cc + currentIndex;
-        row.push(newIndex);
-        row.push(newIndex + 1);
-        row.push(newIndex + 2);
-        row.push(newIndex + 3);
-        currentIndex = currentIndex + 4;
-      }
-      newIndexesByRows.push(row);
-      row = [];
-    }
-
-    // if (!!this.feature.gridData) {
-    //   // sort rows to an array of arrays
-    //   this.feature.gridData.map(tile => {
-    //     if (tile.row === currentRow) {
-    //       row.push(tile);
-    //     } else {
-    //       sortedRows.push(row);
-    //       row = [];
-    //       currentRow++;
-    //     }
-    //   });
-    //   console.log('sortedRows', sortedRows);
-    // console.log('newIndexesByRows', newIndexesByRows);
-    for (let rr = 0; rr < newIndexesByRows.length; rr++) {
-      const indexedRow = newIndexesByRows[rr];
-      // console.log('indexedRow:', indexedRow);
-      if (rr % 2 === 0) {
-        this.tilesOutsideBoundary.push(indexedRow[0]);
-        this.tilesOutsideBoundary.push(indexedRow[1]);
-        this.tilesOutsideBoundary.push(indexedRow[2]);
-        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 1]);
-      } else {
-        this.tilesOutsideBoundary.push(indexedRow[0]);
-        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 1]);
-        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 2]);
-        this.tilesOutsideBoundary.push(indexedRow[indexedRow.length - 3]);
-      }
-    }
-    // console.log('tilesOutsideBoundary', this.tilesOutsideBoundary);
-    // } else {
-    // // loop through rows
-    // for (let rr = 0; rr < this.rows; rr++) {
-    //   if (rr % 2 === 0) {
-    //     // if odd row add first three indexes
-    //     const evenStartIndex = rr * this.columns * 4;
-    //     const evenEndIndex = (rr + 1) * this.columns * 4;
-    //     this.tilesOutsideBoundary.push(evenStartIndex);
-    //     this.tilesOutsideBoundary.push(evenStartIndex + 1);
-    //     this.tilesOutsideBoundary.push(evenStartIndex + 2);
-    //     this.tilesOutsideBoundary.push(evenEndIndex - 1);
-    //   } else {
-    //     // if even row add last three indexes
-    //     const oddStartIndex = rr * this.columns * 4;
-    //     const oddEndIndex = (rr + 1) * this.columns * 4 - 3;
-    //     this.tilesOutsideBoundary.push(oddStartIndex);
-    //     this.tilesOutsideBoundary.push(oddEndIndex);
-    //     this.tilesOutsideBoundary.push(oddEndIndex + 1);
-    //     this.tilesOutsideBoundary.push(oddEndIndex + 2);
-    //   }
-    // }
-    // }
   }
 
   private tileAbbreviation(tile) {
@@ -586,5 +463,166 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     if (rotateAngle === 180 || rotateAngle === 360) {
       return 15.5;
     }
+  }
+
+  outsideBoundaryArr() {
+    return [
+      71,141,142,143,215,285,286,287,359,429,430,431,503,573,574,575,647,717,718,719,791,861,862,863,935,1005,1006,1007,1079,1149,1150,1151,1223,1293,1294,1295,1367,1437,1438,1439,1511,1581,1582,1583,0,1,2,72,146,145,144,216,290,289,288,360,434,433,432,504,578,577,576,648,722,721,720,792,866,865,864,936,1010,1009,1008,1080,1154,1153,1152,1224,1298,1297,1296,1298,1442,1441,1440,1512,1586,1585,1584,1368,1655
+    ];
+    return [
+      0,
+      1,
+      2,
+      79,
+      80,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      239,
+      240,
+      317,
+      318,
+      319,
+      320,
+      321,
+      322,
+      399,
+      400,
+      477,
+      478,
+      479,
+      480,
+      481,
+      482,
+      559,
+      560,
+      637,
+      638,
+      639,
+      640,
+      641,
+      642,
+      719,
+      720,
+      797,
+      798,
+      799,
+      800,
+      801,
+      802,
+      879,
+      880,
+      957,
+      958,
+      959,
+      960,
+      961,
+      962,
+      1039,
+      1040,
+      1117,
+      1118,
+      1119,
+      1120,
+      1121,
+      1122,
+      1199,
+      1200,
+      1277,
+      1278,
+      1279,
+      1280,
+      1281,
+      1282,
+      1359,
+      1360,
+      1437,
+      1438,
+      1439,
+      1440,
+      1441,
+      1442,
+      1519,
+      1520,
+      1597,
+      1598,
+      1599,
+      1600,
+      1601,
+      1602,
+      1679,
+      1680,
+      1757,
+      1758,
+      1759,
+      1760,
+      1761,
+      1762,
+      1839,
+      1840,
+      1917,
+      1918,
+      1919,
+      1920,
+      1921,
+      1922,
+      1999,
+      2000,
+      2077,
+      2078,
+      2079,
+      2080,
+      2081,
+      2082,
+      2159
+    ]
+  }
+
+  oldBoundaryArr() {
+    return [
+      0,
+      1,
+      2,
+      35,
+      36,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      107,
+      108,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      179,
+      180,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      251,
+      252,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      323,
+      324,
+      357,
+      358,
+      359
+    ];
   }
 }
