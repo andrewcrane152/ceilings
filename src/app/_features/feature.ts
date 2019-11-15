@@ -85,6 +85,7 @@ export class Feature {
   public discontinuedMaterials: Array<string>;
   public inactiveMaterials: Array<string>;
   public canQuote = true;
+  public isDuplicating = false;
   public clairoTileSizeType = 'standard';
 
   public gridData: any;
@@ -1696,6 +1697,7 @@ export class Feature {
     let str = terms_str.replace(/[\[\]']+/g, '');
     str = str.replace(/"/g, '');
     str = str.replace(/,/g, '/');
+    str = str.replace(/\\/g, '');
     this.discount_terms_string = str;
     return str;
   }
@@ -1716,5 +1718,24 @@ export class Feature {
         imageHeader = 'Design';
     }
     return imageHeader;
+  }
+
+  duplicateOrder() {
+    this.quoted = false;
+    this.isDuplicating = true;
+    if (!this.location.path().includes('duplicate')) {
+      const path = `${this.location.path()}/duplicate`;
+      this.location.go(path);
+    }
+  }
+
+  checkUrlForDuplicate() {
+    if (this.location.path().includes('duplicate')) {
+      this.duplicateOrder();
+      return true;
+    } else {
+      this.isDuplicating = false;
+      return false;
+    }
   }
 }

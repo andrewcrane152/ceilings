@@ -1,0 +1,22 @@
+<div class="modals-container">
+  <img class="close-btn" (click)="dialogRef.close('cancel')" src="/assets/icons/tools/x-close.svg" alt="Close Modal">
+  <div class="modals-body">
+    <div class="modals-header">
+      <span>Duplicate this {{orderType}}</span>
+      <span></span>
+    </div>
+    <div class="modals-inputs" *ngIf="!saving">
+      <p>This {{orderType}} has been submitted for a quote and can not be editted.</p>
+      <p>Duplicating this {{orderType}} as your own will allow you to edit it and submit a new quote request.</p>
+    </div>
+    <div class="modals-action-btns">
+      <div class="action-btns">
+        <span appStyledButton='primary-right-large'>
+          <button (click)="confirmDuplicate()">
+            <span>Duplicate</span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

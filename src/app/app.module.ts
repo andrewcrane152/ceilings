@@ -100,6 +100,7 @@ import { DesignClarioDimensionsComponent } from './design/right-components/desig
 import { DesignCanvasGridControlsComponent } from './design/right-components/design-canvas-grid-controls/design-canvas-grid-controls.component';
 import { ClarioCloudGridComponent } from './canvas-grids/clario-cloud-grid/clario-cloud-grid.component';
 import { OptionsRightClarioCloudComponent } from './options/options-right-clario-cloud/options-right-clario-cloud.component';
+import { ConfirmDuplicateComponent } from './confirm-duplicate/confirm-duplicate.component';
 
 @NgModule({
   declarations: [
@@ -157,7 +158,8 @@ import { OptionsRightClarioCloudComponent } from './options/options-right-clario
     DesignClarioDimensionsComponent,
     DesignCanvasGridControlsComponent,
     ClarioCloudGridComponent,
-    OptionsRightClarioCloudComponent
+    OptionsRightClarioCloudComponent,
+    ConfirmDuplicateComponent
   ],
   imports: [
     BrowserModule,
@@ -208,7 +210,8 @@ import { OptionsRightClarioCloudComponent } from './options/options-right-clario
     QuoteDialogComponent,
     AddQuantityComponent,
     RemoveQuantityComponent,
-    QuantityOptionsComponent
+    QuantityOptionsComponent,
+    ConfirmDuplicateComponent
   ]
 })
 export class AppModule {}
