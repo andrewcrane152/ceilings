@@ -97,10 +97,10 @@
 
       .totals {
         display: flex;
-        align-items: flex-end;
         justify-content: space-between;
-        flex-direction: row;
+        flex-direction: column;
         margin: 20px 0px;
+        width: 100%;
 
         .est-totals {
           .total-row {
@@ -118,7 +118,11 @@
         }
 
         .details-btn {
-          margin-bottom: -10px;
+
+          display: flex;
+          margin: 15px 0px;
+          justify-content: space-between;
+          width: 100%;
         }
       }
     }

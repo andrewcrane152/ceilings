@@ -131,7 +131,7 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
 
   clarioCloudGridClick(event: any) {
     if (this.feature.quoted) {
-      this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+      this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
       return;
     }
     this.debug.log('clario-cloud-grid', event);

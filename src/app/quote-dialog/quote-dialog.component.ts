@@ -134,7 +134,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.uiType = 'quantity';
     }
     // mark the design as quoted and save
-    if (this.feature.id) {
+    if (this.feature.id && !this.feature.isDuplicating) {
       this.feature.quoted = true;
       this.api.updateDesign().subscribe(feature => {
         // send ceilings design email after we have saved.
@@ -173,7 +173,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     this.seeyond.quoted = true;
     this.seeyond.project_name = this.feature.project_name;
     this.seeyond.specifier = this.feature.specifier;
-    if (this.seeyond.id) {
+    if (this.seeyond.id && !this.seeyond.isDuplicating) {
       this.seeyondApi.updateFeature().subscribe((feature: any) => {
         // send seeyond design email after we have saved.
         this.seeyondApi.sendEmail().subscribe(response => {

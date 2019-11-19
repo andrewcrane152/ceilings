@@ -83,7 +83,7 @@ export class SwoonGridComponent extends CanvasGridsComponent implements OnInit {
 
   swoonGridClick(event: any) {
     if (this.feature.quoted) {
-      this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+      this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
       return;
     }
     const x = Math.round(event.offsetX / this.feature.canvasGridScale);

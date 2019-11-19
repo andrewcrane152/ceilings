@@ -53,6 +53,10 @@ export class StyledButtonDirective implements AfterViewInit {
         this.styleSecondaryButton(button);
         this.addArrowLeft(button, '90');
         break;
+      case 'secondary-right-rotate180':
+        this.styleSecondaryButton(button);
+        this.addArrowLeft(button, '180');
+        break;
       default:
         this.stylePrimaryButton(button);
         break;
