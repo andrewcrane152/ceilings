@@ -41,6 +41,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   rulerWidth = '';
   // rulerImgBackgroundWidth adjusts the size of each ruler section
   rulerImgBackgroundWidth = 50;
+  updatingGridDisplay = false;
 
   constructor(
     public debug: DebugService,
@@ -70,8 +71,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
       case 'velo':
         this.rulerMultiplier = this.feature.units === 'inches' ? 24 : 61;
         this.rulerImgBackgroundWidth = 49;
-        this.vRulerSections = 11;
-        this.hRulerSections = 17;
+        this.checkRulerSections();
         break;
       case 'clario-cloud':
         this.rulerMultiplier = 48;
@@ -105,10 +105,6 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
         this.rulerWidth = `${sixtyFour * this.hRulerSections - (sixtyFour - 5)}px`;
         this.labelWidth = `${sixtyFour}px`;
         break;
-      case 'hushSwoon':
-        this.canvasWidth = 59 * this.columns + 27;
-        this.canvasHeight = 50 * this.rows + 27;
-        break;
     }
 
     // horizontal labels
@@ -122,10 +118,14 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     for (let jj = 0; jj < this.vRulerSections; jj++) {
       this.vRulerLabels.push(jj * this.rulerMultiplier);
     }
+
+    this.updatingGridDisplay = false;
   }
 
   getDesignDecisions() {
     const userSelections = [];
+    this.checkRulerSections();
+
     // Get new r&c
     this.debug.log('canvas-grids', this.feature.gridData);
     this.feature.gridData.map(tile => {
@@ -179,5 +179,20 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
     const ny = Math.sin(rad) * (x - cx) + Math.cos(rad) * (y - cy) + cy;
 
     return [Math.round(nx), Math.round(ny)];
+  }
+
+  checkRulerSections() {
+    const currentHRulerSections = this.hRulerSections;
+    if (!!this.feature.gridData && this.feature.gridData.length === 360) {
+      if (currentHRulerSections !== 17) {
+        this.vRulerSections = 11;
+        this.hRulerSections = 17;
+        this.updatingGridDisplay = true;
+        this.updateGridDisplay();
+      }
+    } else {
+      this.vRulerSections = 24;
+      this.hRulerSections = 35;
+    }
   }
 }
