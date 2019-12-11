@@ -156,7 +156,7 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
       this.feature.quoted = true;
       this.api.saveDesign().subscribe(feature => {
         // send ceilings design email after we have saved.
-        const ceiling = !!feature.ceiling.id ? feature.ceiling : feature;
+        const ceiling = !!feature.ceiling ? feature.ceiling : feature;
         this.feature.id = ceiling.id;
         this.api.sendEmail().subscribe(response => {
           this.debug.log('quote-dialog', response);

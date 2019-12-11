@@ -70,7 +70,7 @@ export class SaveDesignComponent implements OnInit {
         // notify the user that we have saved their design
         this.alert.success('Successfully saved your design');
         // set the feature to what was returned from the API.
-        const ceiling = !!feature.ceiling.id ? feature.ceiling : feature;
+        const ceiling = !!feature.ceiling ? feature.ceiling : feature;
         this.feature = ceiling;
         // navigate if the current path isn't already right
         let url = this.router.createUrlTree([`${this.feature.feature_type}${this.uiType}`, this.feature.id]).toString();
@@ -93,7 +93,7 @@ export class SaveDesignComponent implements OnInit {
         // notify the user that we have saved their design
         this.alert.success('Successfully saved your design');
         // set the feature to what was returned from the API.
-        const ceiling = !!feature.ceiling.id ? feature.ceiling : feature;
+        const ceiling = !!feature.ceiling ? feature.ceiling : feature;
         this.feature = ceiling;
         // redirect to the new design
         this.router.navigate([`${this.feature.feature_type}${this.uiType}`, this.feature.id]);
