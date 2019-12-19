@@ -1,3 +1,4 @@
+import { ConfirmDuplicateComponent } from './../confirm-duplicate/confirm-duplicate.component';
 import { MaterialsService } from './../_services/materials.service';
 import { SeeyondService } from './../_services/seeyond.service';
 import { SeeyondFeature } from '../_features/seeyond-feature';
@@ -163,6 +164,9 @@ export class DesignComponent implements OnInit, OnDestroy {
                   this.feature.buildGrid();
                 } else if (this.feature.feature_type === 'velo') {
                   // velo defaults
+                  if (JSON.parse(design.grid_data).length === 360) {
+                    this.feature.useOldVeloGrid = true;
+                  }
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
                   this.feature.material = 'milky-white';
                   this.feature.materialHex = '#dfdee0';
@@ -184,6 +188,7 @@ export class DesignComponent implements OnInit, OnDestroy {
                 this.router.navigate([design.feature_type, 'design', design.id]);
               }
             }
+            this.feature.checkUrlForDuplicate();
           },
           err => this.api.handleError(err)
         );
@@ -232,6 +237,7 @@ export class DesignComponent implements OnInit, OnDestroy {
 
     // subscribe to the saved event to close the save dialog
     this.api.onSaved.pipe(takeUntil(this.ngUnsubscribe)).subscribe(success => {
+      this.feature.isDuplicating = false;
       if (this.saveDesignDialogRef) {
         this.saveDesignDialogRef.close();
       }
@@ -311,8 +317,7 @@ export class DesignComponent implements OnInit, OnDestroy {
       case 'velo':
         this.showDesign = true;
         this.showModify = true;
-        // this.showCanvasGridControls = true;
-        this.showCanvasGridControls = false;
+        this.showCanvasGridControls = true;
         this.quantitiesString = 'Velo tiles are sold in quantities of 8.';
         break;
       case 'hush':
@@ -434,6 +439,17 @@ export class DesignComponent implements OnInit, OnDestroy {
     this.router.navigate([path]);
   }
 
+  duplicateDesign() {
+    const config = new MatDialogConfig()
+    config.width = '600px';
+    const dialogRef = this.dialog.open(ConfirmDuplicateComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.feature.duplicateOrder();
+      }
+    })
+  }
+
   public logout() {
     this.api.logout();
     this.user = new User();
@@ -473,6 +489,9 @@ export class DesignComponent implements OnInit, OnDestroy {
       this.loginDialog();
       return;
     }
+    if (this.feature.canvasGridScale !== 1) {
+      this.zoomCanvasGrid('default');
+    }
     // get the grid with guides
     // make sure the guide is set to true
     this.feature.showGuide = true;
@@ -481,9 +500,6 @@ export class DesignComponent implements OnInit, OnDestroy {
       const dataURL = veloCanvas.toDataURL();
       this.feature.design_data_url = dataURL;
     } else if (this.feature.feature_type === 'clario-cloud') {
-      if (this.feature.canvasGridScale !== 1) {
-        this.zoomCanvasGrid('default');
-      }
       const ccCanvas = document.querySelector('canvas');
       const dataURL = ccCanvas.toDataURL();
       this.feature.design_data_url = dataURL;
@@ -585,6 +601,7 @@ export class DesignComponent implements OnInit, OnDestroy {
             const loadedDesign = design as any;
             this.location.go(`seeyond/design/${loadedDesign.name}/${loadedDesign.id}`);
             this.seeyond.loadSeeyondDesign(design);
+            this.seeyond.checkUrlForDuplicate();
           });
         } else {
           // Set default param to wall if not specified
@@ -687,7 +704,7 @@ export class DesignComponent implements OnInit, OnDestroy {
   }
 
   alertQuoted() {
-    this.alert.error('This design has been quoted.  To make changes you must first save it as a new design.');
+    this.alert.error('This design has been quoted and can not be altered.  To make changes, duplicate the design and submit a new request with your changes.');
   }
 
   updateGrid() {

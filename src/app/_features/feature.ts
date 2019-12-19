@@ -13,6 +13,7 @@ import { ifError } from 'assert';
 export class Feature {
   onBuildGrid = new EventEmitter();
   onBuildVeloGrid = new EventEmitter();
+  onBuildOldVeloGrid = new EventEmitter();
   onBuildClarioCloudGrid = new EventEmitter();
   onBuildSwoonGrid = new EventEmitter();
   onApplyAll = new EventEmitter();
@@ -85,7 +86,9 @@ export class Feature {
   public discontinuedMaterials: Array<string>;
   public inactiveMaterials: Array<string>;
   public canQuote = true;
+  public isDuplicating = false;
   public clairoTileSizeType = 'standard';
+  public useOldVeloGrid = false;
 
   public gridData: any;
   public toolsArray = this.materialsService.toolsArray;
@@ -692,7 +695,7 @@ export class Feature {
     // If the feature type is velo build that grid
     if (this.feature_type === 'velo') {
       this.debug.log('feature', 'emitting event buildVeloGrid');
-      this.onBuildVeloGrid.emit();
+      this.useOldVeloGrid ? this.onBuildOldVeloGrid.emit() : this.onBuildVeloGrid.emit();
     } else if (this.feature_type === 'clario-cloud') {
       this.debug.log('feature', 'emitting event buildClarioCloudGrid');
       this.onBuildClarioCloudGrid.emit();
@@ -721,7 +724,7 @@ export class Feature {
   toggleGuide() {
     this.showGuide = !this.showGuide;
     if (this.feature_type === 'velo') {
-      this.onBuildVeloGrid.emit();
+      this.useOldVeloGrid ? this.onBuildOldVeloGrid.emit() : this.onBuildVeloGrid.emit();
     }
 
     if (this.feature_type === 'clario-cloud') {
@@ -1696,6 +1699,7 @@ export class Feature {
     let str = terms_str.replace(/[\[\]']+/g, '');
     str = str.replace(/"/g, '');
     str = str.replace(/,/g, '/');
+    str = str.replace(/\\/g, '');
     this.discount_terms_string = str;
     return str;
   }
@@ -1716,5 +1720,24 @@ export class Feature {
         imageHeader = 'Design';
     }
     return imageHeader;
+  }
+
+  duplicateOrder() {
+    this.quoted = false;
+    this.isDuplicating = true;
+    if (!this.location.path().includes('duplicate')) {
+      const path = `${this.location.path()}/duplicate`;
+      this.location.go(path);
+    }
+  }
+
+  checkUrlForDuplicate() {
+    if (this.location.path().includes('duplicate')) {
+      this.duplicateOrder();
+      return true;
+    } else {
+      this.isDuplicating = false;
+      return false;
+    }
   }
 }

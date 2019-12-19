@@ -170,9 +170,15 @@
               [disabled]="((order.data.length === 0) || !feature.design_name)">Request
               Quote</button>
           </span>
-          <span appStyledButton='primary-right' *ngIf="feature.quoted">
-            <button (click)="viewDetails()">View Details</button>
-          </span>
+          <div class="details-duplicate">
+            <span appStyledButton='primary-right' *ngIf="feature.quoted">
+              <button (click)="viewDetails()">View Details</button>
+            </span>
+            <span appStyledButton='secondary-left' *ngIf="feature.quoted">
+              <button (click)="duplicate()">Duplicate</button>
+            </span>
+            <span class="sub-header" *ngIf="feature.isDuplicating">Duplicating from ID {{feature.id}}</span>
+          </div>
           <span class="est-totals" *ngIf="feature.showPricing">
             <div class="total-row" *ngIf="feature.quantity > 1">
               <span class="sub-header">Design List:</span>

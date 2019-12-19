@@ -26,6 +26,7 @@
             <button (click)="this.seeyond.downloadImages()">Download Image</button>
           </span>
         </span>
+        <span class="view-type" *ngIf="feature.isDuplicating">Duplicating from ID {{feature.id}}</span>
         <span class="right view-type" *ngIf="feature.feature_type !=='seeyond'">
           {{designViewType}}
         </span>
@@ -47,6 +48,9 @@
     <div class="grid-footer" *ngIf="showSeeyondOptions">
       <span class="quantities-sold">
         <span class="sub-header">{{seeyond.dimensionsString}}</span>
+      </span>
+      <span *ngIf="!!seeyond.isDuplicating" class="sub-header">
+        Duplicating from id {{seeyond.id}}
       </span>
     </div>
   </div>
@@ -116,16 +120,16 @@
           </div>
         </span>
 
-        <span class="details-btn" *ngIf="feature.feature_type !== 'seeyond'">
-          <span appStyledButton='secondary-left' *ngIf="feature.quoted">
-            <button (click)="viewDetails()">Details</button>
+        <div class="details-btn" *ngIf="(feature.feature_type !== 'seeyond' && feature.quoted) || (feature.feature_type === 'seeyond' && seeyond.quoted)">
+          <span class="details-btn">
+            <span appStyledButton='primary-right'>
+              <button (click)="viewDetails()">Details</button>
+            </span>
+            <span appStyledButton='secondary-left'>
+              <button (click)="duplicateDesign()">Duplicate</button>
+            </span>
           </span>
-        </span>
-        <span class="details-btn" *ngIf="feature.feature_type === 'seeyond'">
-          <span appStyledButton='secondary-left' *ngIf="seeyond.quoted">
-            <button (click)="viewDetails()">Details</button>
-          </span>
-        </span>
+        </div>
       </div>
 
       <div class="request-quote" *ngIf="feature.feature_type !== 'seeyond'">

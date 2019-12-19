@@ -1,3 +1,4 @@
+import { ConfirmDuplicateComponent } from './../confirm-duplicate/confirm-duplicate.component';
 import { QuantityOptionsComponent } from './quantity-options/quantity-options.component';
 import { ClarioGridsService } from './../_services/clario-grids.service';
 import { QuoteDialogComponent } from './../quote-dialog/quote-dialog.component';
@@ -217,6 +218,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       const newRow = { [`${row.material}-${row.tile.tile}`]: row };
       this.qtySrv.doAddRow(newRow);
     });
+    this.feature.checkUrlForDuplicate();
   }
 
   goToOptions() {
@@ -412,5 +414,16 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
           this.loadQtyDialogRef.componentInstance.designs = designs;
         });
     }
+  }
+
+  duplicate() {
+    const config = new MatDialogConfig()
+    config.width = '600px';
+    const dialogRef = this.dialog.open(ConfirmDuplicateComponent, config);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.feature.duplicateOrder();
+      }
+    })
   }
 }

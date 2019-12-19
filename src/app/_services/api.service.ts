@@ -9,6 +9,7 @@ import { DebugService } from './../_services/debug.service';
 
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Injectable()
 export class ApiService {
@@ -21,7 +22,14 @@ export class ApiService {
   userUrl = 'https://' + environment.API_URL + '/users/';
   partSubsUrl = `https://${environment.API_URL}/parts_substitutes`;
 
-  constructor(private http: HttpClient, private feature: Feature, private user: User, private debug: DebugService, private alert: AlertService) {}
+  constructor(
+    private http: HttpClient,
+    private feature: Feature,
+    private user: User,
+    private debug: DebugService,
+    private alert: AlertService,
+    private location: Location
+  ) {}
 
   getMyDesigns() {
     return this.http.get(this.apiUrl + 'list/' + this.user.uid).pipe(catchError(this.handleError));
@@ -93,6 +101,11 @@ export class ApiService {
     this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
     let hushShippingInfo;
+    let duplicatedFromId;
+    const currentPath = this.location.path();
+    if (currentPath.includes('duplicate')) {
+      duplicatedFromId = this.feature.id;
+    }
     if (this.feature.feature_type === 'hush') {
       hushShippingInfo = this.feature.hushShippingInfo;
     }
@@ -126,11 +139,13 @@ export class ApiService {
       archived: this.feature.archived,
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
-      hush_shipping_info: JSON.stringify(hushShippingInfo)
+      hush_shipping_info: JSON.stringify(hushShippingInfo),
+      duplicated_from_id: duplicatedFromId
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
       map((res: any) => {
+        this.feature.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('api', 'emitting onSaved in saveDesign');
         return res || {};

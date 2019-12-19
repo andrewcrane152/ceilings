@@ -12,6 +12,7 @@ import { User } from './../_models/user';
 
 import { Observable ,  throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { Location } from '@angular/common';
 
 @Injectable()
 export class SeeyondService {
@@ -26,7 +27,8 @@ export class SeeyondService {
     public debug: DebugService,
     private materials: MaterialsService,
     private api: ApiService,
-    private alert: AlertService
+    private alert: AlertService,
+    private location: Location
   ) {}
 
   getMyFeatures() {
@@ -51,6 +53,12 @@ export class SeeyondService {
 
   updateFeature() {
     this.debug.log('seeyond', this.seeyond.hardware);
+    let duplicatedFromId;
+    const currentPath = this.location.path();
+    if (currentPath.includes('duplicate')) {
+      duplicatedFromId = this.seeyond.id;
+      // this.seeyond.quoted = false;
+    }
     const hardware = JSON.stringify({ hardware: this.seeyond.hardware });
     const profileImg = this.seeyond.seeyondProfileImage();
     this.replaceOldPartIds();
@@ -95,12 +103,14 @@ export class SeeyondService {
       hardware: this.seeyond.hardware,
       linear_feet: this.seeyond.linear_feet,
       design_data_url: profileImg,
-      quantity: this.seeyond.quantity
+      quantity: this.seeyond.quantity,
+      duplicated_from_id: duplicatedFromId
     };
     this.debug.log('seeyond', patchData);
 
     return this.http.patch(this.apiUrl + this.seeyond.id, patchData).pipe(
       map((res: any) => {
+        this.seeyond.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
         return res || {};
@@ -111,6 +121,12 @@ export class SeeyondService {
 
   saveFeature() {
     const profileImg = this.seeyond.seeyondProfileImage();
+    let duplicatedFromId;
+    const currentPath = this.location.path();
+    if (currentPath.includes('duplicate')) {
+      duplicatedFromId = this.seeyond.id;
+      // this.seeyond.quoted = false;
+    }
     this.replaceOldPartIds();
     const patchData = {
       uid: this.user.uid,
@@ -150,12 +166,14 @@ export class SeeyondService {
       archived: this.seeyond.archived,
       hardware: this.seeyond.hardware,
       linear_feet: this.seeyond.linear_feet,
-      design_data_url: this.seeyond.design_data_url,
-      quantity: this.seeyond.quantity
+      design_data_url: profileImg,
+      quantity: this.seeyond.quantity,
+      duplicated_from_id: duplicatedFromId
     };
 
     return this.http.post(this.apiUrl, patchData).pipe(
       map((res: Response) => {
+        this.seeyond.isDuplicating = false;
         this.onSaved.emit();
         this.debug.log('seeyond', 'emitting onSaved');
         return res || {};

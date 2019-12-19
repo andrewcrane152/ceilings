@@ -97,7 +97,15 @@
           justify-content: space-between;
           border-top: 1px solid #bbb;
           padding-top: 15px;
-          align-items: flex-end;
+          align-items: flex-start;
+
+          .details-duplicate {
+            display: flex;
+          }
+
+          .details-duplicate :first-child {
+            margin-right: 20px;
+          }
 
           .est-total-text {
             margin-right: 50px;
