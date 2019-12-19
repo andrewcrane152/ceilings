@@ -15,7 +15,6 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   adjustmentY = 48;
   tilesOutsideBoundary = [];
   tileIndex = 0;
-  useOldGrid = false;
 
   @ViewChild('veloCanvas', { static: true })
   canvas;
@@ -315,7 +314,7 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
 
   setTilesOutsideBoundary() {
     if (this.feature.feature_type === 'velo') {
-      this.tilesOutsideBoundary = this.useOldGrid ? this.oldBoundaryArr() : this.outsideBoundaryArr();
+      this.tilesOutsideBoundary = this.feature.useOldVeloGrid ? this.oldBoundaryArr() : this.outsideBoundaryArr();
     }
   }
 

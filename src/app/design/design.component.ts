@@ -164,6 +164,9 @@ export class DesignComponent implements OnInit, OnDestroy {
                   this.feature.buildGrid();
                 } else if (this.feature.feature_type === 'velo') {
                   // velo defaults
+                  if (JSON.parse(design.grid_data).length === 360) {
+                    this.feature.useOldVeloGrid = true;
+                  }
                   this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
                   this.feature.material = 'milky-white';
                   this.feature.materialHex = '#dfdee0';

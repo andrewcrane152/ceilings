@@ -87,6 +87,7 @@ export class Feature {
   public canQuote = true;
   public isDuplicating = false;
   public clairoTileSizeType = 'standard';
+  public useOldVeloGrid = false;
 
   public gridData: any;
   public toolsArray = this.materialsService.toolsArray;
