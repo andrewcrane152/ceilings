@@ -50,6 +50,7 @@ import { TileUsageComponent } from './tile-usage/tile-usage.component';
 import { QuoteDialogComponent } from './quote-dialog/quote-dialog.component';
 import { DetailsComponent } from './details/details.component';
 import { VeloGridComponent } from './canvas-grids/velo-grid/velo-grid.component';
+import { OldVeloGridComponent } from './canvas-grids/old-velo-grid/old-velo-grid.component';
 import { VeloTileUsageComponent } from './velo-tile-usage/velo-tile-usage.component';
 import { HushOptionsComponent } from './options/hush-options/hush-options.component';
 import { VeloOptionsComponent } from './options/velo-options/velo-options.component';
@@ -122,6 +123,7 @@ import { ConfirmDuplicateComponent } from './confirm-duplicate/confirm-duplicate
     QuoteDialogComponent,
     DetailsComponent,
     VeloGridComponent,
+    OldVeloGridComponent,
     VeloTileUsageComponent,
     HushOptionsComponent,
     VeloOptionsComponent,

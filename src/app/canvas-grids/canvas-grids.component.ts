@@ -41,7 +41,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
   rulerWidth = '';
   // rulerImgBackgroundWidth adjusts the size of each ruler section
   rulerImgBackgroundWidth = 50;
-  updatingGridDisplay = false;
+  // updatingGridDisplay = false;
 
   constructor(
     public debug: DebugService,
@@ -119,7 +119,7 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
       this.vRulerLabels.push(jj * this.rulerMultiplier);
     }
 
-    this.updatingGridDisplay = false;
+    // this.updatingGridDisplay = false;
   }
 
   getDesignDecisions() {
@@ -183,11 +183,11 @@ export class CanvasGridsComponent implements OnInit, OnDestroy {
 
   checkRulerSections() {
     const currentHRulerSections = this.hRulerSections;
-    if (!!this.feature.gridData && this.feature.gridData.length === 360) {
+    if (this.feature.useOldVeloGrid) {
       if (currentHRulerSections !== 17) {
         this.vRulerSections = 11;
         this.hRulerSections = 17;
-        this.updatingGridDisplay = true;
+        // this.updatingGridDisplay = true;
         this.updateGridDisplay();
       }
     } else {

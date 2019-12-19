@@ -11,5 +11,6 @@
 <div class="guide horizontal" [style.top.px]="guideTop"></div>
 <div class="guide vertical" [style.left.px]="guideLeft"></div>
 
-<app-velo-grid *ngIf="feature.feature_type === 'velo'" (mousemove)="moveGuide($event)"></app-velo-grid>
+<app-velo-grid *ngIf="feature.feature_type === 'velo' && !feature.useOldVeloGrid" (mousemove)="moveGuide($event)"></app-velo-grid>
+<app-old-velo-grid *ngIf="feature.feature_type === 'velo' && feature.useOldVeloGrid" (mousemove)="moveGuide($event)"></app-old-velo-grid>
 <app-clario-cloud-grid *ngIf="feature.feature_type === 'clario-cloud'" (mousemove)="moveGuide($event)"></app-clario-cloud-grid>

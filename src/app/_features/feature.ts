@@ -13,6 +13,7 @@ import { ifError } from 'assert';
 export class Feature {
   onBuildGrid = new EventEmitter();
   onBuildVeloGrid = new EventEmitter();
+  onBuildOldVeloGrid = new EventEmitter();
   onBuildClarioCloudGrid = new EventEmitter();
   onBuildSwoonGrid = new EventEmitter();
   onApplyAll = new EventEmitter();
@@ -694,7 +695,7 @@ export class Feature {
     // If the feature type is velo build that grid
     if (this.feature_type === 'velo') {
       this.debug.log('feature', 'emitting event buildVeloGrid');
-      this.onBuildVeloGrid.emit();
+      this.useOldVeloGrid ? this.onBuildOldVeloGrid.emit() : this.onBuildVeloGrid.emit();
     } else if (this.feature_type === 'clario-cloud') {
       this.debug.log('feature', 'emitting event buildClarioCloudGrid');
       this.onBuildClarioCloudGrid.emit();
@@ -723,7 +724,7 @@ export class Feature {
   toggleGuide() {
     this.showGuide = !this.showGuide;
     if (this.feature_type === 'velo') {
-      this.onBuildVeloGrid.emit();
+      this.useOldVeloGrid ? this.onBuildOldVeloGrid.emit() : this.onBuildVeloGrid.emit();
     }
 
     if (this.feature_type === 'clario-cloud') {
