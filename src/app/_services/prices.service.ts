@@ -66,5 +66,15 @@ export class PricesService {
     hardwarePrices: {},
   }
 
+  public clarioPricingData = {
+    partsList: {},
+    servicePrices: {
+      flatTilePrice: 24.52,
+      clario24Price: 51.38,
+      clario48Price: 102.74
+    },
+    hardwarePrices: {},
+  }
+
   constructor() {}
 }
