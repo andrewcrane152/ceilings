@@ -76,5 +76,39 @@ export class PricesService {
     hardwarePrices: {},
   }
 
+  public veloPricingData = {
+    partsList: {},
+    servicePrices: {
+      variaSheetCost: 508.16,
+      variaDiffusionAdditionalCost: 105.0,
+      feltCost: 79.57,
+      variaCost: 81.11
+    },
+    hardwarePrices: {
+      variaConnectionKitCost: 7.06,
+      feltConnectionKitCost: 0.48,
+      drillBitCost: 11.08,
+      variaPunchToolCost: 18.02,
+      C1cableKitCost: 12.84,
+      C2cableKitCost: 14.54
+    },
+  }
+
+  public clarioCloudPricingData = {
+    partsList: {},
+    servicePrices: {
+      sTile: 346.21,
+      ccTile: 351.97
+    },
+    hardwarePrices: {
+      sTile: 51.36,
+      ccTile: 45.60
+    },
+    productsPrices: {
+      sTile: 82.43,
+      ccTile: 82.43
+    }
+  }
+
   constructor() {}
 }

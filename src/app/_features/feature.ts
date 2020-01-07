@@ -419,6 +419,7 @@ export class Feature {
   }
 
   getClarioEstimate(tilesArray) {
+    const clarioPrices = this.pricesService.clarioPricingData.servicePrices;
     let products_amount = 0.0;
     let clario24TileCount = 0;
     let clario48TileCount = 0;
@@ -451,9 +452,9 @@ export class Feature {
     }
 
     // SERVICES AMOUNT
-    const clarioFlatServiceCost = this.pricesService.clarioPricingData.servicePrices.flatTilePrice;
-    const clario24ServiceCost = this.pricesService.clarioPricingData.servicePrices.clario24Price;
-    const clario48ServiceCost = this.pricesService.clarioPricingData.servicePrices.clario48Price;
+    const clarioFlatServiceCost = clarioPrices.flatTilePrice;
+    const clario24ServiceCost = clarioPrices.clario24Price;
+    const clario48ServiceCost = clarioPrices.clario48Price;
     const clario24Total = clario24ServiceCost * clario24TileCount;
     const clario48Total = clario48ServiceCost * clario48TileCount;
     const clarioFlatTotal = clario00TileCount * clarioFlatServiceCost;
@@ -465,6 +466,7 @@ export class Feature {
   }
 
   getVeloEstimate(tilesArray) {
+    const veloPrices = this.pricesService.veloPricingData;
     // PRODUCTS AMOUNT
     let veloFeltTiles = 0;
     let veloVariaTiles = 0;
@@ -472,8 +474,8 @@ export class Feature {
     let products_amount: number;
     let variaSheetsNeeded: number;
     let variaDiffusionSheetsNeeded: number;
-    const variaSheetCost = 508.16;
-    const variaDiffusionSheetCost: number = variaSheetCost + 105.0;
+    const variaSheetCost = veloPrices.servicePrices.variaSheetCost;
+    const variaDiffusionSheetCost: number = variaSheetCost + veloPrices.servicePrices.variaDiffusionAdditionalCost;
 
     for (const tile in tilesArray) {
       if (tilesArray.hasOwnProperty(tile)) {
@@ -495,24 +497,24 @@ export class Feature {
     products_amount = variaSheetsNeeded * variaSheetCost + variaDiffusionSheetsNeeded * variaDiffusionSheetCost;
 
     // SERVICES AMOUNT
-    const veloFeltServiceCost = 79.57;
-    const veloVariaServiceCost = 81.11;
+    const veloFeltServiceCost = veloPrices.servicePrices.feltCost;
+    const veloVariaServiceCost = veloPrices.servicePrices.variaCost;
     this.services_amount = (veloFeltTiles * veloFeltServiceCost) + ((veloVariaTiles + veloVariaDiffusionTiles) * veloVariaServiceCost);
 
     // HARDWARE AMOUNT
     let hardware_amount: number;
     let hardwareCost = 0.0;
-    const variaConnectionKitCost = 7.06;
-    const feltConnectionKitCost = 0.48;
-    const drillBitCost = 11.08;
-    const variaPunchToolCost = 18.02;
+    const variaConnectionKitCost = veloPrices.hardwarePrices.variaConnectionKitCost;
+    const feltConnectionKitCost = veloPrices.hardwarePrices.feltConnectionKitCost;
+    const drillBitCost = veloPrices.hardwarePrices.drillBitCost;
+    const variaPunchToolCost = veloPrices.hardwarePrices.variaPunchToolCost;
     let variaConnectionKitsNeeded = 0;
     let feltConnectionKitsNeeded = 0;
     let variaPunchToolNeeded = false;
     let C1cableKit = 0;
-    const C1cableKitCost = 12.84;
+    const C1cableKitCost = veloPrices.hardwarePrices.C1cableKitCost;
     let C2cableKit = 0;
-    const C2cableKitCost = 14.54;
+    const C2cableKitCost = veloPrices.hardwarePrices.C2cableKitCost;
 
     // CABLE COST CALCULATION
     // we need to calculate the cable hardware for each individual island
@@ -568,16 +570,18 @@ export class Feature {
     // "S" tiles have different hardware and fab pricing because is being treated as a simplespec item
     // cc indicates all the other clario-cloud tiles that aren't "S"
 
+    const clarioCloudPrices = this.pricesService.clarioCloudPricingData;
+
     let ccTileCount = 0;
     let sTileCount = 0;
 
-    const sTileHardwareCost = 51.36;
-    const sTileServicesCost = 346.21;
-    const sTileProductsCost = 82.43;
+    const sTileHardwareCost = clarioCloudPrices.hardwarePrices.sTile;
+    const sTileServicesCost = clarioCloudPrices.servicePrices.sTile;
+    const sTileProductsCost = clarioCloudPrices.productsPrices.sTile;
 
-    const ccTileHardwareCost = 45.60;
-    const ccTileServicesCost = 351.97;
-    const ccTileProductsCost = 82.43;
+    const ccTileHardwareCost = clarioCloudPrices.hardwarePrices.ccTile;
+    const ccTileServicesCost = clarioCloudPrices.servicePrices.ccTile;
+    const ccTileProductsCost = clarioCloudPrices.productsPrices.ccTile;
 
     const dataArray = !!tilesArray ? tilesArray : this.gridData;
     for (const ccTile in dataArray) {
