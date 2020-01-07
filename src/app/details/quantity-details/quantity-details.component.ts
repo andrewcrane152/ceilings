@@ -78,6 +78,7 @@ export class QuantityDetailsComponent implements OnInit {
           this.qtyOrder = this.qtySrv.order;
         });
       }
+      this.api.checkAccessToPricing();
       this.feature.applyDealerPricing();
     });
   }

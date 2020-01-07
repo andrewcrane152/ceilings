@@ -161,6 +161,8 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       this.user.firstname = apiUser.firstname;
       this.user.lastname = apiUser.lastname;
     });
+
+    this.api.checkToShowPricing()
   }
 
   ngAfterContentInit() {
