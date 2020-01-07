@@ -228,15 +228,28 @@ export class ApiService {
     const userInfo = JSON.parse(localStorage.getItem('3formUser'));
     const uid = !!userInfo ? userInfo.uid : '';
     const accessUrl = `${this.pricingAccessUrl}?ids[]=${uid}`;
+
     return this.http.get(accessUrl, {}).pipe(
       map((res: any) => {
-        if (res && !!res.user_branches[0]) {
-          const userBranchInfo = res.user_branches[0]
-          if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
-            userInfo['showPricing'] = true;
-            this.feature.showPricing = true;
-            localStorage.setItem('3formUser', JSON.stringify(userInfo));
-          }
+        let userBranchInfo;
+        if (!!res) {
+            if (!!res.user_branches) {
+               userBranchInfo = res.user_branches[0]
+              if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
+                userInfo['showPricing'] = true;
+                this.feature.showPricing = true;
+                localStorage.setItem('3formUser', JSON.stringify(userInfo));
+              }
+            }
+            if (!!res[0]) {
+              if ((!!res[0].employee && !!res[0].employee.id)
+                || (!!res[0].branch && res[0].branch.designation && res[0].branch.designation === 'Dealer Partner')
+              ) {
+                userInfo['showPricing'] = true;
+                this.feature.showPricing = true;
+                localStorage.setItem('3formUser', JSON.stringify(userInfo));
+              }
+            }
           return res;
         } else {
           this.alert.apiAlert(res.result.error);
