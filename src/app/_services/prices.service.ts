@@ -57,5 +57,14 @@ export class PricesService {
     }
   };
 
+  public tetriaPricingData = {
+    partsList: {},
+    servicePrices: {
+      flatTilePrice: 63.65,
+      tetriaTilePrice: 84.87
+    },
+    hardwarePrices: {},
+  }
+
   constructor() {}
 }

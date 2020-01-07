@@ -333,8 +333,8 @@ export class Feature {
   }
 
   getTetriaEstimate(tilesArray) {
-    const flatTilePrice = 63.65;
-    const tetriaTilePrice = 84.87;
+    const flatTilePrice = this.pricesService.tetriaPricingData.servicePrices.flatTilePrice;
+    const tetriaTilePrice = this.pricesService.tetriaPricingData.servicePrices.tetriaTilePrice;
     let flatTileCount = 0;
     let tetriaTileCount = 0;
     const tetriaTiles = ['01', '02', '03'];
