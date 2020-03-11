@@ -75,12 +75,8 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
         this.dialogHeader = `${dialogVerb} Hush Blocks Tiles`;
         break;
       case 'tetria':
-        requiredMaterials = this.materialsService.materials.felt.merino;
+        requiredMaterials = this.materialsService.materials.felt.sola;
         this.dialogHeader = `${dialogVerb} Tetria Tiles`;
-        break;
-      case 'hushSwoon':
-        requiredMaterials = this.materialsService.materials.felt.merino;
-        this.dialogHeader = `${dialogVerb} Hush Swoon Tiles`;
         break;
       case 'clario':
         requiredMaterials = this.materialsService.materials.felt.sola;
@@ -126,9 +122,6 @@ export class AddQuantityComponent implements OnInit, AfterContentInit {
     switch (this.feature.feature_type) {
       case 'hush':
         materialImg = `/assets/images/tiles/hush-blocks/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;
-        break;
-      case 'hushSwoon':
-        materialImg = `/assets/images/tiles/hush-swoon/felt/merino/${this.selectedMaterial}.png`;
         break;
       case 'tetria':
         materialImg = `/assets/images/tiles/${this.feature.selectedTile.tile}/${this.selectedMaterial}.png`;

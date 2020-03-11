@@ -125,8 +125,15 @@
             <span appStyledButton='primary-right'>
               <button (click)="viewDetails()">Details</button>
             </span>
-            <span appStyledButton='secondary-left'>
+            <span *ngIf='!feature.usesDiscontinuedMaterial' appStyledButton='secondary-left'>
               <button (click)="duplicateDesign()">Duplicate</button>
+            </span>
+            <span *ngIf='feature.usesDiscontinuedMaterial'
+              appStyledButton='secondary-left'
+              matTooltip="Can not duplicate a design with disconintued or inactive materials"
+              class="tooltip-host"
+              matTooltipPosition="above">
+              <button disabled>Duplicate</button>
             </span>
           </span>
         </div>

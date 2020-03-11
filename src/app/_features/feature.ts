@@ -89,6 +89,8 @@ export class Feature {
   public isDuplicating = false;
   public clairoTileSizeType = 'standard';
   public useOldVeloGrid = false;
+  public usesDiscontinuedMaterial = false;
+  public loadedDesign: any = null;
 
   public gridData: any;
   public toolsArray = this.materialsService.toolsArray;
@@ -530,7 +532,6 @@ export class Feature {
         const cableTypesNeeded = this.getVeloCables(island, sharedEdges);
         C1cableKit += cableTypesNeeded[0];
         C2cableKit += cableTypesNeeded[1];
-        console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
@@ -925,9 +926,10 @@ export class Feature {
             } else {
               purchasedTiles[key] = {
                 purchased: veloPkgQty,
+                // TODO: CHANGED MERINO TO SOLA HERE, PROBABLY WONT WORK FOR LOADING OLD DESIGNS
                 image:
                   gridTiles[tile].materialType === 'felt'
-                    ? '/assets/images/materials/felt/merino/' + gridTiles[tile].material + '.png'
+                    ? '/assets/images/materials/felt/sola/' + gridTiles[tile].material + '.png'
                     : '/assets/images/tiles/00/' + gridTiles[tile].material + '.png',
                 hex: gridTiles[tile].materialType === 'varia' ? gridTiles[tile].hex : '',
                 convex: gridTiles[tile].tile === 'convex' ? 1 : 0,
@@ -971,35 +973,6 @@ export class Feature {
           }
         }
         tiles = ccPurchasedTiles;
-        break;
-      case 'hushSwoon':
-        const hsPkgQty: number = this.getPackageQty();
-        const hsGridTiles = this.veloTiles();
-        let hsPurchasedTiles: {};
-
-        for (const tile in hsGridTiles) {
-          if (hsGridTiles.hasOwnProperty(tile)) {
-            const materialType = hsGridTiles[tile].materialType;
-            const material = hsGridTiles[tile].material;
-            const key = `${material}`;
-            if (hsPurchasedTiles === undefined) {
-              hsPurchasedTiles = {};
-            }
-            if (!!hsPurchasedTiles[key]) {
-              hsPurchasedTiles[key].purchased++;
-            } else {
-              hsPurchasedTiles[key] = {
-                purchased: hsPkgQty,
-                image: `/assets/images/tiles/hush-swoon/felt/merino/${hsGridTiles[tile].material}.png`,
-                hex: hsGridTiles[tile].hex,
-                material: hsGridTiles[tile].material,
-                materialType: hsGridTiles[tile].materialType,
-                tile: 'hush-swoon'
-              };
-            }
-          }
-        }
-        tiles = hsPurchasedTiles;
         break;
 
       case 'clario':
@@ -1309,14 +1282,6 @@ export class Feature {
       }
     }
 
-    // adjust count of tiles to start at 1
-
-    // test for just one edge (if it's an end piece)
-    // test for two adjacent neighbors in the loop or first/last only
-
-    console.log('shared edges/tiles ratio:', ratio);
-    console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
-
     if (ratio <= 1.15) {
       cableKit1 = Math.ceil(edgesArr.reduce((a, b) => a + b) * 0.75);
       cableKit2 = this.findVeloFeatureC2s(veloTiles);
@@ -1605,10 +1570,7 @@ export class Feature {
         requiredMaterials = this.materials.felt.sola;
         break;
       case 'tetria':
-        requiredMaterials = this.materials.felt.merino;
-        break;
-      case 'hushSwoon':
-        requiredMaterials = this.materials.felt.merino;
+        requiredMaterials = this.materials.felt.sola;
         break;
       case 'clario':
         requiredMaterials = this.materials.felt.sola;
@@ -1618,7 +1580,7 @@ export class Feature {
         break;
       case 'velo':
         requiredMaterials = { felt: undefined, varia: undefined };
-        requiredMaterials.felt = this.materials.felt.merino;
+        requiredMaterials.felt = this.materials.felt.sola;
         if (!this.materials.varia.color[251]) {
           this.materials.varia.color = this.addNoColorToVariaObj();
         }
@@ -1743,5 +1705,9 @@ export class Feature {
       this.isDuplicating = false;
       return false;
     }
+  }
+
+  checkVeloOldMaterials() {
+    return this.usesDiscontinuedMaterial = this.loadedDesign && (this.loadedDesign.tiles.includes('merino') || this.loadedDesign.tiles.includes('varia'));
   }
 }

@@ -483,6 +483,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Ruby',
+          hex: '#aa2339',
           sheet_part_id: '0-51-916'
         },
         aries: {
@@ -491,6 +492,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Aries',
+          hex: '#db763d',
           sheet_part_id: '0-51-917'
         },
         citrine: {
@@ -499,6 +501,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Citrine',
+          hex: '#ffcc43',
           sheet_part_id: '0-51-918'
         },
         admiral: {
@@ -507,6 +510,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Admiral',
+          hex: '#354883',
           sheet_part_id: '0-51-920'
         },
         oxford: {
@@ -515,6 +519,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Oxford',
+          hex: '#2f3c63',
           sheet_part_id: '0-51-919'
         },
         hunter: {
@@ -523,6 +528,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Hunter',
+          hex: '#273c39',
           sheet_part_id: '0-51-921'
         },
         burnt_umber: {
@@ -531,6 +537,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Burnt Umber',
+          hex: '#503f39',
           sheet_part_id: '0-51-930'
         },
         nickel: {
@@ -539,6 +546,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Nickel',
+          hex: '#dadbe0',
           sheet_part_id: '0-51-926'
         },
         armor: {
@@ -547,6 +555,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Armor',
+          hex: '#7d7a81',
           sheet_part_id: '0-51-924'
         },
         mineral: {
@@ -555,6 +564,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Mineral',
+          hex: '#524f50',
           sheet_part_id: '0-51-923'
         },
         cast: {
@@ -563,6 +573,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Cast',
+          hex: '#363533',
           sheet_part_id: '0-51-929'
         },
         ebony: {
@@ -571,6 +582,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Ebony',
+          hex: '#171614',
           sheet_part_id: '0-51-927'
         },
         cashmere: {
@@ -579,6 +591,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Cashmere',
+          hex: '#ab8971',
           sheet_part_id: '0-51-928'
         },
         moon: {
@@ -587,6 +600,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Moon',
+          hex: '#cccce0',
           sheet_part_id: '0-51-922'
         },
         zinc: {
@@ -595,6 +609,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Zinc',
+          hex: '#edeff2',
           sheet_part_id: '0-51-925'
         },
         ore: {
@@ -619,270 +634,270 @@ export class MaterialsService {
           material: 'milky-white',
           image: '/assets/images/materials/felt/merino/milky-white.png',
           hex: '#dfdee0',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Milky White',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         1: {
           material: 'heather-gray',
           image: '/assets/images/materials/felt/merino/heather-gray.png',
           hex: '#babbbe',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Heather Gray',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         2: {
           material: 'charcoal',
           image: '/assets/images/materials/felt/merino/charcoal.png',
           hex: '#445062',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Charcoal',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         3: {
           material: 'heather-charcoal',
           image: '/assets/images/materials/felt/merino/heather-charcoal.png',
           hex: '#5e616d',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Heather Charcoal',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         4: {
           material: 'heather-black',
           image: '/assets/images/materials/felt/merino/heather-black.png',
           hex: '#353542',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Heather Black',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         5: {
           material: 'black',
           image: '/assets/images/materials/felt/merino/black.png',
           hex: '#20232d',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Black',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         6: {
           material: 'taupe',
           image: '/assets/images/materials/felt/merino/taupe.png',
           hex: '#b7a7a3',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Taupe',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         7: {
           material: 'heather-taupe',
           image: '/assets/images/materials/felt/merino/heather-taupe.png',
           hex: '#b3aaa4',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Heather Taupe',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         8: {
           material: 'putty',
           image: '/assets/images/materials/felt/merino/putty.png',
           hex: '#8e7476',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Putty',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         9: {
           material: 'latte',
           image: '/assets/images/materials/felt/merino/latte.png',
           hex: '#a15532',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Latte',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         10: {
           material: 'heather-dark-brown',
           image: '/assets/images/materials/felt/merino/heather-dark-brown.png',
           hex: '#54393a',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Heather Dark Brown',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         11: {
           material: 'dark-brown',
           image: '/assets/images/materials/felt/merino/dark-brown.png',
           hex: '#382228',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Dark Brown',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         12: {
           material: 'red',
           image: '/assets/images/materials/felt/merino/red.png',
           hex: '#e20000',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Red',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         13: {
           material: 'crimson',
           image: '/assets/images/materials/felt/merino/crimson.png',
           hex: '#bf001f',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Crimson',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         14: {
           material: 'bordeaux',
           image: '/assets/images/materials/felt/merino/bordeaux.png',
           hex: '#700229',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Bordeaux',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         15: {
           material: 'raspberry-jam',
           image: '/assets/images/materials/felt/merino/raspberry-jam.png',
           hex: '#bb0058',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Raspberry Jam',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         16: {
           material: 'royal-purple',
           image: '/assets/images/materials/felt/merino/royal-purple.png',
           hex: '#481a6d',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Royal Purple',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         17: {
           material: 'midnight-blue',
           image: '/assets/images/materials/felt/merino/midnight-blue.png',
           hex: '#22234e',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Midnight Blue',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         18: {
           material: 'peacock',
           image: '/assets/images/materials/felt/merino/peacock.png',
           hex: '#003363',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Peacock',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         19: {
           material: 'liberty-blue',
           image: '/assets/images/materials/felt/merino/liberty-blue.png',
           hex: '#005db0',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Liberty',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         20: {
           material: 'deep-turquoise',
           image: '/assets/images/materials/felt/merino/deep-turquoise.png',
           hex: '#006ecb',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Deep',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         21: {
           material: 'platinum',
           image: '/assets/images/materials/felt/merino/platinum.png',
           hex: '#8a95a6',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Platinum',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         22: {
           material: 'sky-blue',
           image: '/assets/images/materials/felt/merino/sky-blue.png',
           hex: '#01a5d4',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Sky',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         23: {
           material: 'teal',
           image: '/assets/images/materials/felt/merino/teal.png',
           hex: '#00a494',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Teal',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         24: {
           material: 'hunter-green',
           image: '/assets/images/materials/felt/merino/hunter-green.png',
           hex: '#003b39',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Hunter',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         25: {
           material: 'avocado',
           image: '/assets/images/materials/felt/merino/avocado.png',
           hex: '#778a00',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Avocado',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         26: {
           material: 'clover-green',
           image: '/assets/images/materials/felt/merino/clover-green.png',
           hex: '#019a00',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Clover',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         27: {
           material: 'goldenrod',
           image: '/assets/images/materials/felt/merino/goldenrod.png',
           hex: '#ffb300',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Goldenrod',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         28: {
           material: 'camel',
           image: '/assets/images/materials/felt/merino/camel.png',
           hex: '#dfa77b',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Camel',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         },
         29: {
           material: 'orange',
           image: '/assets/images/materials/felt/merino/orange.png',
           hex: '#ff6c00',
-          status: 'active',
+          status: 'inactive',
           name_str: 'Orange',
-          availableUntil: '',
+          availableUntil: 'Spring 2020',
           partId: ''
         }
       }
