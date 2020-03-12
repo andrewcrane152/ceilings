@@ -477,14 +477,14 @@ export class MaterialsService {
   public materials = {
     felt: {
       sola: {
-        ruby: {
-          material: 'ruby',
-          image: '/assets/images/materials/felt/sola/ruby.png',
+        jasper: {
+          material: 'jasper',
+          image: '/assets/images/materials/felt/sola/jasper.png',
           status: 'active',
           available_until: '',
-          name_str: 'Ruby',
-          hex: '#aa2339',
-          sheet_part_id: '0-51-916'
+          name_str: 'Jasper',
+          hex: '#932926',
+          sheet_part_id: '0-51-970'
         },
         aries: {
           material: 'aries',
@@ -492,7 +492,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Aries',
-          hex: '#db763d',
+          hex: '#fa832f',
           sheet_part_id: '0-51-917'
         },
         citrine: {
@@ -510,35 +510,44 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Admiral',
-          hex: '#354883',
+          hex: '#344c88',
           sheet_part_id: '0-51-920'
         },
-        oxford: {
-          material: 'oxford',
-          image: '/assets/images/materials/felt/sola/oxford.png',
+        dusk: {
+          material: 'dusk',
+          image: '/assets/images/materials/felt/sola/dusk.png',
           status: 'active',
           available_until: '',
-          name_str: 'Oxford',
-          hex: '#2f3c63',
-          sheet_part_id: '0-51-919'
+          name_str: 'Dusk',
+          hex: '#4e6477',
+          sheet_part_id: '0-51-969'
         },
-        hunter: {
-          material: 'hunter',
-          image: '/assets/images/materials/felt/sola/hunter.png',
+        emerald: {
+          material: 'emerald',
+          image: '/assets/images/materials/felt/sola/emerald.png',
           status: 'active',
           available_until: '',
-          name_str: 'Hunter',
+          name_str: 'Emerald',
           hex: '#273c39',
           sheet_part_id: '0-51-921'
         },
-        burnt_umber: {
-          material: 'burnt_umber',
-          image: '/assets/images/materials/felt/sola/burnt_umber.png',
+        driftwood: {
+          material: 'driftwood',
+          image: '/assets/images/materials/felt/sola/driftwood.png',
           status: 'active',
           available_until: '',
-          name_str: 'Burnt Umber',
-          hex: '#503f39',
-          sheet_part_id: '0-51-930'
+          name_str: 'Driftwood',
+          hex: '#9a8979',
+          sheet_part_id: '0-51-967'
+        },
+        zinc: {
+          material: 'zinc',
+          image: '/assets/images/materials/felt/sola/zinc.png',
+          status: 'active',
+          available_until: '',
+          name_str: 'Zinc',
+          hex: '#ededf1',
+          sheet_part_id: '0-51-925'
         },
         nickel: {
           material: 'nickel',
@@ -546,7 +555,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Nickel',
-          hex: '#dadbe0',
+          hex: '#d1d1d8',
           sheet_part_id: '0-51-926'
         },
         armor: {
@@ -555,7 +564,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Armor',
-          hex: '#7d7a81',
+          hex: '#8d8d96',
           sheet_part_id: '0-51-924'
         },
         mineral: {
@@ -564,7 +573,7 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Mineral',
-          hex: '#524f50',
+          hex: '#636163',
           sheet_part_id: '0-51-923'
         },
         cast: {
@@ -573,8 +582,26 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Cast',
-          hex: '#363533',
+          hex: '#363635',
           sheet_part_id: '0-51-929'
+        },
+        dune: {
+          material: 'dune',
+          image: '/assets/images/materials/felt/sola/dune.png',
+          status: 'active',
+          available_until: '',
+          name_str: 'Dune',
+          hex: '#c6b8a7',
+          sheet_part_id: '0-51-972'
+        },
+        moon: {
+          material: 'moon',
+          image: '/assets/images/materials/felt/sola/moon.png',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
+          name_str: 'Moon',
+          hex: '#cccce0',
+          sheet_part_id: '0-51-922'
         },
         ebony: {
           material: 'ebony',
@@ -582,35 +609,53 @@ export class MaterialsService {
           status: 'active',
           available_until: '',
           name_str: 'Ebony',
-          hex: '#171614',
+          hex: '#2b292a',
           sheet_part_id: '0-51-927'
+        },
+        nightfall: {
+          material: 'nightfall',
+          image: '/assets/images/materials/felt/sola/nightfall.png',
+          status: 'active',
+          available_until: '',
+          name_str: 'Nightfall',
+          hex: '#09181f',
+          sheet_part_id: '0-51-971'
+        },
+        oxford: {
+          material: 'oxford',
+          image: '/assets/images/materials/felt/sola/oxford.png',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
+          name_str: 'Oxford',
+          hex: '#2f3c63',
+          sheet_part_id: '0-51-919'
+        },
+        hunter: {
+          material: 'hunter',
+          image: '/assets/images/materials/felt/sola/hunter.png',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
+          name_str: 'Hunter',
+          hex: '#273c39',
+          sheet_part_id: '0-51-968'
+        },
+        burnt_umber: {
+          material: 'burnt_umber',
+          image: '/assets/images/materials/felt/sola/burnt_umber.png',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
+          name_str: 'Burnt Umber',
+          hex: '#503f39',
+          sheet_part_id: '0-51-930'
         },
         cashmere: {
           material: 'cashmere',
           image: '/assets/images/materials/felt/sola/cashmere.png',
-          status: 'active',
-          available_until: '',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
           name_str: 'Cashmere',
           hex: '#ab8971',
           sheet_part_id: '0-51-928'
-        },
-        moon: {
-          material: 'moon',
-          image: '/assets/images/materials/felt/sola/moon.png',
-          status: 'active',
-          available_until: '',
-          name_str: 'Moon',
-          hex: '#cccce0',
-          sheet_part_id: '0-51-922'
-        },
-        zinc: {
-          material: 'zinc',
-          image: '/assets/images/materials/felt/sola/zinc.png',
-          status: 'active',
-          available_until: '',
-          name_str: 'Zinc',
-          hex: '#edeff2',
-          sheet_part_id: '0-51-925'
         },
         ore: {
           material: 'ore',
@@ -627,7 +672,16 @@ export class MaterialsService {
           available_until: 'March 2019',
           name_str: 'Dark Gray',
           sheet_part_id: '0-51-801'
-        }
+        },
+        ruby: {
+          material: 'ruby',
+          image: '/assets/images/materials/felt/sola/ruby.png',
+          status: 'discontinued',
+          available_until: 'Spring 2021',
+          name_str: 'Ruby',
+          hex: '#aa2339',
+          sheet_part_id: '0-51-916'
+        },
       },
       merino: {
         0: {

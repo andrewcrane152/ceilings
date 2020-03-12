@@ -169,14 +169,14 @@ export class DesignComponent implements OnInit, OnDestroy {
                     }
                     this.feature.checkVeloOldMaterials();
                     this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
-                    this.feature.material = 'ruby';
-                    this.feature.materialHex = '#aa2239';
+                    this.feature.material = 'jasper';
+                    this.feature.materialHex = '#932926';
                     this.feature.materialType = 'felt';
                     this.feature.toolsArray = ['remove'];
                     break;
 
                   case 'clario-cloud':
-                    this.feature.material = 'ruby'
+                    this.feature.material = 'jasper'
                     this.feature.toolsArray = ['remove', 'pattern-direction'];
                     break;
 
@@ -204,25 +204,25 @@ export class DesignComponent implements OnInit, OnDestroy {
           this.debug.log('design-component', `feature_type: ${this.feature.feature_type}`);
           if (this.feature.feature_type === 'tetria') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.tetria[0]);
-            this.feature.material = 'ruby';
+            this.feature.material = 'jasper';
           } else if (this.feature.feature_type === 'hush') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
-            this.feature.material = 'zinc';
+            this.feature.material = 'nickel';
             this.feature.toolsArray = ['remove'];
           } else if (this.feature.feature_type === 'seeyond') {
             this.setSeeyondFeature(params);
           } else if (this.feature.feature_type === 'clario') {
             this.clarioGrids.gridSizeSelected('15/16');
             this.feature.updateSelectedTile(this.materialsService.tilesArray.clario[1]);
-            this.feature.material = 'zinc';
+            this.feature.material = 'nickel';
           } else if (this.feature.feature_type === 'velo') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
             this.feature.toolsArray = ['remove'];
-            this.feature.material = 'ruby';
-            this.feature.materialHex = '#aa2339';
+            this.feature.material = 'jasper';
+            this.feature.materialHex = '#932926';
             this.feature.materialType = 'felt';
           } else if (this.feature.feature_type === 'clario-cloud') {
-            this.feature.material = 'ruby'
+            this.feature.material = 'jasper'
             this.feature.toolsArray = ['remove', 'pattern-direction'];
           }
           this.materials = this.feature.getFeatureMaterials();
