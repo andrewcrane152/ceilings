@@ -933,7 +933,6 @@ export class Feature {
             } else {
               purchasedTiles[key] = {
                 purchased: veloPkgQty,
-                // TODO: CHANGED MERINO TO SOLA HERE, PROBABLY WONT WORK FOR LOADING OLD DESIGNS
                 image:
                   gridTiles[tile].materialType === 'felt'
                     ? '/assets/images/materials/felt/sola/' + gridTiles[tile].material + '.png'
