@@ -83,8 +83,8 @@ export class Feature {
   public materialHex: string;
   public materialType: string;
   public diffusion: string;
-  public discontinuedMaterials: Array<string>;
-  public inactiveMaterials: Array<string>;
+  public discontinuedMaterials: Array<string> = [];
+  public inactiveMaterials: Array<string> = [];
   public canQuote = true;
   public isDuplicating = false;
   public clairoTileSizeType = 'standard';
@@ -246,7 +246,7 @@ export class Feature {
     }
     this.discontinuedMaterials = discontinuedMaterials;
     this.inactiveMaterials = inactiveMaterials;
-    this.checkMaterialsUsed();
+    this.checkForDeprecatedMaterials();
   }
 
   checkMaterialsUsed() {
@@ -284,6 +284,9 @@ export class Feature {
         });
       });
       // alert users if inactive materials are being used
+      if (matchedInactiveMaterials.length > 0) {
+        this.usesDiscontinuedMaterial = true;
+      }
       if (matchedInactiveMaterials.length === 1) {
         this.alert.error(`${matchedInactiveMaterials[0]} is being discontinued and is only available while supplies last.`);
       } else if (matchedInactiveMaterials.length > 1) {
@@ -292,6 +295,7 @@ export class Feature {
         this.alert.error(`${alertStr} are being discontinued and are only available while supplies last.`);
       }
     }
+
     if (this.discontinuedMaterials.length > 0) {
       // loop through gridData looking for discontinued materials
       this.discontinuedMaterials.map(material => {
@@ -319,6 +323,9 @@ export class Feature {
       });
       // if discontinued materials are found disable quote and alert user
       if (matchedDiscontinuedMaterials.length > 0) {
+        if (matchedDiscontinuedMaterials.length > 0) {
+          this.usesDiscontinuedMaterial = true;
+        }
         this.canQuote = false;
         if (matchedDiscontinuedMaterials.length === 1) {
           this.alert.error(`The ${matchedDiscontinuedMaterials[0]} material has been discontinued. Select a new color to proceed.`);
@@ -1187,7 +1194,6 @@ export class Feature {
         hushSwoonTiles.push(this.gridData[tile]);
       }
     }
-    console.log('hushSwoonTiles:', hushSwoonTiles);
     hushSwoonTiles.map(tile => {
       switch (tile.rotation) {
         case 0.5235987755982988:
@@ -1709,5 +1715,23 @@ export class Feature {
 
   checkVeloOldMaterials() {
     return this.usesDiscontinuedMaterial = this.loadedDesign && (this.loadedDesign.tiles.includes('merino') || this.loadedDesign.tiles.includes('varia'));
+  }
+
+  checkForDeprecatedMaterials(design?) {
+    design = design || this.loadedDesign;
+    if (this.discontinuedMaterials.length === 0 || this.inactiveMaterials.length === 0) {
+      this.getDeprecatedMaterials();
+    }
+    const designStr = design ? JSON.stringify(design.tiles) : '';
+    this.inactiveMaterials.forEach(inactMat => {
+      if (designStr.includes(inactMat.toLowerCase())) {
+        this.usesDiscontinuedMaterial = true;
+      }
+    })
+    this.discontinuedMaterials.forEach(discMat => {
+      if (designStr.includes(discMat.toLowerCase())) {
+        this.usesDiscontinuedMaterial = true;
+      }
+    })
   }
 }

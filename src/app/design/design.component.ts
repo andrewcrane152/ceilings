@@ -193,6 +193,7 @@ export class DesignComponent implements OnInit, OnDestroy {
                 this.router.navigate([design.feature_type, 'design', design.id]);
               }
             }
+            this.feature.checkForDeprecatedMaterials();
             this.feature.checkUrlForDuplicate();
           },
           err => this.api.handleError(err)

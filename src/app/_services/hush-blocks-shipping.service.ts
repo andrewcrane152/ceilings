@@ -80,7 +80,6 @@ export class HushBlocksShippingService {
     };
 
     this.fillBoxes();
-    console.log('boxesRecommended', this.currentShippingInfo.boxesRecommended);
   }
 
   private fillBoxes() {
