@@ -3,6 +3,10 @@ import { CanvasGridsComponent } from '../canvas-grids.component';
 // import * as pip from 'point-in-polygon';
 import * as pip from 'robust-point-in-polygon';
 
+(String.prototype as any).capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 @Component({
   selector: 'app-velo-grid',
   templateUrl: './velo-grid.component.html',
@@ -319,39 +323,15 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
   }
 
   private tileAbbreviation(tile) {
-    let abbreviation: string;
-    switch (tile) {
-      case 'concave':
-        abbreviation = 'CC';
-        break;
-
-      case 'convex':
-        abbreviation = 'CV';
-        break;
-
-      default:
-        this.alert.error('Unknown tile: ' + tile);
-        break;
-    }
-    return abbreviation;
+    return tile === 'concave'
+      ? 'CC'
+      : 'CV';
   }
 
-  private materialTypeAbbreviation(materialType) {
-    let abbreviation: string;
-    switch (materialType) {
-      case 'felt':
-        abbreviation = 'F';
-        break;
-
-      case 'varia':
-        abbreviation = 'V';
-        break;
-
-      default:
-        this.alert.error('Unknown material type: ' + materialType);
-        break;
-    }
-    return abbreviation;
+  private materialTypeAbbreviation(tile) {
+    return (this.feature.checkVeloOldMaterials())
+      ? (tile.materialType === 'felt') ? 'Felt' : 'Var'
+      : tile.material.substring(0, 3).capitalize();
   }
 
   private diffusionAbbreviation(diffusion) {
@@ -378,9 +358,9 @@ export class VeloGridComponent extends CanvasGridsComponent implements OnInit {
     // change fillStyle for the font (cyan)
     ctx.fillStyle = '#00E1E1';
     ctx.font = '10px Arial';
-    ctx.fillText(this.materialTypeAbbreviation(this.feature.gridData[index].materialType), -4, -5);
+    ctx.fillText(this.materialTypeAbbreviation(this.feature.gridData[index]), -10, -2);
     ctx.font = '10px Arial';
-    ctx.fillText(this.tileAbbreviation(this.feature.gridData[index].tile), -8, 4);
+    ctx.fillText(this.tileAbbreviation(this.feature.gridData[index].tile), -8, 7);
     if (this.feature.gridData[index].diffusion) {
       ctx.font = '10px Arial';
       ctx.fillText(this.diffusionAbbreviation(this.feature.gridData[index].diffusion), -10, 12);

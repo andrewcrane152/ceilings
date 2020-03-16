@@ -140,7 +140,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
     let y = event.offsetY;
     x = Math.round(x / this.feature.canvasGridScale);
     y = Math.round(y / this.feature.canvasGridScale);
-    console.log(`you clicked on x: ${x}, y: ${y}`);
     let foundTile = false;
     for (const el in this.feature.gridData) {
       if (!foundTile && pip(this.feature.gridData[el].square, [x, y]) === -1) {
@@ -350,7 +349,6 @@ export class ClarioCloudGridComponent extends CanvasGridsComponent implements On
       bgImg.onload = function() {
         const xStart = Math.round((tile.square[0][0]) * canvasScale);
         const yStart = Math.round((tile.square[0][1]) * canvasScale);
-        console.log(`xStart: ${xStart}, yStart: ${yStart}`);
         ctx.drawImage(bgImg, xStart, yStart, 64 * canvasScale, 64 * canvasScale);
         if (showGuide) {
           labelTiles(ctx, xStart, yStart);

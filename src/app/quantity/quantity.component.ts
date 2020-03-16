@@ -168,6 +168,7 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
   ngAfterContentInit() {
     this.featureTitle = `${this.feature.getFeatureHumanName()} Quantity Order`;
     this.packageQtyInfo = this.feature.packageInformation();
+    this.feature.checkForDeprecatedMaterials();
   }
 
   ngOnDestroy() {
@@ -200,8 +201,9 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       }
       qtyOrder.tiles = JSON.stringify(tilesObj);
     }
-    // this.feature.showMainNavbar.emit(true);
+    // this.feature.checkForDeprecatedMaterials(qtyOrder);
     this.qtySrv.order.data = [];
+    this.feature.loadedDesign = qtyOrder;
     this.feature.id = qtyOrder.id;
     this.feature.uid = qtyOrder.uid;
     this.feature.design_name = qtyOrder.design_name;

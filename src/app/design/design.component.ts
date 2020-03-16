@@ -126,10 +126,6 @@ export class DesignComponent implements OnInit, OnDestroy {
         this.useRepeatingGrid = true;
       }
 
-      if (featureType === 'profile') {
-        this.setProfileFeature(params);
-        return;
-      }
       // if one of the params are an integer we need to load the design
       const designId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10) || parseInt(params['param3'], 10);
       if (!!designId) {
@@ -142,6 +138,7 @@ export class DesignComponent implements OnInit, OnDestroy {
               this.router.navigate([params['type'], 'design']);
             } else {
               // design was found so load it.
+              this.feature.loadedDesign = design;
               this.feature.is_quantity_order = design.is_quantity_order;
               if (design.is_quantity_order) {
                 this.router.navigate([`${design.feature_type}/quantity`, design.id]);
@@ -154,40 +151,49 @@ export class DesignComponent implements OnInit, OnDestroy {
                 this.feature.setDesign(design);
                 this.featureTiles = this.feature.tilesArray[featureType];
                 this.materials = this.feature.getFeatureMaterials();
-                if (this.feature.feature_type === 'clario') {
-                  this.feature.grid_type = design.grid_type;
-                  this.feature.tile_size = design.tile_size;
-                  this.feature.clairoTileSizeType = this.feature.getClarioGridType(design.tile_size);
-                  this.clarioGrids.gridSizeSelected(design.grid_type);
-                  this.clarioGrids.loadSelectedTileSize(design.tile_size);
-                  // Clario needs to have tiles set before the grid can be built properly.
-                  this.feature.buildGrid();
-                } else if (this.feature.feature_type === 'velo') {
-                  // velo defaults
-                  if (JSON.parse(design.grid_data).length === 360) {
-                    this.feature.useOldVeloGrid = true;
-                  }
-                  this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
-                  this.feature.material = 'milky-white';
-                  this.feature.materialHex = '#dfdee0';
-                  this.feature.materialType = 'felt';
-                  this.feature.toolsArray = ['remove'];
-                } else if (this.feature.feature_type === 'clario-cloud') {
-                  this.feature.material = 'ruby'
-                  this.feature.toolsArray = ['remove', 'pattern-direction'];
-                } else if (this.feature.feature_type === 'hush') {
-                  this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
-                  this.feature.toolsArray = ['remove'];
-                } else if (this.feature.feature_type === 'tetria') {
-                  this.feature.updateSelectedTile(this.materialsService.tilesArray.tetria[0]);
-                } else if (this.feature.feature_type === 'hushSwoon') {
-                  this.feature.updateSelectedTile(this.materialsService.tilesArray.hushSwoon[0]);
-                  this.feature.toolsArray = ['remove'];
+                switch (this.feature.feature_type) {
+
+                  case 'clario':
+                    this.feature.grid_type = design.grid_type;
+                    this.feature.tile_size = design.tile_size;
+                    this.feature.clairoTileSizeType = this.feature.getClarioGridType(design.tile_size);
+                    this.clarioGrids.gridSizeSelected(design.grid_type);
+                    this.clarioGrids.loadSelectedTileSize(design.tile_size);
+                    // Clario needs to have tiles set before the grid can be built properly.
+                    this.feature.buildGrid();
+                    break;
+
+                  case 'velo':
+                    if (JSON.parse(design.grid_data).length === 360) {
+                      this.feature.useOldVeloGrid = true;
+                    }
+                    this.feature.checkVeloOldMaterials();
+                    this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
+                    this.feature.material = 'jasper';
+                    this.feature.materialHex = '#932926';
+                    this.feature.materialType = 'felt';
+                    this.feature.toolsArray = ['remove'];
+                    break;
+
+                  case 'clario-cloud':
+                    this.feature.material = 'jasper'
+                    this.feature.toolsArray = ['remove', 'pattern-direction'];
+                    break;
+
+                  case 'hush':
+                    this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
+                    this.feature.toolsArray = ['remove'];
+                    break;
+
+                  case 'tetria':
+                    this.feature.updateSelectedTile(this.materialsService.tilesArray.tetria[0]);
+                    break;
                 }
               } else {
                 this.router.navigate([design.feature_type, 'design', design.id]);
               }
             }
+            this.feature.checkForDeprecatedMaterials();
             this.feature.checkUrlForDuplicate();
           },
           err => this.api.handleError(err)
@@ -199,32 +205,26 @@ export class DesignComponent implements OnInit, OnDestroy {
           this.debug.log('design-component', `feature_type: ${this.feature.feature_type}`);
           if (this.feature.feature_type === 'tetria') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.tetria[0]);
-            this.feature.material = 'milky-white';
+            this.feature.material = 'jasper';
           } else if (this.feature.feature_type === 'hush') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.hush[0]);
-            this.feature.material = 'zinc';
+            this.feature.material = 'nickel';
             this.feature.toolsArray = ['remove'];
           } else if (this.feature.feature_type === 'seeyond') {
             this.setSeeyondFeature(params);
           } else if (this.feature.feature_type === 'clario') {
             this.clarioGrids.gridSizeSelected('15/16');
             this.feature.updateSelectedTile(this.materialsService.tilesArray.clario[1]);
-            this.feature.material = 'zinc';
+            this.feature.material = 'nickel';
           } else if (this.feature.feature_type === 'velo') {
             this.feature.updateSelectedTile(this.materialsService.tilesArray.velo[0]);
             this.feature.toolsArray = ['remove'];
-            this.feature.material = 'milky-white';
-            this.feature.materialHex = '#dfdee0';
+            this.feature.material = 'jasper';
+            this.feature.materialHex = '#932926';
             this.feature.materialType = 'felt';
           } else if (this.feature.feature_type === 'clario-cloud') {
-            this.feature.material = 'ruby'
+            this.feature.material = 'jasper'
             this.feature.toolsArray = ['remove', 'pattern-direction'];
-          } else if (this.feature.feature_type === 'hushSwoon') {
-            this.feature.updateSelectedTile(this.materialsService.tilesArray.hushSwoon[0]);
-            this.feature.toolsArray = ['remove'];
-            this.feature.material = 'milky-white';
-            this.feature.materialHex = '#dfdee0';
-            this.feature.materialType = 'felt';
           }
           this.materials = this.feature.getFeatureMaterials();
           this.debug.log('design-component', this.materials);
@@ -627,47 +627,6 @@ export class DesignComponent implements OnInit, OnDestroy {
           this.seeyond.updateSeeyondFeature(seeyondFeature);
         }
       });
-    });
-  }
-
-  setProfileFeature(urlParams) {
-    this.api.getPartsSubstitutes().subscribe(partsSubs => {
-      this.materialsService.parts_substitutes = partsSubs;
-      const params = Object.assign({}, urlParams);
-      const designId = parseInt(params['param1'], 10) || parseInt(params['param2'], 10) || parseInt(params['param3'], 10);
-      if (!!designId) {
-        // // load requested id
-        // this.seeyondService.loadFeature(designId).subscribe(design => {
-        //   this.location.go(`seeyond/design/${design.name}/${design.id}`);
-        //   this.seeyond.loadSeeyondDesign(design);
-        // });
-      } else {
-        // set the tile type to swoon if not specified
-        if (params['param1'] === 'tiles' && !params['param2']) {
-          params['param2'] = 'swoon';
-        }
-        // TODO this data is just a placeholder for now
-        this.feature.updateSelectedTile(this.materialsService.tilesArray.profile.swoon[0]);
-        this.feature.material = 'milky-white';
-        this.feature.materialHex = '#dfdee0';
-        this.feature.materialType = 'varia';
-        // // Determine the seeyond feature to load
-        // let seeyondFeature;
-        // const seeyondFeaturesList = this.seeyond.seeyond_features;
-        // Object.keys(seeyondFeaturesList).forEach(key => {
-        //   if (
-        //     Object.keys(params)
-        //       .map(feature => params[feature])
-        //       .indexOf(seeyondFeaturesList[key]['name']) > -1
-        //   ) {
-        //     seeyondFeature = seeyondFeaturesList[key]['name'];
-        //   }
-        // });
-        // this.materials = this.feature.getFeatureMaterials();
-        // this.featureTiles = this.feature.tilesArray[this.feature.feature_type];
-        this.editOptions();
-        // this.seeyond.updateSeeyondFeature(seeyondFeature);
-      }
     });
   }
 

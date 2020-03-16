@@ -231,35 +231,31 @@ export class ApiService {
 
     return this.http.get(accessUrl, {}).pipe(
       map((res: any) => {
-        let userBranchInfo;
         if (!!res) {
-            if (!!res.user_branches) {
-               userBranchInfo = res.user_branches[0]
-              if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
-                userInfo['showPricing'] = true;
-                this.feature.showPricing = true;
-                localStorage.setItem('3formUser', JSON.stringify(userInfo));
-              }
+          const userData = res.users[0] || res.user_branches[0] || res[0] || '';
+          if (userData) {
+            if ((userData.employee && userData.employee.id)
+                || (userData.branch && userData.branch.designation === 'Dealer Partner')
+            ) {
+              this.setShowPricing();
             }
-            if (!!res[0]) {
-              if ((!!res[0].employee && !!res[0].employee.id)
-                || (!!res[0].branch && res[0].branch.designation && res[0].branch.designation === 'Dealer Partner')
-              ) {
-                userInfo['showPricing'] = true;
-                this.feature.showPricing = true;
-                localStorage.setItem('3formUser', JSON.stringify(userInfo));
-              }
-            }
+          }
           return res;
         } else {
           this.alert.apiAlert(res.result.error);
         }
       }),
       catchError(res => {
-        // this.alert.error(res.error.result.message);
         return 'error';
       })
     );
+  }
+
+  setShowPricing() {
+    const userInfo = JSON.parse(localStorage.getItem('3formUser'));
+    userInfo['showPricing'] = true;
+    this.feature.showPricing = true;
+    localStorage.setItem('3formUser', JSON.stringify(userInfo));
   }
 
   logout() {

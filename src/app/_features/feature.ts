@@ -83,12 +83,14 @@ export class Feature {
   public materialHex: string;
   public materialType: string;
   public diffusion: string;
-  public discontinuedMaterials: Array<string>;
-  public inactiveMaterials: Array<string>;
+  public discontinuedMaterials: Array<string> = [];
+  public inactiveMaterials: Array<string> = [];
   public canQuote = true;
   public isDuplicating = false;
   public clairoTileSizeType = 'standard';
   public useOldVeloGrid = false;
+  public usesDiscontinuedMaterial = false;
+  public loadedDesign: any = null;
 
   public gridData: any;
   public toolsArray = this.materialsService.toolsArray;
@@ -244,7 +246,7 @@ export class Feature {
     }
     this.discontinuedMaterials = discontinuedMaterials;
     this.inactiveMaterials = inactiveMaterials;
-    this.checkMaterialsUsed();
+    this.checkForDeprecatedMaterials();
   }
 
   checkMaterialsUsed() {
@@ -282,6 +284,9 @@ export class Feature {
         });
       });
       // alert users if inactive materials are being used
+      if (matchedInactiveMaterials.length > 0) {
+        this.usesDiscontinuedMaterial = true;
+      }
       if (matchedInactiveMaterials.length === 1) {
         this.alert.error(`${matchedInactiveMaterials[0]} is being discontinued and is only available while supplies last.`);
       } else if (matchedInactiveMaterials.length > 1) {
@@ -290,6 +295,7 @@ export class Feature {
         this.alert.error(`${alertStr} are being discontinued and are only available while supplies last.`);
       }
     }
+
     if (this.discontinuedMaterials.length > 0) {
       // loop through gridData looking for discontinued materials
       this.discontinuedMaterials.map(material => {
@@ -317,6 +323,9 @@ export class Feature {
       });
       // if discontinued materials are found disable quote and alert user
       if (matchedDiscontinuedMaterials.length > 0) {
+        if (matchedDiscontinuedMaterials.length > 0) {
+          this.usesDiscontinuedMaterial = true;
+        }
         this.canQuote = false;
         if (matchedDiscontinuedMaterials.length === 1) {
           this.alert.error(`The ${matchedDiscontinuedMaterials[0]} material has been discontinued. Select a new color to proceed.`);
@@ -530,7 +539,6 @@ export class Feature {
         const cableTypesNeeded = this.getVeloCables(island, sharedEdges);
         C1cableKit += cableTypesNeeded[0];
         C2cableKit += cableTypesNeeded[1];
-        console.warn(`Cable Kit Totals: C1: ${C1cableKit}, C2: ${C2cableKit}`);
 
         // Calculate the hardware cost for connections and add to the hardware cost
         hardwareCost +=
@@ -927,7 +935,7 @@ export class Feature {
                 purchased: veloPkgQty,
                 image:
                   gridTiles[tile].materialType === 'felt'
-                    ? '/assets/images/materials/felt/merino/' + gridTiles[tile].material + '.png'
+                    ? '/assets/images/materials/felt/sola/' + gridTiles[tile].material + '.png'
                     : '/assets/images/tiles/00/' + gridTiles[tile].material + '.png',
                 hex: gridTiles[tile].materialType === 'varia' ? gridTiles[tile].hex : '',
                 convex: gridTiles[tile].tile === 'convex' ? 1 : 0,
@@ -971,35 +979,6 @@ export class Feature {
           }
         }
         tiles = ccPurchasedTiles;
-        break;
-      case 'hushSwoon':
-        const hsPkgQty: number = this.getPackageQty();
-        const hsGridTiles = this.veloTiles();
-        let hsPurchasedTiles: {};
-
-        for (const tile in hsGridTiles) {
-          if (hsGridTiles.hasOwnProperty(tile)) {
-            const materialType = hsGridTiles[tile].materialType;
-            const material = hsGridTiles[tile].material;
-            const key = `${material}`;
-            if (hsPurchasedTiles === undefined) {
-              hsPurchasedTiles = {};
-            }
-            if (!!hsPurchasedTiles[key]) {
-              hsPurchasedTiles[key].purchased++;
-            } else {
-              hsPurchasedTiles[key] = {
-                purchased: hsPkgQty,
-                image: `/assets/images/tiles/hush-swoon/felt/merino/${hsGridTiles[tile].material}.png`,
-                hex: hsGridTiles[tile].hex,
-                material: hsGridTiles[tile].material,
-                materialType: hsGridTiles[tile].materialType,
-                tile: 'hush-swoon'
-              };
-            }
-          }
-        }
-        tiles = hsPurchasedTiles;
         break;
 
       case 'clario':
@@ -1214,7 +1193,6 @@ export class Feature {
         hushSwoonTiles.push(this.gridData[tile]);
       }
     }
-    console.log('hushSwoonTiles:', hushSwoonTiles);
     hushSwoonTiles.map(tile => {
       switch (tile.rotation) {
         case 0.5235987755982988:
@@ -1308,14 +1286,6 @@ export class Feature {
         edgesArr[actualNeighbors]++;
       }
     }
-
-    // adjust count of tiles to start at 1
-
-    // test for just one edge (if it's an end piece)
-    // test for two adjacent neighbors in the loop or first/last only
-
-    console.log('shared edges/tiles ratio:', ratio);
-    console.log(`E1=${edgesArr[1]}, E2=${edgesArr[2]}, E3=${edgesArr[3]}, E4=${edgesArr[4]}, E5=${edgesArr[5]}`);
 
     if (ratio <= 1.15) {
       cableKit1 = Math.ceil(edgesArr.reduce((a, b) => a + b) * 0.75);
@@ -1605,10 +1575,7 @@ export class Feature {
         requiredMaterials = this.materials.felt.sola;
         break;
       case 'tetria':
-        requiredMaterials = this.materials.felt.merino;
-        break;
-      case 'hushSwoon':
-        requiredMaterials = this.materials.felt.merino;
+        requiredMaterials = this.materials.felt.sola;
         break;
       case 'clario':
         requiredMaterials = this.materials.felt.sola;
@@ -1618,7 +1585,7 @@ export class Feature {
         break;
       case 'velo':
         requiredMaterials = { felt: undefined, varia: undefined };
-        requiredMaterials.felt = this.materials.felt.merino;
+        requiredMaterials.felt = this.materials.felt.sola;
         if (!this.materials.varia.color[251]) {
           this.materials.varia.color = this.addNoColorToVariaObj();
         }
@@ -1743,5 +1710,27 @@ export class Feature {
       this.isDuplicating = false;
       return false;
     }
+  }
+
+  checkVeloOldMaterials() {
+    return this.usesDiscontinuedMaterial = this.loadedDesign && (this.loadedDesign.tiles.includes('merino') || this.loadedDesign.tiles.includes('varia'));
+  }
+
+  checkForDeprecatedMaterials(design?) {
+    design = design || this.loadedDesign;
+    if (this.discontinuedMaterials.length === 0 || this.inactiveMaterials.length === 0) {
+      this.getDeprecatedMaterials();
+    }
+    const designStr = design ? JSON.stringify(design.tiles) : '';
+    this.inactiveMaterials.forEach(inactMat => {
+      if (designStr.includes(inactMat.toLowerCase())) {
+        this.usesDiscontinuedMaterial = true;
+      }
+    })
+    this.discontinuedMaterials.forEach(discMat => {
+      if (designStr.includes(discMat.toLowerCase())) {
+        this.usesDiscontinuedMaterial = true;
+      }
+    })
   }
 }
