@@ -60,7 +60,7 @@ export class PricesService {
   public tetriaPricingData = {
     partsList: {},
     servicePrices: {
-      flatTilePrice: 64.92,
+      flatTilePrice: 86.57,
       tetriaTilePrice: 86.57
     },
     hardwarePrices: {},
