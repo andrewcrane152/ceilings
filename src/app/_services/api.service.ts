@@ -230,7 +230,9 @@ export class ApiService {
       337074
     ];
     const user = JSON.parse(localStorage.getItem('3formUser'));
-    this.feature.showVariaInVelo = UID_ACCESS_VARIA_IN_VELO.includes(user.uid) || false;
+    this.feature.showVariaInVelo = (!!user && !!user.uid) ?
+      UID_ACCESS_VARIA_IN_VELO.includes(user.uid) :
+      false;
   }
 
   checkAccessToPricing() {
