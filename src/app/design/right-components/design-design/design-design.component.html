@@ -53,10 +53,8 @@
   </ng-container>
 
   <!-- VELO MATERIAL SELECTION -->
-  <ng-container *ngIf="feature.feature_type === 'velo'">
+  <ng-container *ngIf="feature.feature_type === 'velo' && !feature.showVariaInVelo">
     <div class="velo-container">
-      <!-- <mat-tab-group> -->
-        <!-- <mat-tab label="Merino Felt"> -->
           <div class="velo-materials-container" *ngIf="materials.felt">
             <div *ngFor="let felt of materials.felt | keys" (click)="feature.updateSelectedMaterial(felt.material, felt.hex, 'felt')">
               <div *ngIf="felt.status === 'active'" matTooltip="{{felt.material | capitalize}}" [matTooltipPosition]="position"
@@ -65,9 +63,22 @@
               </div>
             </div>
           </div>
-        <!-- </mat-tab> -->
-        <!-- TODO: RESTORE FOR OLD DESIGNS? Leaving this here in case they want it back after it's gone.-->
-        <!-- <mat-tab label="Varia">
+    </div>
+  </ng-container>
+  <ng-container *ngIf="feature.feature_type === 'velo' && feature.showVariaInVelo">
+    <div class="velo-container">
+      <mat-tab-group>
+        <mat-tab label="Merino Felt">
+          <div class="velo-materials-container" *ngIf="materials.felt">
+            <div *ngFor="let felt of materials.felt | keys" (click)="feature.updateSelectedMaterial(felt.material, felt.hex, 'felt')">
+              <div *ngIf="felt.status === 'active'" matTooltip="{{felt.material | capitalize}}" [matTooltipPosition]="position"
+                [attr.data-hex]="felt.hex" class="tooltip-host">
+                <img src="{{felt.image}}" alt="{{felt.material | capitalize}}" class="" [class.selected]="feature.material==felt.material">
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Varia">
           <div class="velo-materials-container" *ngIf="materials.varia">
             <div *ngFor="let varia of materials.varia.color | keys last as isLast" (click)="feature.updateSelectedMaterial(varia.material, varia.hex, 'varia')">
               <div *ngIf="varia.status === 'active'" matTooltip="{{varia.material | capitalize}}" [matTooltipPosition]="position"
@@ -96,8 +107,8 @@
               </li>
             </ul>
           </div>
-        </mat-tab> -->
-      <!-- </mat-tab-group> -->
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </ng-container>
 

@@ -91,6 +91,7 @@ export class Feature {
   public useOldVeloGrid = false;
   public usesDiscontinuedMaterial = false;
   public loadedDesign: any = null;
+  public showVariaInVelo = false;
 
   public gridData: any;
   public toolsArray = this.materialsService.toolsArray;

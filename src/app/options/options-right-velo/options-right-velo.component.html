@@ -20,9 +20,11 @@
     <img src="/assets/images/materials/felt/sola/oxford.png" alt="Oxford">
     <img src="/assets/images/materials/felt/sola/hunter.png" alt="Hunter">
   </div>
-  <!-- <div class="description">Add either Avalance D01 or Vapor W05 diffusion layer.</div>
-  <div class="diffusions">
-    <img src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01">
-    <img src="/assets/icons/tools/vapor_w05.jpg" alt="Vapor W05">
-  </div> -->
+  <ng-container *ngIf="feature.showVariaInVelo">
+    <div class="description">Add either Avalance D01 or Vapor W05 diffusion layer.</div>
+    <div class="diffusions">
+      <img src="/assets/icons/tools/avalanche_d01.jpg" alt="Avalanche D01">
+      <img src="/assets/icons/tools/vapor_w05.jpg" alt="Vapor W05">
+    </div>
+  </ng-container>
 </div>

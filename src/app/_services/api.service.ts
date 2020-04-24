@@ -208,6 +208,7 @@ export class ApiService {
 
   checkToShowPricing() {
     if (!!localStorage.getItem('3formUser')) {
+      this.checkToShowVariaInVelo();
       this.checkAccessToPricing().subscribe(
         data => {
           if (!!data.result) {
@@ -216,12 +217,22 @@ export class ApiService {
         },
         error => {
           console.log('denied pricing access');
-          // if (error) {
-          //   this.handleError(error);
-          // }
         }
       );
     }
+  }
+
+  checkToShowVariaInVelo() {
+    const UID_ACCESS_VARIA_IN_VELO = [
+      432355,
+      44345,
+      166792,
+      337074
+    ];
+    const user = JSON.parse(localStorage.getItem('3formUser'));
+    this.feature.showVariaInVelo = (!!user && !!user.uid) ?
+      UID_ACCESS_VARIA_IN_VELO.includes(user.uid) :
+      false;
   }
 
   checkAccessToPricing() {
@@ -233,23 +244,23 @@ export class ApiService {
       map((res: any) => {
         let userBranchInfo;
         if (!!res) {
-            if (!!res.user_branches) {
-               userBranchInfo = res.user_branches[0]
-              if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
-                userInfo['showPricing'] = true;
-                this.feature.showPricing = true;
-                localStorage.setItem('3formUser', JSON.stringify(userInfo));
-              }
+          if (!!res.user_branches) {
+              userBranchInfo = res.user_branches[0]
+            if (!!userBranchInfo.employee_id || userBranchInfo.branch.designation === 'Dealer Partner') {
+              userInfo['showPricing'] = true;
+              this.feature.showPricing = true;
+              localStorage.setItem('3formUser', JSON.stringify(userInfo));
             }
-            if (!!res[0]) {
-              if ((!!res[0].employee && !!res[0].employee.id)
-                || (!!res[0].branch && res[0].branch.designation && res[0].branch.designation === 'Dealer Partner')
-              ) {
-                userInfo['showPricing'] = true;
-                this.feature.showPricing = true;
-                localStorage.setItem('3formUser', JSON.stringify(userInfo));
-              }
+          }
+          if (!!res[0]) {
+            if ((!!res[0].employee && !!res[0].employee.id)
+              || (!!res[0].branch && res[0].branch.designation && res[0].branch.designation === 'Dealer Partner')
+            ) {
+              userInfo['showPricing'] = true;
+              this.feature.showPricing = true;
+              localStorage.setItem('3formUser', JSON.stringify(userInfo));
             }
+          }
 
         // if (!!res) {
         //   let userData = res.users[0] || res.user_branches[0] || res[0] || '';
