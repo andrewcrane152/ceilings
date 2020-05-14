@@ -221,6 +221,9 @@ export class ApiService {
           // }
         }
       );
+
+      // TODO: REMOVE THIS:
+      this.feature.showPricing = JSON.parse(localStorage.getItem('3formUser')).uid === 432355;
     }
   }
 

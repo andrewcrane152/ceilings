@@ -60,6 +60,16 @@
               <input type="number" [(ngModel)]="requestedQuantity" (change)="multiplesChanged()">
             </span>
           </div>
+          <div id="add-clips" class="info-section" *ngIf="feature.feature_type === 'clario' || feature.feature_type === 'tetria'">
+            <span class="help-text">
+              <div class="sub-header">Add Clip Hardware</div>
+              <span class="description-text">Clips can be added to an installation to more securely hold the tile in place within the ceiling grid by applying positive pressure on the tile.</span>
+            </span>
+            <span class="multiples-input">
+              <input id="includeClips" type="checkbox" [checked]="feature.clipsRequested" (click)="clipsOptionChanged($event.target.checked)">
+              <span>Include Clips</span>
+            </span>
+          </div>
           <div *ngIf="feature.feature_type !=='seeyond' && feature.showPricing" id="estimated-totals"
             class="info-section">
             <div class="info-line" *ngIf="feature.quantity > 1">
