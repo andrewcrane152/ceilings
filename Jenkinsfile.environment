@@ -21,7 +21,6 @@ pipeline {
         echo sh(script: 'env|sort', returnStdout: true)
       }
     }
-
     stage('Build Image') {
       steps {
         echo "Creating $BRANCH_NAME Image...."
