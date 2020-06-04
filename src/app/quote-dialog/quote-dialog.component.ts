@@ -122,9 +122,11 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     if (this.uiType === 'design') {
       this.feature.updateEstimatedAmount();
     } else if (this.uiType === 'quantity') {
-      console.log('get table data')
-      console.log('each row doEditRow')
-      console.log(this.qtySrv.order);
+      this.qtySrv.order.data.forEach((row, index) => {
+        const dataRow = row as any;
+        const rowObjKey = `${dataRow.material}-${dataRow.tile_size}`;
+        row = this.qtySrv.doEditRow(index, {rowObjKey: row});
+      });
     }
   }
 

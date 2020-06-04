@@ -430,8 +430,4 @@ export class QuantityComponent implements OnInit, AfterContentInit, OnDestroy {
       }
     })
   }
-
-  logRows() {
-    console.log('log rows');
-  }
 }

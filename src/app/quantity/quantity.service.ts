@@ -21,6 +21,7 @@ export class QuantityService {
   constructor(private debug: DebugService, public feature: Feature, private route: ActivatedRoute, private clarioGrids: ClarioGridsService, private hushBlocksShippingService: HushBlocksShippingService) {}
 
   doAddRow(row) {
+    this.debug.log('quantity', 'doAddRowInvoked');
     this.debug.log('quantity', row);
     const newRow = this.setRowData(row);
     this.order.data.push(newRow);
