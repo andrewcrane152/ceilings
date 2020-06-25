@@ -24,7 +24,7 @@ export class SeeyondFeature extends Feature {
   public xml: any = {};
   public tessellation: number; // court
   public tessellationStr: string;
-  public pattern_strength = 3;
+  public pattern_strength = 10;
   public material: string;
   public sheet_part_id: string;
   public boxes: number;
@@ -86,7 +86,7 @@ export class SeeyondFeature extends Feature {
       this.location.go(`seeyond/design/${seeyond_feature_type}`);
       const seeyondFeature = this.seeyond_features[this.seeyond_feature_index];
       // set defaults
-      this.pattern_strength = 3;
+      this.pattern_strength = 10;
       this.seeyond_feature_index = this.seeyond_feature_index;
       this.name = seeyondFeature.name;
       this.title = seeyondFeature.title;

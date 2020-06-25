@@ -60,13 +60,13 @@
           </div>
           <p class="text-center xs">{{pattern | capitalize}}</p>
         </div>
-        <div class="strength-parent design-column-padding-adjust">
+        <!-- <div class="strength-parent design-column-padding-adjust">
           <span>Pattern Strength</span>
           <select name="pattern-strength" id="pattern-strength" [value]="seeyond.pattern_strength" (change)="updatePatternStrength($event.target.value)"
             [disabled]="this.seeyond.quoted" class="form-control">
             <option *ngFor="let strength of strengths">{{strength}}</option>
           </select>
-        </div>
+        </div> -->
         <div class="relief-parent design-column-padding-adjust" *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
           <span>Pattern Location</span>
           <select name="pattern-relief" id="pattern-relief" [(ngModel)]="patternRelief" (change)="updatePatternRelief()"
