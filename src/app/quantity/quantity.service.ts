@@ -1,6 +1,5 @@
 import { HushBlocksShippingService } from './../_services/hush-blocks-shipping.service';
 import { ClarioGridsService } from './../_services/clario-grids.service';
-// import { TileObj } from './quantity.service';
 import { MatTableDataSource } from '@angular/material';
 import { TileRow } from './quantity.component';
 import { Feature } from './../_features/feature';
@@ -95,7 +94,6 @@ export class QuantityService {
   }
 
   doEditRow(index, row) {
-    console.log('doEditRow:', row);
     this.getRowEstimate(row); // sets feature.estimated_amount
     const editRow = row[Object.keys(row)[0]];
     editRow.total = this.feature.estimated_amount;
