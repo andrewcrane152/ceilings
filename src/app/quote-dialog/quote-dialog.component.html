@@ -63,7 +63,7 @@
           <div id="add-clips" class="info-section" *ngIf="feature.feature_type === 'clario' || feature.feature_type === 'tetria'">
             <span class="help-text">
               <div class="sub-header">Add Clip Hardware</div>
-              <span class="description-text">Clips can be added to an installation to more securely hold the tile in place within the ceiling grid by applying positive pressure on the tile.</span>
+              <span class="description-text">An optional attachment clip can be added to prevent movement of the ceiling tile in environments with positive pressure, significant air movement, or strong HVAC upward drafts. This clip creates force on the back side of the tile to hold it in place and can increase installation time.</span>
             </span>
             <span class="multiples-input">
               <input id="includeClips" type="checkbox" [checked]="feature.clipsRequested" (click)="clipsOptionChanged($event.target.checked)">
