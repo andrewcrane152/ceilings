@@ -73,6 +73,7 @@ export class Feature {
       twoByTwo: 0
     }
   };
+  public clipsRequested = false;
 
   // attributes for the tool
   public tile_type = 'tile';
@@ -343,8 +344,10 @@ export class Feature {
   }
 
   getTetriaEstimate(tilesArray) {
-    const flatTilePrice = this.pricesService.tetriaPricingData.servicePrices.flatTilePrice;
-    const tetriaTilePrice = this.pricesService.tetriaPricingData.servicePrices.tetriaTilePrice;
+    const tetriaTilePricing = this.pricesService.tetriaPricingData;
+    const flatTilePrice = tetriaTilePricing.servicePrices.flatTilePrice;
+    const tetriaTilePrice = tetriaTilePricing.servicePrices.tetriaTilePrice;
+    const clipsPrice = tetriaTilePricing.partsList['3-15-2415'];
     let flatTileCount = 0;
     let tetriaTileCount = 0;
     const tetriaTiles = ['01', '02', '03'];
@@ -362,8 +365,10 @@ export class Feature {
         }
       }
     }
+
+    const hardware_amount = this.clipsRequested ? (flatTileCount + tetriaTileCount) * clipsPrice * 2 : 0;
     this.services_amount = tetriaTileCount * tetriaTilePrice + flatTileCount * flatTilePrice;
-    this.estimated_amount = this.services_amount;
+    this.estimated_amount = this.services_amount + hardware_amount;
   }
 
   getHushBlocksEstimate(tilesArray) {
@@ -429,16 +434,19 @@ export class Feature {
   }
 
   getClarioEstimate(tilesArray) {
-    const clarioPrices = this.pricesService.clarioPricingData.servicePrices;
+    const clarioPrices = this.pricesService.clarioPricingData;
     let products_amount = 0.0;
+    let hardware_amount = 0.0;
     let clario24TileCount = 0;
     let clario48TileCount = 0;
     let clario00TileCount = 0;
     let sheetsNeeded = 0;
     let sheetCost = 0.0;
+    let totalNumTiles = 0;
     for (const tile in tilesArray) {
       if (tilesArray.hasOwnProperty(tile)) {
         const currentTile = tilesArray[tile];
+        totalNumTiles = totalNumTiles + currentTile.purchased;
         if (currentTile.tile === '24' || currentTile.tile === '600' || currentTile.tile === '625') {
           // 24x24 prices
           clario24TileCount += currentTile.purchased;
@@ -461,10 +469,16 @@ export class Feature {
       }
     }
 
+    this.hardware = this.clipsRequested ?
+      {'3-15-2415': totalNumTiles * 2 } :
+      null;
+    hardware_amount = this.clipsRequested ? totalNumTiles * clarioPrices.partsList['3-15-2415'] * 2 : 0;
+    console.log('hardware:', this.hardware);
+
     // SERVICES AMOUNT
-    const clarioFlatServiceCost = clarioPrices.flatTilePrice;
-    const clario24ServiceCost = clarioPrices.clario24Price;
-    const clario48ServiceCost = clarioPrices.clario48Price;
+    const clarioFlatServiceCost = clarioPrices.servicePrices.flatTilePrice;
+    const clario24ServiceCost = clarioPrices.servicePrices.clario24Price;
+    const clario48ServiceCost = clarioPrices.servicePrices.clario48Price;
     const clario24Total = clario24ServiceCost * clario24TileCount;
     const clario48Total = clario48ServiceCost * clario48TileCount;
     const clarioFlatTotal = clario00TileCount * clarioFlatServiceCost;
@@ -472,7 +486,7 @@ export class Feature {
     this.services_amount = clarioFlatTotal + clario24Total + clario48Total;
     // END SERVICES AMOUNT
 
-    this.estimated_amount = this.services_amount + products_amount;
+    this.estimated_amount = this.services_amount + products_amount + hardware_amount;
   }
 
   getVeloEstimate(tilesArray) {

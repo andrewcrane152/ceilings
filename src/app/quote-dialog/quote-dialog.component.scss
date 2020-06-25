@@ -24,13 +24,18 @@
   }
 }
 
-#order-multiples {
+#order-multiples,
+#add-clips {
   display: flex;
   align-items: center;
 
   span {
     width: 50%;
   }
+}
+
+input[type=checkbox] {
+  width: 20px !important;
 }
 
 #estimated-totals {

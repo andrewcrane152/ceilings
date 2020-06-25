@@ -9,6 +9,7 @@ import { AlertService } from './../_services/alert.service';
 import { Feature } from '../_features/feature';
 import { User } from '../_models/user';
 import { SeeyondFeature } from '../_features/seeyond-feature';
+import { QuantityService } from 'app/quantity/quantity.service';
 
 @Component({
   selector: 'app-quote-dialog',
@@ -48,7 +49,8 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     public dialogRef: MatDialogRef<QuoteDialogComponent>,
     public seeyond: SeeyondFeature,
     public seeyondApi: SeeyondService,
-    public location: Location
+    public location: Location,
+    private qtySrv: QuantityService
   ) {}
 
   ngOnInit() {
@@ -113,6 +115,19 @@ export class QuoteDialogComponent implements OnInit, AfterContentChecked {
     }
     this.debug.log('quote-dialog', `multiples: ${this.feature.quantity}`);
     this.setTemplateValues();
+  }
+
+  clipsOptionChanged(clipsRequested) {
+    this.feature.clipsRequested = clipsRequested;
+    if (this.uiType === 'design') {
+      this.feature.updateEstimatedAmount();
+    } else if (this.uiType === 'quantity') {
+      this.qtySrv.order.data.forEach((row, index) => {
+        const dataRow = row as any;
+        const rowObjKey = `${dataRow.material}-${dataRow.tile_size}`;
+        row = this.qtySrv.doEditRow(index, {rowObjKey: row});
+      });
+    }
   }
 
   validInputs() {

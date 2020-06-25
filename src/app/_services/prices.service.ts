@@ -58,7 +58,9 @@ export class PricesService {
   };
 
   public tetriaPricingData = {
-    partsList: {},
+    partsList: {
+      '3-15-2415': 0.73
+    },
     servicePrices: {
       flatTilePrice: 86.57,
       tetriaTilePrice: 86.57
@@ -67,7 +69,9 @@ export class PricesService {
   }
 
   public clarioPricingData = {
-    partsList: {},
+    partsList: {
+      '3-15-2415': 0.73
+    },
     servicePrices: {
       flatTilePrice: 25.01,
       clario24Price: 52.41,
