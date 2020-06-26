@@ -1,21 +1,40 @@
-version: "3.5"
+version: "3.7"
 services:
   app:
-    image: "3form/design:${TAG:-latest}"
+    image: "3form/design:${DOCKER_IMAGE_TAG:-latest}"
+    environment:
+      TZ: America/Denver
     ports:
       - "8080:80"
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 1
-        order: start-first
-      restart_policy:
-        condition: any # This is already the default
+    networks:
+      - webgateway
     healthcheck:
       test: wget --quiet --tries=1 --spider http://localhost/ || exit 1
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
-    environment:
-      TZ: America/Denver
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        order: start-first
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=webgateway
+        - traefik.http.routers.design.rule=Host(`design.3-form.com`, `ceilings.3-form.com`, `seeyond.3-form.com`)
+        - traefik.http.routers.design.middlewares=ceilings-redirect@docker, seeyond-redirect@docker
+        - traefik.http.routers.design.tls=true
+        - traefik.http.services.design.loadbalancer.server.port=80
+        # ceilings redirect
+        - traefik.http.middlewares.ceilings-redirect.redirectregex.regex=^https?://ceilings.3-form.com/(.*)
+        - traefik.http.middlewares.ceilings-redirect.redirectregex.replacement=https://design.3-form.com/$${1}
+        - traefik.http.middlewares.ceilings-redirect.redirectregex.permanent=true
+        # seeyond redirect
+        - traefik.http.middlewares.seeyond-redirect.redirectregex.regex=^https?://seeyond.3-form.com/(.*)
+        - traefik.http.middlewares.seeyond-redirect.redirectregex.replacement=https://design.3-form.com/seeyond/design/$${1}
+        - traefik.http.middlewares.seeyond-redirect.redirectregex.permanent=true
+
+networks:
+  webgateway:
+    external: true
