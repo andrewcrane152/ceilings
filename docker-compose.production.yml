@@ -19,6 +19,9 @@ services:
       update_config:
         parallelism: 1
         order: start-first
+      placement:
+        constraints:
+          - node.labels.region == tdc
       labels:
         - traefik.enable=true
         - traefik.docker.network=webgateway
