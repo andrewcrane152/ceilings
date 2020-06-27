@@ -42,7 +42,7 @@ pipeline {
             DOCKER_IMAGE.push('latest')
           }
         }
-        sh "docker rmi $REGISTRY:$TAG"
+        sh "docker rmi $REGISTRY:$GIT_COMMIT"
       }
     }
   }
