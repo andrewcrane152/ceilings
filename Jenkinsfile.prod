@@ -9,19 +9,27 @@ pipeline {
     RAILS_ENV = 'production'
     REGISTRY = '3form/design'
     REGISTRY_CREDENTIAL = 'dockerhub'
-    TAG = sh (
-      script: 'git rev-parse --short HEAD',
-      returnStdout: true
-    ).trim()
     DOCKER_IMAGE = ''
   }
 
   stages {
+    stage('Pre-Build') {
+      steps {
+        sh """
+          curl \
+            --header 'Content-Type: application/json' \
+            --request POST \
+            --data '{\"serviceId\":\"${env.JOB_NAME}\",\"status\":\"running\",\"link\":\"${env.BUILD_URL}\",\"parameters\":{\"DESIGN_COMMIT\":\"${env.GIT_COMMIT}\"}}' \
+            https://op-dashboard.3-form.com/deploys/main-builds/deployments.json || true
+        """
+      }
+    }
+
     stage('Build Image') {
       steps {
         echo 'Creating Production Image....'
         script {
-          DOCKER_IMAGE = docker.build(REGISTRY + ":$TAG", "--build-arg environment=production .")
+          DOCKER_IMAGE = docker.build(REGISTRY + ":$GIT_COMMIT", "--build-arg environment=production .")
         }
       }
     }
@@ -37,13 +45,35 @@ pipeline {
         sh "docker rmi $REGISTRY:$TAG"
       }
     }
+  }
 
-    stage("Deploy") {
-      steps {
-        sh "scp ./docker-compose.production.yml webmaster@192.168.31.38:/home/webmaster/design-production/docker-compose.yml"
-        sh "ssh webmaster@192.168.31.38 '/home/webmaster/design-production/deploy.sh'"
-        cleanWs()
-      }
+  post {
+    always {
+      cleanWs()
+    }
+    success {
+      sh """
+        curl \
+          --header 'Content-Type: application/json' \
+          --request POST \
+          --data '{\"serviceId\":\"${env.JOB_NAME}\",\"status\":\"complete\",\"link\":\"${env.BUILD_URL}\",\"parameters\":{\"DESIGN_COMMIT\":\"${env.GIT_COMMIT}\"}}' \
+          https://op-dashboard.3-form.com/deploys/main-builds/deployments.json || true
+      """
+      slackSend channel: '#web-dev-ops',
+                color: 'good',
+                message: "The pipeline ${currentBuild.fullDisplayName} has succeeded (<${env.BUILD_URL}|Open>)."
+    }
+    failure {
+      sh """
+        curl \
+          --header 'Content-Type: application/json' \
+          --request POST \
+          --data '{\"serviceId\":\"${env.JOB_NAME}\",\"status\":\"failure\",\"link\":\"${env.BUILD_URL}\",\"parameters\":{\"DESIGN_COMMIT\":\"${env.GIT_COMMIT}\"}}' \
+          https://op-dashboard.3-form.com/deploys/main-builds/deployments.json || true
+      """
+      slackSend channel: '#web-dev-ops',
+                color: 'red',
+                message: "The pipeline ${currentBuild.fullDisplayName} has failed (<${env.BUILD_URL}|Open>)."
     }
   }
 }
