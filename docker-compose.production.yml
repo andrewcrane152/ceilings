@@ -4,8 +4,6 @@ services:
     image: "3form/design:${DOCKER_IMAGE_TAG:-latest}"
     environment:
       TZ: America/Denver
-    ports:
-      - "8080:80"
     networks:
       - webgateway
     healthcheck:
