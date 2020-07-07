@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   app:
-    image: "3form/design:${DOCKER_IMAGE_TAG:-latest}"
+    image: "registry.3-form.com/design:${DOCKER_IMAGE_TAG:-latest}"
     environment:
       TZ: America/Denver
     networks:

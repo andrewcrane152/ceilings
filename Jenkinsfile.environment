@@ -6,7 +6,7 @@ pipeline {
   }
 
   environment {
-    REGISTRY = '3form/design'
+    REGISTRY = 'registry.3-form.com/design'
     REGISTRY_CREDENTIAL = 'dockerhub'
     TAG = sh (
       script: 'git rev-parse --short HEAD',
@@ -44,9 +44,18 @@ pipeline {
 
     stage("Deploy") {
       steps {
-        sh "ssh webmaster@192.168.31.47 '/home/webmaster/${BRANCH_NAME}/environment-deploy.sh design'"
-        cleanWs()
+        sh '''
+          export DOCKER_HOST=ssh://webmaster@192.168.42.79
+
+          docker service update --image "$REGISTRY:$BRANCH_NAME" "${BRANCH_NAME}_design"
+        '''
       }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
     }
   }
 }
