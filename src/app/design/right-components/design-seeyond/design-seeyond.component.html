@@ -106,18 +106,18 @@
       </div>
     </div>
     <div class="strength-relief-container">
-      <div class="strength-container">
-        <div class="sub-header">Pattern Strength</div>
+      <!-- <div class="strength-container">
+        <div class="sub-header">Pattern Strength</div> -->
         <!-- <mat-slider class="example-margin" max="10" min="1" step="1" thumbLabel="true" tickInterval="1" [disabled]="this.seeyond.quoted"
           [value]="seeyond.pattern_strength" (change)="updatePatternStrength(patternStrength.value)" #patternStrength>
         </mat-slider> -->
-        <span appStyledSelect [width]="145">
+        <!-- <span appStyledSelect [width]="145">
           <select [(ngModel)]="seeyond.pattern_strength" (change)="updatePatternStrength()"
             [disabled]="this.seeyond.quoted">
             <option *ngFor="let strength of strengths" value="{{strength}}">{{strength}}</option>
           </select>
         </span>
-      </div>
+      </div> -->
       <div class="relief-container"
         *ngIf="seeyond.seeyond_feature_type ==='linear-partition' || seeyond.seeyond_feature_type ==='curved-partition'">
         <div class="sub-header">Pattern Location</div>
