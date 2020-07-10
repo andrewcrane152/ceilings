@@ -8,7 +8,6 @@ pipeline {
   environment {
     RAILS_ENV = 'production'
     REGISTRY = 'registry.3-form.com/design'
-    REGISTRY_CREDENTIAL = 'dockerhub'
     DOCKER_IMAGE = ''
   }
 
@@ -37,10 +36,8 @@ pipeline {
     stage('Push Image') {
       steps {
         script {
-          docker.withRegistry('', REGISTRY_CREDENTIAL) {
-            DOCKER_IMAGE.push()
-            DOCKER_IMAGE.push('latest')
-          }
+          DOCKER_IMAGE.push()
+          DOCKER_IMAGE.push('latest')
         }
         sh "docker rmi $REGISTRY:$GIT_COMMIT"
       }
