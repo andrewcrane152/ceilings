@@ -7,25 +7,15 @@ pipeline {
 
   environment {
     REGISTRY = 'registry.3-form.com/design'
-    REGISTRY_CREDENTIAL = 'dockerhub'
-    TAG = sh (
-      script: 'git rev-parse --short HEAD',
-      returnStdout: true
-    ).trim()
     DOCKER_IMAGE = ''
   }
 
   stages {
-    stage('Prepare') {
-      steps {
-        echo sh(script: 'env|sort', returnStdout: true)
-      }
-    }
     stage('Build Image') {
       steps {
         echo "Creating $BRANCH_NAME Image...."
         script {
-          DOCKER_IMAGE = docker.build(REGISTRY + ":$TAG", "--build-arg environment=${BRANCH_NAME} .")
+          DOCKER_IMAGE = docker.build(REGISTRY + ":$BRANCH_NAME", "--build-arg environment=${BRANCH_NAME} .")
         }
       }
     }
@@ -33,12 +23,9 @@ pipeline {
     stage('Push Image') {
       steps {
         script {
-          docker.withRegistry('', REGISTRY_CREDENTIAL) {
-            DOCKER_IMAGE.push()
-            DOCKER_IMAGE.push("$BRANCH_NAME")
-          }
+          DOCKER_IMAGE.push()
         }
-        sh "docker rmi $REGISTRY:$TAG"
+        sh "docker rmi $REGISTRY:$BRANCH_NAME"
       }
     }
 
