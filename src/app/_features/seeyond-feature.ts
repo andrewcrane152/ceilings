@@ -98,8 +98,10 @@ export class SeeyondFeature extends Feature {
       this.ceiling_length = seeyondFeature.ceiling_length;
       this.tessellation = 0;
       this.tessellationStr = 'court';
-      this.material = 'nickel';
-      this.sheet_part_id = '0-51-925';
+
+      const defaultMaterial = this.materialsService.materials.felt.sola.nickel;
+      this.material = defaultMaterial.material;
+      this.sheet_part_id = defaultMaterial.sheet_part_id;
 
       this.debug.log('seeyond-feature', this);
 
