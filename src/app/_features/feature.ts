@@ -49,7 +49,7 @@ export class Feature {
   public discount_terms = [50, 10];
   public discount_terms_string = '50/10';
   public discount_amount = 0.0;
-  public dealer_markup = 2.2222222222;
+  public dealer_markup = 2.25;
   public net_price = 0.0;
   public services_amount = 0.0;
   public showPricing = false;
