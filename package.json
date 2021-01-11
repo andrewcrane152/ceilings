@@ -6,7 +6,7 @@
     "build:development": "npm run set-dev-env && ng build",
     "build:production": "ng build --configuration=production",
     "build:alpha": "ng build --configuration=alpha",
-    "dev": "ng serve --host 0.0.0.0 --disable-host-check",
+    "dev": "ng serve --host 0.0.0.0 --disable-host-check --configuration=dev",
     "set-dev-env": "ts-node -O '{\"module\": \"commonjs\"}' set-dev-env.ts",
     "ng": "ng",
     "start": "ng serve",

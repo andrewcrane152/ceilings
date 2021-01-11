@@ -2,7 +2,7 @@ const { writeFile } = require("fs");
 const { environment } = require("./src/environments/environment");
 
 const prefix = process.env.DEV_PREFIX;
-const targetPath = "./src/environments/environment.ts";
+const targetPath = "./src/environments/environment.dev-generated.ts";
 
 const newEnv = {
   ...environment,
