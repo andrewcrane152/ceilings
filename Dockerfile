@@ -9,6 +9,9 @@ ADD ./ /app/
 ARG environment
 RUN npm run "build:${environment}"
 
+ARG DEV_PREFIX
+ENV DEV_PREFIX=${DEV_PREFIX}
+
 ### Multi-stage: Nginx ###
 FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html

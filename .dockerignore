@@ -1,0 +1,12 @@
+node_modules
+dist
+
+.editorconfig
+.gitignore
+.graphqlconfig.yaml
+.prettierrc.js
+.stylelintrc
+Capfile
+codegen.*
+Dockerfile
+Jenkinsfile*
