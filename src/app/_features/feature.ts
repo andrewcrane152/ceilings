@@ -473,7 +473,6 @@ export class Feature {
       {'3-15-2415': totalNumTiles * 2 } :
       null;
     hardware_amount = this.clipsRequested ? totalNumTiles * clarioPrices.partsList['3-15-2415'] * 2 : 0;
-    console.log('hardware:', this.hardware);
 
     // SERVICES AMOUNT
     const clarioFlatServiceCost = clarioPrices.servicePrices.flatTilePrice;

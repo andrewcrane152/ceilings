@@ -45,74 +45,25 @@ export class ApiService {
     return this.http.get<any>(this.apiUrl + id);
   }
 
-  updateDesign() {
-    this.debug.log('api', 'updating design');
-    // we can't forget about the hardware...
-    this.debug.log('api', this.feature.tiles);
+  get patchData() {
     let hushShippingInfo;
-    if (this.feature.feature_type === 'hush') {
-      hushShippingInfo = this.feature.hushShippingInfo;
-    }
-    if (this.feature.is_quantity_order) {
-      this.prepDataForQtyOrder();
-    }
-    const patchData = {
-      id: this.feature.id,
-      uid: this.user.uid,
-      feature_type: this.feature.feature_type,
-      design_name: this.feature.design_name,
-      project_name: this.feature.project_name,
-      specifier: this.feature.specifier,
-      width: this.feature.width || 0,
-      length: this.feature.length || 0,
-      units: this.feature.units,
-      material: this.feature.material,
-      tile_size: this.feature.tile_size,
-      grid_type: this.feature.grid_type,
-      tiles: JSON.stringify(this.feature.tiles),
-      design_data_url: this.feature.design_data_url,
-      hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
-      estimated_amount: this.feature.estimated_amount,
-      services_amount: this.feature.services_amount,
-      list_price: this.feature.list_price,
-      discount_terms: JSON.stringify(this.feature.discount_terms),
-      discount_amount: this.feature.discount_amount,
-      net_price: this.feature.net_price,
-      dealer_markup: this.feature.dealer_markup,
-      grid_data: JSON.stringify(this.feature.gridData),
-      quoted: this.feature.quoted,
-      archived: this.feature.archived,
-      quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order,
-      hush_shipping_info: JSON.stringify(hushShippingInfo)
-    };
-
-    return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
-      map((res: any) => {
-        this.onSaved.emit();
-        this.debug.log('api', 'emitting onSaved in updateDesign');
-        return res || {};
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  saveDesign() {
-    this.debug.log('api', 'saving design');
     const featureType = this.feature.setFeatureType(this.feature.feature_type);
-    let hushShippingInfo;
-    let duplicatedFromId;
     const currentPath = this.location.path();
+    let duplicatedFromId = null;
     if (currentPath.includes('duplicate')) {
       duplicatedFromId = this.feature.id;
     }
+
     if (this.feature.feature_type === 'hush') {
       hushShippingInfo = this.feature.hushShippingInfo;
     }
+
     if (this.feature.is_quantity_order) {
       this.prepDataForQtyOrder();
     }
-    const patchData = {
+
+    return {
+      id: this.feature.id,
       uid: this.user.uid,
       feature_type: featureType,
       design_name: this.feature.design_name,
@@ -140,8 +91,28 @@ export class ApiService {
       quantity: this.feature.quantity,
       is_quantity_order: this.feature.is_quantity_order,
       hush_shipping_info: JSON.stringify(hushShippingInfo),
-      duplicated_from_id: duplicatedFromId
-    };
+      duplicated_from_id: duplicatedFromId,
+    }
+  }
+
+  updateDesign() {
+    this.debug.log('api', 'updating design');
+    this.debug.log('api', this.feature.tiles);
+    const patchData = this.patchData;
+
+    return this.http.patch(this.apiUrl + this.feature.id, patchData).pipe(
+      map((res: any) => {
+        this.onSaved.emit();
+        this.debug.log('api', 'emitting onSaved in updateDesign');
+        return res || {};
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  saveDesign() {
+    this.debug.log('api', 'saving design');
+    const patchData = this.patchData;
 
     return this.http.post(this.apiUrl, patchData).pipe(
       map((res: any) => {
