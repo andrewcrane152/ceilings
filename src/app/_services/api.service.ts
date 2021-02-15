@@ -1,3 +1,4 @@
+import { MaterialsService } from 'app/_services/materials.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
@@ -28,8 +29,77 @@ export class ApiService {
     private user: User,
     private debug: DebugService,
     private alert: AlertService,
-    private location: Location
+    private location: Location,
+    private materialsService: MaterialsService,
   ) {}
+
+  get allClarioFromOverseas() {
+    let allClarioFromOverseas = true;
+    (Object.values(this.feature.tiles) as any).forEach(tile => {
+      if (!this.materialsService.overSeasClarioPartIds.includes(tile.partId)) {
+        allClarioFromOverseas = false;
+      }
+    });
+    return allClarioFromOverseas;
+  }
+
+  get patchData() {
+    const { feature } = this;
+    let hushShippingInfo;
+    let allClarioFromOverseas;
+    const featureType = this.feature.setFeatureType(feature.feature_type);
+    const currentPath = this.location.path();
+    let duplicatedFromId = null;
+    this.addPartIdsToTiles();
+    if (currentPath.includes('duplicate')) {
+      duplicatedFromId = feature.id;
+    }
+
+    if (featureType === 'hush') {
+      hushShippingInfo = feature.hushShippingInfo;
+    }
+
+    if (featureType === 'clario') {
+      allClarioFromOverseas = this.allClarioFromOverseas;
+    }
+
+    if (feature.is_quantity_order) {
+      this.prepDataForQtyOrder();
+    }
+
+    return {
+      id: feature.id,
+      uid: this.user.uid,
+      feature_type: featureType,
+      design_name: feature.design_name,
+      project_name: feature.project_name,
+      specifier: feature.specifier,
+      width: feature.width || 0,
+      length: feature.length || 0,
+      units: feature.units,
+      material: feature.material,
+      tile_size: feature.tile_size,
+      grid_type: feature.grid_type,
+      tiles: JSON.stringify(feature.tiles),
+      design_data_url: feature.design_data_url,
+      hardware: !!feature.hardware ? JSON.stringify(feature.hardware) : null,
+      estimated_amount: feature.estimated_amount,
+      services_amount: feature.services_amount,
+      list_price: feature.list_price,
+      discount_terms: JSON.stringify(feature.discount_terms),
+      discount_amount: feature.discount_amount,
+      net_price: feature.net_price,
+      dealer_markup: feature.dealer_markup,
+      grid_data: JSON.stringify(feature.gridData),
+      quoted: feature.quoted,
+      archived: feature.archived,
+      quantity: feature.quantity,
+      is_quantity_order: feature.is_quantity_order,
+      hush_shipping_info: JSON.stringify(hushShippingInfo),
+      duplicated_from_id: duplicatedFromId,
+      clario_from_overseas: allClarioFromOverseas,
+    }
+  }
 
   getMyDesigns() {
     return this.http.get(this.apiUrl + 'list/' + this.user.uid).pipe(catchError(this.handleError));
@@ -45,54 +115,29 @@ export class ApiService {
     return this.http.get<any>(this.apiUrl + id);
   }
 
-  get patchData() {
-    let hushShippingInfo;
-    const featureType = this.feature.setFeatureType(this.feature.feature_type);
-    const currentPath = this.location.path();
-    let duplicatedFromId = null;
-    if (currentPath.includes('duplicate')) {
-      duplicatedFromId = this.feature.id;
-    }
+  addPartIdsToTiles(){
+    const { feature } = this;
+    const featureType = feature.feature_type;
+    (Object.values(feature.tiles) as any).forEach(tile => {
+      const partsListKey = this.getpartsListKey(tile);
+      if (!!partsListKey) {
+        const partIds = this.materialsService.partIds[featureType][partsListKey];
+        if (partIds) {
+          const material = tile.material;
+          tile.partId = partIds[material];
+        }
+      }
+    });
+  }
 
-    if (this.feature.feature_type === 'hush') {
-      hushShippingInfo = this.feature.hushShippingInfo;
+  getpartsListKey(tile) {
+    const { feature } = this;
+    let key = null;
+    switch (feature.feature_type) {
+      case 'clario':
+        key = `${tile.tile}-${feature.grid_type}`;
     }
-
-    if (this.feature.is_quantity_order) {
-      this.prepDataForQtyOrder();
-    }
-
-    return {
-      id: this.feature.id,
-      uid: this.user.uid,
-      feature_type: featureType,
-      design_name: this.feature.design_name,
-      project_name: this.feature.project_name,
-      specifier: this.feature.specifier,
-      width: this.feature.width || 0,
-      length: this.feature.length || 0,
-      units: this.feature.units,
-      material: this.feature.material,
-      tile_size: this.feature.tile_size,
-      grid_type: this.feature.grid_type,
-      tiles: JSON.stringify(this.feature.tiles),
-      design_data_url: this.feature.design_data_url,
-      hardware: !!this.feature.hardware ? JSON.stringify(this.feature.hardware) : null,
-      estimated_amount: this.feature.estimated_amount,
-      services_amount: this.feature.services_amount,
-      list_price: this.feature.list_price,
-      discount_terms: JSON.stringify(this.feature.discount_terms),
-      discount_amount: this.feature.discount_amount,
-      net_price: this.feature.net_price,
-      dealer_markup: this.feature.dealer_markup,
-      grid_data: JSON.stringify(this.feature.gridData),
-      quoted: this.feature.quoted,
-      archived: this.feature.archived,
-      quantity: this.feature.quantity,
-      is_quantity_order: this.feature.is_quantity_order,
-      hush_shipping_info: JSON.stringify(hushShippingInfo),
-      duplicated_from_id: duplicatedFromId,
-    }
+    return key;
   }
 
   updateDesign() {
